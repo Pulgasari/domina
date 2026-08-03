@@ -14,7 +14,7 @@ getElementsByDataKey  = (key,  ctx) => getElements(`[data-key="${key}"]`, _doc(c
 
 export const // ============ MAGIC HELPERS ============
 _doc  = sth => sth ? _el(sth) : document,
-_root = sth => sth ? _el(sth) : $root,
+_root = sth => sth ? _el(sth) : document.documentElement,
 _el   = sth => isElementish(sth) ? sth : getElement(_slct(sth)),
 
 /**
