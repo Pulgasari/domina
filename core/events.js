@@ -3,6 +3,7 @@
 import { _el } from './internal/resolve.js';
 import { isArray, isFn, isString } from './internal/is.js';
 import { arrayfied } from './internal/normalize.js';
+import { getElements } from './query.js';
 
 // Events, die nicht bubbeln -> auf bubbelndes Äquivalent mappen
 const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };
