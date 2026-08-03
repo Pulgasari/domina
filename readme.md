@@ -24,8 +24,14 @@ domina.title
 
 ##
 
+addClass
+hasAttribute
+hasClass
+removeClass
 removeMeta        -> single or namespace
 removeStylesheet  -> single
+toggleAttribute
+toggleClass
 updateElement     -> single
 updateHead        
 updateMeta        -> single k/v or k/v-array or object or string
