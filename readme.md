@@ -15,8 +15,10 @@ domina.element/node
 domina.elements/nodes
 domina.element.position (viewport, document, offet-parent, other element)
 domina.element.size
+domina.font
 domina.form
 domina.form.data
+domina.image
 domina.meta
 domina.shadow
 domina.stylesheet
@@ -77,6 +79,47 @@ update
 - es muss durchgehend camelcase/kebabcase gemanaged werden
 
 ```
+
+E. Utils-Latte (dein Nebenpunkt)
+
+Genau die Konvertierungen, die man ständig von Hand macht:
+
+```js
+// klassen / listen
+toList('a b  c')            // ['a','b','c']       whitespace/komma-tolerant
+toList(['a', ['b','c']])    // ['a','b','c']       flach
+toList({ a: true, b: 0 })   // ['a']               objekt-form
+toClass(input)              // 'a b c'             fürs class-attribut
+toSelector(input)           // '.a.b.c'            für querySelector
+
+// namen
+camel('font-size')          // 'fontSize'
+kebab('fontSize')           // 'font-size'
+dataKey('data-user-id')     // 'userId'            dataset-zugriff
+dataAttr('userId')          // 'data-user-id'
+
+// werte
+px(12)                      // '12px'              zahl -> einheit
+px('50%')                   // '50%'               strings unangetastet
+unpx('12px')                // 12
+toBool('false')             // false               attribut-strings korrekt
+autoCast('42')              // 42                  zahl/bool/json/string
+autoCast('{"a":1}')         // { a: 1 }
+
+// urls / params
+toQuery({ a: 1, b: [2,3] }) // 'a=1&b=2&b=3'
+fromQuery('a=1&b=2')        // { a: '1', b: '2' }
+
+// html
+escapeHTML(str)
+stripHTML(str)
+```
+
+autoCast ist der Schlüssel für data() — data-count="0" soll 0 sein, nicht "0".
+
+##
+
+Fonts/Images verschieben Layout nachträglich. document.fonts.ready und img.decode() kennt kaum jemand.
 
 ##
 
