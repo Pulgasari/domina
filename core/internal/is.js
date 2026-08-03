@@ -1,4 +1,4 @@
-// internal/is.js — Prädikate. Keine Imports, keine Seiteneffekte.
+// @domina/core/internal/is.js
 
 export const
 
