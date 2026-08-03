@@ -27,7 +27,7 @@ document.title
 getElement         = (spec, ctx) => _doc(ctx).querySelector(_slct(spec)) ?? null,
 getElements        = (spec, ctx) => [..._doc(ctx).querySelectorAll(_slct(spec))],
 getElementById     = (id,   ctx) => _doc(ctx).getElementById?.(id) ?? getElement(`#${id}`, ctx),
-getElementsByClass = (name, ctx) => [..._doc(ctx).getElementsByClassName (name)],
+getElementsByClass = (name, ctx) => { const d = _doc(ctx); return d.getElementsByClassName ? [...d.getElementsByClassName(name)] : getElements(`.${name}`, ctx); },    
 getElementsByName  = (name, ctx) => getElements(`[name="${name}"]`, ctx),
 getElementsByTag   = (name, ctx) => [..._doc(ctx).getElementsByTagName   (name)],
 
