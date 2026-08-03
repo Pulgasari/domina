@@ -13,10 +13,10 @@
     "./observer": "./observer.js",
     "./raf": "./raf.js",
     "./misc": "./misc.js",
-    "./collection": "./collection/mod.js"
+    "./collection": "./collection/index.js"
   },
   "publish": {
-    "include": ["index.js", "index.d.ts", "/", "readme.md", "LICENSE"],
+    "include": ["index.js", "types.d.ts", "/", "readme.md", "LICENSE"],
     "exclude": ["**/*.test.js", "src/**/*.md"]
   }
 }
