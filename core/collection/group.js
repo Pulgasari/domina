@@ -17,7 +17,6 @@ export function groupElements({
   groupClass = null,
   emptyKey = '—',
 }) {
-  const $container = _el(container);
   const scope = resolveScope('groupElements', container, item);
   if (!scope) return [];
 
