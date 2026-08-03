@@ -19,6 +19,9 @@ document.links
 document.scripts
 document.title
 
+.insertAdjacentText()
+.insertAdjacentElement()
+
 */
 
 getElement         = (spec, ctx) => _doc(ctx).querySelector(_slct(spec)) ?? null,
