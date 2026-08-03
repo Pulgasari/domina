@@ -10,6 +10,7 @@ mögliche namespaces
 domina.css.layers
 domina.css.scopes
 domina.css.tokens
+domina.dataset
 domina.element/node
 domina.elements/nodes
 domina.meta
@@ -25,13 +26,23 @@ domina.title
 ##
 
 addClass
+getAttribute
+getClass
+getDataset
+getProperties
+getStylesheet
 hasAttribute
 hasClass
+removeAttribute
 removeClass
+removeDataset
 removeMeta        -> single or namespace
 removeStylesheet  -> single
+setAttribute
 toggleAttribute
 toggleClass
+updateAttribute
+updateDataset
 updateElement     -> single
 updateHead        
 updateMeta        -> single k/v or k/v-array or object or string
@@ -58,6 +69,13 @@ move
 remove
 update
 
+##
+- es muss durchgehend camelcase/kebabcase gemanaged werden
+
+##
+traversal. Komplett abwesend. parent, closest, children, siblings, next, prev, find. Für eine DOM-Lib ist das kein Extra.
+
+Insertion-Basics. insertAt gibt es, append/prepend/before/after mit flatNodes-Normalisierung nicht.
 
 ```
 
