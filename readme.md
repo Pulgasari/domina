@@ -13,6 +13,8 @@ domina.css.tokens
 domina.dataset
 domina.element/node
 domina.elements/nodes
+domina.element.position (viewport, document, offet-parent, other element)
+domina.element.size
 domina.meta
 domina.shadow
 domina.stylesheet
@@ -73,6 +75,10 @@ update
 - es muss durchgehend camelcase/kebabcase gemanaged werden
 
 ```
+
+## scrolling
+
+Scrolling: scrollTo, scrollBy, scrollIntoView, scrollTop=, scroll-behavior in CSS. Fünf Wege, unterschiedliche Smooth-Unterstützung, und es gibt kein scrollend-Event mit voller Browser-Deckung. „Warte bis Smooth-Scroll fertig" ist ein wiederkehrendes Selbstbau-Ding.
 
 ##
 traversal. Komplett abwesend. parent, closest, children, siblings, next, prev, find. Für eine DOM-Lib ist das kein Extra.
