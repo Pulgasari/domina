@@ -4,8 +4,6 @@ import { _el }            from './core.js';
 import { createElement }  from './create.js';
 import { isString }       from './utils.js';
 
-const normalize = nodes => nodes.flat(Infinity).filter(n => n != null && n !== false);
-
 export const
 
   // wrap(el, 'div') oder wrap(el, existingNode) oder wrap(el, 'div', { class: 'box' })
