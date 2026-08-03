@@ -46,7 +46,7 @@ _slct = sth => {
     // remaining attributes
     const attrsToSkip = ['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data'];    
     for (const [k,v] of Object.entries(sth)) {
-      if (attrsToSkip.includes(k) || null) continue;
+      if (attrsToSkip.includes(k)) continue;
       selector += `[${k}="${v}"]`;
     }
 
