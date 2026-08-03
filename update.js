@@ -1,14 +1,10 @@
 // update.js
 
 import { _el } from './core.js';
-import { isArray, isFn, isString } from './utils.js';
+import { isArray, isFn, isString, normalize } from './utils.js';
 import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from './observer.js';
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
-
-// null / undefined / false raus, Arrays platt – für Children überall gleich
-const normalize = nodes => nodes.flat(Infinity).filter(n => n != null && n !== false);
-
 // todo:
 //updateHead
 //updateTitle
