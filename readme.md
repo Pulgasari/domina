@@ -78,6 +78,10 @@ update
 
 ```
 
+## Live-Collections
+
+getElementsByClassName, getElementsByTagName, .children, .forms sind live und mutieren während der Iteration. querySelectorAll ist statisch. Der Unterschied ist unsichtbar, bis die Schleife Elemente überspringt.
+
 ## scrolling
 
 Scrolling: scrollTo, scrollBy, scrollIntoView, scrollTop=, scroll-behavior in CSS. Fünf Wege, unterschiedliche Smooth-Unterstützung, und es gibt kein scrollend-Event mit voller Browser-Deckung. „Warte bis Smooth-Scroll fertig" ist ein wiederkehrendes Selbstbau-Ding.
