@@ -37,7 +37,7 @@ const filterModes = {
   'date-before' : dateFilter((a, b) => a  <  b),
 };
 
-export function filterElements({
+export function filterElements ({
   container,
   item,
   filters,
@@ -87,3 +87,5 @@ export function filterElements({
     items   : matchedItems
   };
 }
+
+export default filterElements;
