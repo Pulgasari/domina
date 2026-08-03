@@ -24,7 +24,7 @@ const sortModes = {
   auto: (a, b) => (parseDate(a) && parseDate(b)) ? sortModes.date(a, b) : sortModes.regular(a, b),
 };
 
-export function sortElements({ container, item, indicators }) {
+export function sortElements ({ container, item, indicators }) {
   const $container = _el(container);
   if (!$container) {
     console.warn('sortElements: container not found.', container);
@@ -73,3 +73,5 @@ export function sortElements({ container, item, indicators }) {
   $container.append(...items);   // reine Bewegung, kein Fragment nötig
   return items;
 }
+
+export default sortElements;
