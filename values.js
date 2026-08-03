@@ -1,11 +1,8 @@
 // values.js
 
-import { _el }                           from './core.js';
-import { arrayfied, isArray }            from './utils.js';
+import { _el } from './core.js';
+import { arrayfied, isArray, isCheckableElement, isMultiElement } from './utils.js';
 import { parseDate, toDateInput, toNum } from './utils.js';
-
-const isCheckableElement = el => el.type === 'checkbox' || el.type === 'radio';
-const isMultiElement     = el => el.tagName === 'SELECT' && el.multiple;
 
 const casts = {
   bool   : v => Boolean(isArray(v) ? v.length : v),
