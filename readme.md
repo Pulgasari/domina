@@ -15,6 +15,8 @@ domina.element/node
 domina.elements/nodes
 domina.element.position (viewport, document, offet-parent, other element)
 domina.element.size
+domina.form
+domina.form.data
 domina.meta
 domina.shadow
 domina.stylesheet
