@@ -1,4 +1,4 @@
-// @ts-self-types="./mod.d.ts"
+// @ts-self-types="./types.d.ts"
 // @domina/core
 
 export * from './create.js';
