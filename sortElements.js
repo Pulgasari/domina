@@ -63,10 +63,10 @@ export function sortElements ({ container, item, indicators }) {
           result = order(valA, valB, a, b);
         } else {
           const [mode, direction] = order.includes('-') ? order.split('-') : ['auto', order];
-          result = (sortModes[mode] || sortModes.auto)(valA, valB);
-          if (direction === 'desc') result *= -1;
+          const dir = direction === 'desc' ? -1 : 1;
+          result = (sortModes[mode] || sortModes.auto)(valA, valB, dir);
         }
-
+        
         if (result) return result;
       }
       return 0;
