@@ -1,4 +1,4 @@
-// query.js — öffentliche Suche im DOM.
+// query.js
 
 import { _doc, _slct, _el } from './internal/resolve.js';
 
