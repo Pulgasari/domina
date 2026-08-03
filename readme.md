@@ -78,6 +78,14 @@ update
 
 ```
 
+##
+
+appendChild nimmt einen Node, append nimmt Nodes und Strings — aber append gibt nichts zurück, appendChild gibt den Node. Beim Verketten stolpert man.
+
+## Custom Elements
+
+connectedCallback feuert auch beim Verschieben. Es gibt kein „wirklich entfernt" — dein Observer hat das Problem auch.
+
 ## Live-Collections
 
 getElementsByClassName, getElementsByTagName, .children, .forms sind live und mutieren während der Iteration. querySelectorAll ist statisch. Der Unterschied ist unsichtbar, bis die Schleife Elemente überspringt.
