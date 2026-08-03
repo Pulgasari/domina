@@ -18,6 +18,10 @@ domina.stylesheet
 domina.template
 domina.title
 
+## sub-packages
+@domina/css
+@domina/shadow
+
 ##
 
 removeMeta        -> single or namespace
