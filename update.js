@@ -69,7 +69,7 @@ export const updateElement2 = (spec, props = {}, ...children) => {
   // apply props
   for (const [key, value] of Object.entries(props)) {
 
-      key ==='style
+      key ==='style'
     ? Object.assign(el.style, value)
         
     : (key === 'dataset' || key === 'data')
