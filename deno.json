@@ -1,7 +1,7 @@
 {
   "workspace": [
-    "./packages/domina",
-    "./packages/chain"
+    "./core",
+    "./chain"
   ],
   "tasks": {
     "check": "deno check packages/*/mod.js",
