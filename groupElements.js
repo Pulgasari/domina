@@ -7,7 +7,7 @@ import { getValue }                     from './values.js';
 
 const MARK = 'data-domina-group';
 
-export function groupElements({
+export function groupElements ({
   container,
   item,
   by,                       // Selector-String | fn(el) -> key
@@ -71,3 +71,5 @@ export function groupElements({
   $container.append(frag);
   return groups;
 }
+
+export default groupElements;
