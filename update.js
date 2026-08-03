@@ -39,10 +39,13 @@ updateElement = (spec, props = {}, ...children) => {
     else if (key === 'class' || key === 'className')
     element.setAttribute('class', isArray(value) ? value.flat(Infinity).filter(Boolean).join(' ') : value);
 
-    // event
-    else if (key.startsWith('on') && isFn(value))
-    observerEvents[key] ?? element.addEventListener(key.slice(2).toLowerCase(), value);
-
+    // event + observer
+    else if (key.startsWith('on') && isFn(value)) {
+      const observerFn = observerEvents[key]; observerFn 
+        ? observerFn(element, value)
+        : element.addEventListener(key.slice(2).toLowerCase(), value);
+    }
+    
     // prop + attribute
     else if (!isSVG && key in element) element[key] = value;
     else element.setAttribute(key, value);
