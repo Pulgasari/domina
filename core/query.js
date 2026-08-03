@@ -35,3 +35,7 @@ getElementsByDataAttr = (key, ctx) => getElements(`[data-${key}]`, ctx),
 getElementsByDataKey  = (key, ctx) => getElements(`[data-key="${key}"]`, ctx),
 
 clone = (spec, deep = true) => _el(spec)?.cloneNode(deep) ?? null;
+
+/*
+Und grundsätzlich: der einzige Vorteil dieser Methoden gegenüber getElements('.foo') ist Geschwindigkeit — und die verlierst du durch das [...]-Spreading sofort wieder, weil die live HTMLCollection zum statischen Array wird. Sie sind also reine API-Vertrautheit, keine Optimierung. Völlig legitim, aber erwarte keinen Performance-Gewinn.
+*/
