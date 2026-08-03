@@ -25,7 +25,7 @@ _slct = sth => {
     if (!isObject(sth)) return sth;
 
     // tag
-    const selector = (sth.tag || sth.tagName || '').toLowerCase();
+    let selector = (sth.tag || sth.tagName || '').toLowerCase();
 
     // id
     if (sth.id) selector += '#' + sth.id;
