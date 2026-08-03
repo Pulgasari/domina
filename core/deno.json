@@ -1,0 +1,22 @@
+{
+  "name": "@pulgasari/domina",
+  "version": "1.0.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.js",
+    "./query": "./query.js",
+    "./create": "./create.js",
+    "./update": "./update.js",
+    "./values": "./values.js",
+    "./form": "./form.js",
+    "./events": "./events.js",
+    "./observer": "./observer.js",
+    "./raf": "./raf.js",
+    "./misc": "./misc.js",
+    "./collection": "./collection/mod.js"
+  },
+  "publish": {
+    "include": ["index.js", "index.d.ts", "/", "readme.md", "LICENSE"],
+    "exclude": ["**/*.test.js", "src/**/*.md"]
+  }
+}
