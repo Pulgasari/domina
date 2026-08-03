@@ -72,7 +72,7 @@ update
 ##
 - es muss durchgehend camelcase/kebabcase gemanaged werden
 
----
+```
 
 ##
 traversal. Komplett abwesend. parent, closest, children, siblings, next, prev, find. Für eine DOM-Lib ist das kein Extra.
@@ -92,3 +92,9 @@ measure() liest alle Rects, der Callback ordnet um, mutate() setzt inverse Trans
 
 - oftmals will man iwie ausm nichts zugreifen können
 - oder vom elements aus
+
+Minimal-Move statt Blind-Append
+sortElements macht $container.append(...items). Das reißt jedes Element aus dem DOM und hängt es neu ein. Konsequenzen: Focus geht verloren, <iframe> lädt neu, <video> stoppt, CSS-Transitions starten neu, Selection ist weg. Bei bereits korrekter Reihenfolge passiert trotzdem voller Aufwand.
+Ein Reconciler, der nur bewegt was sich geändert hat (längste steigende Teilfolge, ~20 Zeilen), löst das komplett. Das ist keine Erfindung — Frameworks machen es intern — aber als freistehende Funktion in einer Lib habe ich es noch nicht gesehen:
+Js
+sortElements und groupElements benutzen es intern, und es ist einzeln nützlich.
