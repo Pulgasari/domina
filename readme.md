@@ -80,6 +80,25 @@ update
 
 ```
 
+```
+document.getElementsByClassName()
+document.getElementsByTagName()
+
+document.anchors
+document.body
+document.documentElement
+document.embeds
+document.forms
+document.head
+document.images
+document.links
+document.scripts
+document.title
+
+.insertAdjacentText()
+.insertAdjacentElement()
+```
+
 E. Utils-Latte (dein Nebenpunkt)
 
 Genau die Konvertierungen, die man ständig von Hand macht:
