@@ -1,6 +1,6 @@
 // create.js
 
-import { isString } from './utils.js';
+import { isString, normalize } from './utils.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
