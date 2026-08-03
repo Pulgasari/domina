@@ -1,5 +1,6 @@
 // utils.js
 
+//das durchreichen dieser utils findet hier nur statt solang beide packages noch nich published sind sonst nerven die urls immer
 export { arrayfied, isArray, isElementish, isFn, isFragment, isNullish, isObject, isString } from 'https://pulgasari.github.io/aufbau/utils/is.js';
 
 export const
