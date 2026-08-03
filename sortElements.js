@@ -5,26 +5,26 @@ import { isArray, isFn, isString }         from './utils.js';
 import { parseDate, shuffle, toNum }       from './utils.js';
 import { getValue }                        from './values.js';
 
-// unparsebare Werte landen immer am Ende (auch bei desc – gewollt)
-const nullsLast = (a, b) => (a === null && b === null) ? 0 : a === null ? 1 : b === null ? -1 : null;
-// nullsLast wird bei desc mit *= -1 gedreht, unparsebare Werte landen dann vorne. 
-// Der Kommentar behauptet das Gegenteil. 
-// Fix: Richtung nur auf das Vergleichsergebnis anwenden, wenn beide Werte parsebar waren.
+const defaultOrder = 'auto-asc';
+
+// unparsebare Werte landen immer am Ende – auch bei desc.
+// dir wirkt deshalb NUR auf den echten Vergleich.
+const nullsLast = (x, y, dir, compare) =>
+    x === null && y === null ?  0
+  : x === null              ?  1
+  : y === null              ? -1
+  : dir * compare(x, y);
 
 const sortModes = {
-  regular: (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }),
+  regular: (a, b, dir) =>
+    dir * String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }),
 
-  num: (a, b) => {
-    const x = toNum(a), y = toNum(b);
-    return nullsLast(x, y) ?? x - y;
-  },
+  num:  (a, b, dir) => nullsLast(toNum(a),     toNum(b),     dir, (x, y) => x - y),
+  date: (a, b, dir) => nullsLast(parseDate(a), parseDate(b), dir, (x, y) => x - y),
 
-  date: (a, b) => {
-    const x = parseDate(a), y = parseDate(b);
-    return nullsLast(x, y) ?? x - y;
-  },
-
-  auto: (a, b) => (parseDate(a) && parseDate(b)) ? sortModes.date(a, b) : sortModes.regular(a, b),
+  auto: (a, b, dir) => (parseDate(a) && parseDate(b))
+    ? sortModes.date(a, b, dir)
+    : sortModes.regular(a, b, dir),
 };
 
 export function sortElements ({ container, item, indicators }) {
