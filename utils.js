@@ -7,6 +7,11 @@ export { arrayfied, isArray, isElementish, isFn, isFragment, isNullish, isObject
 export const normalize = nodes => nodes.flat(Infinity).filter(n => n != null && n !== false);
 
 export const
+isCheckableElement = el => el.type === 'checkbox' || el.type === 'radio',
+isMultiElement     = el => el.tagName === 'SELECT' && el.multiple;
+
+
+export const
 isDate   = v => /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.test(v) || (!isNaN(Date.parse(v)) && isNaN(Number(v))),
 isEDO    = v => isObject(v) && (v.tag || v.tagName),
 isEmpty  = v => v === '' || v === null || v === undefined,
