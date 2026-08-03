@@ -17,8 +17,6 @@ isEDO    = v => isObject(v) && (v.tag || v.tagName),
 isEmpty  = v => v === '' || v === null || v === undefined,
 isHTML   = v => isString(v) && v.trim().startsWith('<'),
 isIdLike = v => v.charCodeAt(0) === 35 && v.indexOf(' ') === -1 && v.indexOf('.') === -1,
-isDings  = el => el.type === 'checkbox' || el.type === 'radio',
-isMulti  = el => el.tagName === 'SELECT' && el.multiple,
 isURL    = v => isString(v) && v.includes('://');
 
 const pad = n => String(n).padStart(2, '0');
