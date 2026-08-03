@@ -1,8 +1,8 @@
 // form.js
 
-import { _el }                        from './core.js';
-import { isArray, isFn, isString }    from './utils.js';
-import { getValue, setValue }         from './values.js';
+import { _el }                from './core.js';
+import { isArray, isString }  from './utils.js';
+import { getValue, setValue } from './values.js';
 
 const SKIP = ['submit', 'reset', 'button', 'image'];
 
