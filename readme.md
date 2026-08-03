@@ -13,7 +13,9 @@ domina.css.tokens
 domina.element/node
 domina.elements/nodes
 domina.meta
+domina.shadow
 domina.stylesheet
+domina.template
 domina.title
 
 ##
