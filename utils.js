@@ -3,6 +3,9 @@
 //das durchreichen dieser utils findet hier nur statt solang beide packages noch nich published sind sonst nerven die urls immer
 export { arrayfied, isArray, isElementish, isFn, isFragment, isNullish, isObject, isString } from 'https://pulgasari.github.io/aufbau/utils/is.js';
 
+// null / undefined / false raus, Arrays platt – für Children überall gleich
+export const normalize = nodes => nodes.flat(Infinity).filter(n => n != null && n !== false);
+
 export const
 isDate   = v => /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.test(v) || (!isNaN(Date.parse(v)) && isNaN(Number(v))),
 isEDO    = v => isObject(v) && (v.tag || v.tagName),
