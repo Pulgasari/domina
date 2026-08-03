@@ -138,6 +138,19 @@ autoCast ist der Schlüssel für data() — data-count="0" soll 0 sein, nicht "0
 
 ##
 
+Was tatsächlich taugt: document.forms und form.elements — die sind nicht ersetzbar, weil elements auch Controls einschließt, die per form="id" außerhalb des Formulars stehen. querySelectorAll findet die nicht. select.options und table.rows sind ebenfalls solide. Der Rest ist Nostalgie; getElements('img') ist präziser und vorhersehbarer.
+Fürs Toolkit interessanter ist die benannte Adressierung, die niemand mehr kennt:
+
+```js
+document.forms.login.elements.email     // statt querySelector('form[name=login] [name=email]')
+form.elements.namedItem('tags')         // RadioNodeList bei mehreren gleichen Namen
+form.elements.tags.value                // RadioNodeList.value = der gecheckte Radio
+```
+
+RadioNodeList.value ist ein echtes Juwel: gibt direkt den Wert des selektierten Radios, ohne Schleife. Deine getFormValues iteriert dafür manuell. Nicht falsch — aber für den Radio-Fall gäbe es die kürzere Variante.
+
+##
+
 Fonts/Images verschieben Layout nachträglich. document.fonts.ready und img.decode() kennt kaum jemand.
 
 ##
