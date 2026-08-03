@@ -3,8 +3,8 @@
 // ::: create
 import * as createMethods from './create.js';
 //import * as    getMethods from './get.js';
-import * as.formMethods   from './form.js';
-import * as.eventsMethods from './events.js';
+import * as formMethods   from './form.js';
+import * as eventsMethods from './events.js';
 import * as miscMethods   from './misc.js';
 import * as rafMethods    from './raf.js';
 import * as valueMethods  from './values.js';
