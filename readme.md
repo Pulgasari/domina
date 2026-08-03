@@ -124,15 +124,54 @@ show, hide, toggle, fadeIn/Out/To, slideUp/Down/Toggle, animate, queue, stop, de
 
 $.ajax, $.get, $.post, $.getJSON, load, serialize, serializeArray
 
-## Utilities (~20): 
+### Utilities (~20): 
 
 $.each, $.map, $.grep, $.extend, $.merge, $.inArray, $.trim, $.type, $.isArray, $.param, $.Deferred, $.when, $.proxy, $.noop
 
-## Ready/Plugin: 
+### Ready/Plugin: 
 
 $(document).ready, $.fn.extend
 
+## Wo die Haken saßen
 
+1. Utilities und Ajax sind tot. $.each → for...of. $.extend → Spread. $.Deferred → Promise. $.ajax → fetch. Das war ein Drittel der Lib und ist heute reiner Ballast. Was nicht tot ist: $.param (Objekt → Query-String) und serialize. Die tippt man immer noch selbst.
+
+2. Effects waren die schlechteste Idee. animate() per setInterval auf JS-Thread, slideUp das height in Pixeln interpoliert. Heute: CSS-Transitions und WAAPI, beide auf dem Compositor. Aber das Problem, das jQuery gelöst hat, ist nicht weg — show/hide mit korrekter Rückgabe zum Original-display, und „animiere auf height: auto" ist mit CSS immer noch nicht direkt möglich. Da ist eine echte Lücke.
+
+3. Die Kette war Wrapper und Kollektion in einem. $('.x').text() liest vom ersten, $('.x').text('y') schreibt auf alle. Diese Getter/Setter-Asymmetrie war die häufigste Fehlerquelle überhaupt. Dass du die Kette rausgezogen hast, umgeht es — aber sobald chain kommt, steht die Frage wieder da. Die Antwort ist: Getter geben ein Array, oder es gibt getrennte Einstiegspunkte für Einzel und Menge.
+
+5. .data() war ein Cache, kein Dataset. $.data(el, 'x', {…}) schrieb in eine interne Map, nicht ins DOM. Nach .data('x', 5) stand im HTML immer noch der alte Wert. Ursache für endlose Verwirrung.
+  
+7. Kein Cleanup-Modell. .remove() räumte Handler auf, aber wenn du das Element per innerHTML überschriebst, leakte alles. Es gab keinen Weg, „alle meine Handler in diesem Bereich weg" zu sagen. Dein Disposer-Pattern ist hier strukturell besser — aber du hast noch keinen Gruppen-Disposer.
+
+8. Alles oder nichts. 90 KB für $('.x').addClass('y'). Deine Subpath-Exports lösen das.
+
+9. $ machte zu viel. Selektor, Konstruktor, DOM-ready, Wrapper — vier Bedeutungen für ein Zeichen.
+
+Was daraus für domina folgt
+Definitiv rein — das ist die Pflichtlücke
+Traversal. find, closest, parent, parents, children, siblings, next, prev, is, index, contains. Wichtiger Unterschied zu jQuery: die Varianten mit optionalem Filter-Selektor (parents('.card'), nextAll('[data-x]')) sind das, was man wirklich braucht — nicht die ungefilterten.
+Klassen. addClass/removeClass/toggleClass/hasClass/replaceClass, jeweils mit String, Array und Objekt ({ active: true, hidden: false }). Letzteres ist der Grund, warum man classList nicht direkt nimmt.
+Attribute/Props. attr, setAttr, removeAttr, toggleAttr, prop. Plus — und das ist die Verbesserung gegenüber jQuery — data(el, key) das wirklich aus dem Dataset liest, aber JSON-Werte automatisch parst. Kein Schattencache.
+Remove/Empty/Replace. Fehlt komplett.
+Geometrie. rect, offset (relativ zum Dokument), position (relativ zum Offset-Parent), scroll get/set, size (Content vs. Border-Box). Alles über measure() aus raf.js, damit es batched.
+CSS. css(el) liest computed, css(el, {…}) schreibt. Plus cssVar(el, '--x') — Custom Properties brauchen getPropertyValue, das weiß nicht jeder.
+show/hide/toggle. Mit korrekter Rückgabe zum vorherigen display (im WeakMap gespeichert, nicht im Inline-Style hinterlassen).
+Toolkit-Tier — selten, aber jedes Mal selbst gebaut
+Scroll & Viewport: lockScroll (stapelbar, ohne Layout-Shift), scrollIntoViewIf, isInViewport, scrollbarWidth, onScrollEnd.
+Focus & A11y: focusables(el), trapFocus(el), restoreFocus(), announce(text) für Live-Regions, setInert.
+Animation: animateTo(el, keyframes, opts) → Promise. awaitTransition(el). Und die eine, die CSS nicht kann: animateSize(el, fn) — misst vorher/nachher, animiert height/width explizit, setzt danach zurück auf auto. Das ist jQuerys slideDown, aber richtig.
+Forms: toFormData, toQueryString, validate (Constraint API auslesen und als Objekt zurückgeben), onDirty (Änderungen gegen Ausgangszustand tracken).
+Media/Environment: onMedia(query, cb), prefersReducedMotion(), onlineStatus.
+Clipboard/Files: copy(text), download(blob, name), onDrop(el, cb) mit Datei-Extraktion.
+Templating light: fill(el, data) — füllt [data-field="name"] aus einem Objekt. Kein Framework, aber deckt „Server liefert HTML-Template, JS füllt es" ab.
+Die zwei eigenständigen Ideen
+reorder(container, items) — minimales Bewegen statt Blind-Append. Löst einen echten Bug in sortElements (Focus-Verlust, iframe-Reload, Transition-Neustart) und ist einzeln nützlich. Kein Framework exponiert das freistehend.
+flip(items, mutateFn) — FLIP-Animation um beliebige DOM-Umordnung. Deine frame(read, write) ist buchstäblich dafür gebaut. sortElements mit Animation, ohne Animations-Library.
+Und eine dritte, die ich vorher nicht genannt habe:
+scope() — Gruppen-Disposer. Das ist jQuerys Cleanup-Loch, richtig gelöst:
+Js
+Jede Funktion, die einen Disposer zurückgibt, kann darüber laufen. Bei Komponenten-Lifecycles ist das genau das, was man ständig von Hand baut — ein Array voller stop-Funktionen.
 
 
 
