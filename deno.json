@@ -1,0 +1,23 @@
+{
+  "workspace": [
+    "./packages/domina",
+    "./packages/chain"
+  ],
+  "tasks": {
+    "check": "deno check packages/*/mod.js",
+    "test": "deno test -A test/",
+    "fmt": "deno fmt",
+    "publish:dry": "deno publish --dry-run"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "singleQuote": true,
+    "semiColons": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-unused-vars"]
+    }
+  }
+}
