@@ -3,6 +3,7 @@
 // ::: create
 import * as createMethods from './create.js';
 //import * as    getMethods from './get.js';
+import miscMethods        from './misc.js';
 
 // ::: get
 import getElement            from './core.js';
@@ -13,8 +14,8 @@ import getElementsByDataKey  from './core.js';
 
 // ::: misc
 import filterElements from './filterElements.js';
-import sortElements  from './sortElements.js';
-import updateElement from './updateElement.js';
+import sortElements   from './sortElements.js';
+import updateElement  from './updateElement.js';
 
 /*
 import insertElement from './insertElement.js';
@@ -36,6 +37,7 @@ export default {
   elements : getElements,
 
   ...createMethods,
+  ...miscMethods,
 }
 
 
