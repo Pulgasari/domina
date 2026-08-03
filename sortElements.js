@@ -7,6 +7,9 @@ import { getValue }                        from './values.js';
 
 // unparsebare Werte landen immer am Ende (auch bei desc – gewollt)
 const nullsLast = (a, b) => (a === null && b === null) ? 0 : a === null ? 1 : b === null ? -1 : null;
+// nullsLast wird bei desc mit *= -1 gedreht, unparsebare Werte landen dann vorne. 
+// Der Kommentar behauptet das Gegenteil. 
+// Fix: Richtung nur auf das Vergleichsergebnis anwenden, wenn beide Werte parsebar waren.
 
 const sortModes = {
   regular: (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }),
