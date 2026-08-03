@@ -28,7 +28,7 @@ getElement         = (spec, ctx) => _doc(ctx).querySelector(_slct(spec)) ?? null
 getElements        = (spec, ctx) => [..._doc(ctx).querySelectorAll(_slct(spec))],
 getElementById     = (id,   ctx) => _doc(ctx).getElementById?.(id) ?? getElement(`#${id}`, ctx),
 getElementsByClass = (name, ctx) => [..._doc(ctx).getElementsByClassName (name)],
-getElementsByName  = (name, ctx) => [..._doc(ctx).getElementsName        (name)],
+getElementsByName  = (name, ctx) => getElements(`[name="${name}"]`, ctx),
 getElementsByTag   = (name, ctx) => [..._doc(ctx).getElementsByTagName   (name)],
 
 getElementsByDataAttr = (key, ctx) => getElements(`[data-${key}]`, ctx),
