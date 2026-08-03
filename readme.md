@@ -85,7 +85,8 @@ Text/HTML. setText, setHTML, getText.
 Form-Serialisierung. getFormValues gibt ein Objekt — es fehlt toFormData und toQueryString. Zwei Zeilen, aber genau die zwei Zeilen tippt man ständig.
 copyToClipboard / downloadBlob — trivial, aber nie zur Hand.
 
-FLIP, gekoppelt an die Collection-Ops
+## FLIP, gekoppelt an die Collection-Ops
+
 Du hast raf.js mit Read-vor-Write-Trennung und du hast drei Funktionen, die Elemente im DOM umordnen. Das ist exakt die Konstellation, in der FLIP trivial wird:
 Js
 measure() liest alle Rects, der Callback ordnet um, mutate() setzt inverse Transforms und lässt sie auslaufen. Deine frame(readFn, writeFn) ist praktisch dafür gebaut. Sortieren und Filtern, das animiert statt springt, ohne dass der Nutzer eine Animations-Library dazuholt — das ist ein echtes Alleinstellungsmerkmal und kostet dich vielleicht 60 Zeilen.
@@ -98,3 +99,40 @@ sortElements macht $container.append(...items). Das reißt jedes Element aus dem
 Ein Reconciler, der nur bewegt was sich geändert hat (längste steigende Teilfolge, ~20 Zeilen), löst das komplett. Das ist keine Erfindung — Frameworks machen es intern — aber als freistehende Funktion in einer Lib habe ich es noch nicht gesehen:
 Js
 sortElements und groupElements benutzen es intern, und es ist einzeln nützlich.
+
+## jQuery — was drin war
+Grob nach Bereichen, damit man sieht, wo die Masse lag:
+Selektion & Traversal (~30 Methoden): find, filter, not, has, closest, parent(s), parentsUntil, children, siblings, next(All|Until), prev(All|Until), first, last, eq, slice, add, end, index, is, contents, map, each
+
+### Manipulation (~25): 
+
+append(To), prepend(To), before, after, insertBefore/After, wrap, wrapAll, wrapInner, unwrap, remove, detach, empty, clone, replaceWith, html, text, val, attr, removeAttr, prop, addClass, removeClass, toggleClass, hasClass, data, removeData
+
+### Geometrie (~12): 
+
+css, width, height, innerWidth/Height, outerWidth/Height, offset, position, offsetParent, scrollTop, scrollLeft
+
+### Events (~15): 
+
+on, off, one, trigger, triggerHandler, plus Shortcuts (click, hover, …), Event-Objekt-Normalisierung, Delegation, Namespaces
+
+### Effects (~10): 
+
+show, hide, toggle, fadeIn/Out/To, slideUp/Down/Toggle, animate, queue, stop, delay
+
+### Ajax (~10): 
+
+$.ajax, $.get, $.post, $.getJSON, load, serialize, serializeArray
+
+## Utilities (~20): 
+
+$.each, $.map, $.grep, $.extend, $.merge, $.inArray, $.trim, $.type, $.isArray, $.param, $.Deferred, $.when, $.proxy, $.noop
+
+## Ready/Plugin: 
+
+$(document).ready, $.fn.extend
+
+
+
+
+
