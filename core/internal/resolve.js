@@ -3,11 +3,8 @@
 import { isElementish, isObject } from './is.js';
 
 export const // resolveContext | resolveElement
-$root = document.documentElement,
-_doc  = sth => !sth ? document : sth.nodeType ? sth : _el(sth) ?? document,
-_el   = (sth, ctx) => isElementish(sth) ? sth : _doc(ctx).querySelector(_slct(sth)) ?? null,     
-_root = sth => sth ? _el(sth) : $root;
-
+_doc = sth => !sth ? document : sth.nodeType ? sth : _el(sth) ?? document,
+_el  = (sth, ctx) => isElementish(sth) ? sth : _doc(ctx).querySelector(_slct(sth)) ?? null;   
 /**
  * Selektor-String oder EDO -> CSS-Selektor.
  * tag/tagName, id, class/className, dataset/data + beliebige Attribute.
