@@ -25,6 +25,19 @@ domina.stylesheet
 domina.template
 domina.title
 
+doc.datasets
+doc.elements
+doc.fonts
+doc.forms
+doc.images
+doc.links
+doc.meta
+doc.nodes
+doc.scripts
+doc.stylesheets
+doc.templates
+doc.title
+
 ## sub-packages
 @domina/css
 @domina/shadow
@@ -97,6 +110,13 @@ document.title
 
 .insertAdjacentText()
 .insertAdjacentElement()
+```
+
+Wo es für dich interessant wäre: updateStylesheet könnte optional constructed Sheets nutzen statt <style>-Tags. Und dieses hier ist ein echter Toolkit-Kandidat, den es nirgends gibt:
+
+```js
+findRules('.card')          // in welchen sheets/regeln kommt der selektor vor
+cssVars(el)                 // alle custom properties, die auf el gelten
 ```
 
 E. Utils-Latte (dein Nebenpunkt)
