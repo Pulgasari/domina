@@ -27,6 +27,8 @@ domina.title
 
 doc.datasets
 doc.elements
+doc.eventListeners
+doc.events
 doc.fonts
 doc.forms
 doc.images
