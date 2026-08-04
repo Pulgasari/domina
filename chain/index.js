@@ -5,47 +5,49 @@
 
 import * as dom from '@domina/core';
 
-const wrap = els => new Chain(els);
+const wrap = elements => new Chain (elements);
 
 class Chain {
-  constructor(els) {
-    this.els = els;
-    this.length = els.length;
+  constructor (elements) {
+    this.elements = elements;
+    this.length   = elements.length;
   }
 
   // ---- iteration
-  [Symbol.iterator]() { return this.els[Symbol.iterator](); }
-  each(fn) { this.els.forEach(fn); return this; }
-  map(fn)  { return this.els.map(fn); }          // verlässt die kette
-  get(i)   { return i == null ? this.els : this.els.at(i); }
+  
+  [Symbol.iterator]() { return this.elements[Symbol.iterator](); }
+  each (fn) { this.elements.forEach(fn); return this; }
+  map  (fn) { return this.elements.map(fn); }          // verlässt die kette
+  get  (i)  { return i == null ? this.elements : this.elements.at(i); }
 
   // ::: setter: geben this zurück
   
-     addClass(...a) { this.els.forEach(el => dom.addClass(el, ...a)); return this; }
-  removeClass(...a) { this.els.forEach(el => dom.removeClass(el, ...a)); return this; }
+     addClass (...args) { this.elements.forEach(el => dom.addClass(el, ...a)); return this; }
+  removeClass (...args) { this.elements.forEach(el => dom.removeClass(el, ...a)); return this; }
   
-  setAttr  (...args) { this.els.forEach (element => dom.setAttr  (element, ...args)); return this; }    
-  setStyle (...args) { this.els.forEach (element => dom.setStyle (element, ...args)); return this; }
-  setValue (...args) { this.els.forEach (element => dom.setValue (element, ...args)); return this; }
+  setAttr  (...args) { this.elements.forEach (element => dom.setAttr  (element, ...args)); return this; }    
+  setStyle (...args) { this.elements.forEach (element => dom.setStyle (element, ...args)); return this; }
+  setValue (...args) { this.elements.forEach (element => dom.setValue (element, ...args)); return this; }
   
   update(...a)      { this.els.forEach(el => dom.updateElement(el, ...a)); return this; }
   remove()          { this.els.forEach(dom.remove); return this; }
 
   // ::: getter: geben arrays, NICHT den ersten treffer
   
-  attrs(name)  { return this.els.map(el => dom.getAttr(el, name)); }
-  values(mode) { return this.els.map(el => dom.getValue(el, mode)); }
-  texts()      { return this.els.map(el => el.textContent); }
+  attrs(name)  { return this.elements.map(el => dom.getAttr(el, name)); }
+  values(mode) { return this.elements.map(el => dom.getValue(el, mode)); }
+  texts()      { return this.elements.map(el => el.textContent); }
 
   // ::: traversal: neue kette
   
-  find(sel)    { return wrap(this.els.flatMap(el => dom.getElements(sel, el))); }
-  closest(sel) { return wrap([...new Set(this.els.map(el => el.closest(sel)).filter(Boolean))]); }
-  filter(test) { return wrap(this.els.filter(test)); }
-  first()      { return wrap(this.els.slice(0, 1)); }
-  last()       { return wrap(this.els.slice(-1)); }
+  find    (selector) { return wrap(this.els.flatMap(el => dom.getElements(sel, el))); }
+  closest (selector) { return wrap([...new Set(this.els.map(el => el.closest(sel)).filter(Boolean))]); }
+  filter  (test)     { return wrap(this.elements.filter(test)); }
+  first   ()         { return wrap(this.elements.slice(0, 1)); }
+  last    ()         { return wrap(this.elements.slice(-1)); }
 
   // ---- events: disposer sammeln, kette bleibt
+  
   on(types, handler, options) {
     this._disposers ??= [];
     this._disposers.push(dom.on(this.els, types, handler, options));
@@ -54,6 +56,6 @@ class Chain {
   dispose() { this._disposers?.forEach(d => d()); this._disposers = []; return this; }
 }
 
-export const el = spec => wrap(
+export const chain = spec => wrap(
   Array.isArray(spec) ? spec.filter(Boolean) : dom.getElements(spec)
 );
