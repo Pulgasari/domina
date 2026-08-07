@@ -1,6 +1,6 @@
 // @domina/core/internal/resolve.js
 
-import { isElementish, isObject } from './is.js';
+import { isElementish, isFn, isObject } from './is.js';
 
 export const // resolveContext | resolveElement
 _doc = sth => !sth ? document : sth.nodeType ? sth : _el(sth) ?? document,
@@ -33,3 +33,6 @@ export const _slct = sth => {
   return selector || '*';
 };
 
+// any eventtarget passes through untouched (window, mediaquerylist, worker, audio …),
+// everything else takes the selector path
+export const _tgt = (sth, ctx) => isFn(sth?.addEventListener) ? sth : _el(sth, ctx);
