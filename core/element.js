@@ -74,7 +74,7 @@ export const updateElement = (spec, props = {}, ...children) => {
 
 
 export const createElement = (tag = 'div', props = {}, ...children) =>
-  updateElement(document.createElement(tag), props, ...children),
+  updateElement(document.createElement(tag), props, ...children);
 
 // ::::::
 
