@@ -3,6 +3,34 @@
 import { _el } from './internal/resolve.js';
 import { isString } from './internal/is.js';
 
+// :::::: styleElements
+
+import { createElement, updateElement } from './element.js';
+
+export const createStyleElement = sth => createElement('style', isString(sth) ? { textContent: sth } : sth);    
+
+/**
+ * updateStylesheet(css)                      -> anonymes <style>, jedes Mal neu
+ * updateStylesheet(css, { id: 'theme' })     -> idempotent, ersetzt Inhalt
+ * updateStylesheet(null, { id: 'theme' })    -> entfernt
+ */
+export const updateStyleElement = (css, { id, media } = {}) => {
+  if (css === null && id) {
+    document.getElementById(id)?.remove();
+    return null;
+  }
+
+  const el = id
+    ? upsertHead(`style#${id}`, () => updateElement(document.createElement('style'), { id }))
+    : (() => { const s = document.createElement('style'); document.head.append(s); return s; })();
+
+  el.textContent = String(css ?? '');
+  if (media) el.media = media;
+  return el;
+};
+
+// :::::: stylesheets
+
 // root -> Map<key, Promise<CSSStyleSheet|null>>
 const registry = new WeakMap;
 const isSheet  = v => typeof CSSStyleSheet !== 'undefined' && v instanceof CSSStyleSheet;
