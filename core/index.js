@@ -12,8 +12,8 @@ export * from './update.js';
 export * from './values.js';
 export * from './collection/index.js';
 
-// Aliase
+// aliases
 export { 
-  element  : getElement, 
-  elements : getElements,
-} from './src/query.js';
+  getElement  as element, 
+  getElements as elements
+} from './query.js';
