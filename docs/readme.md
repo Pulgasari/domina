@@ -2,6 +2,14 @@
 
 [https://pulgasari.github.io/domina/docs/](https://pulgasari.github.io/domina/docs/)
 
+## internal
+
+```md
+_el    ->  resolveElement
+_slct  ->  resolveSelector
+_tgt   ->  resolveTarget
+```
+
 ## core methods
 
 ```md
@@ -61,6 +69,22 @@ functional approach
 
 ## doc
 
+`doc` bietet ne art `document` ersatz mit cleanem interface bestehend aus gettern und settern und objekt-like zugriff.
+
+```md
+doc.id  ->  access element by id
+```
+
+```md
+doc.meta
+doc.meta = {...};
+doc.meta.og
+doc.meta.og.title
+
+doc.title
+doc.title = 'new title';
+```
+
 ```md
 domina.css.layers
 domina.css.scopes
@@ -94,12 +118,6 @@ doc.scripts
 doc.stylesheets
 doc.templates
 doc.title
-
-doc.meta
-doc.meta = {...};
-
-doc.title
-doc.title = 'new title';
 ```
 
 ```md
