@@ -46,6 +46,16 @@ updateStylesheet
 updateTitle
 ```
 
+## chain
+
+chainable approach (hommage to jQuery)
+
+## pipe
+
+functional approach
+
+## doc
+
 ```md
 domina.css.layers
 domina.css.scopes
@@ -79,37 +89,9 @@ doc.scripts
 doc.stylesheets
 doc.templates
 doc.title
+```
 
-## sub-packages
-@domina/css
-@domina/shadow
-
-##
-
-addClass
-getAttribute
-getClass
-getDataset
-getProperties
-getStylesheet
-hasAttribute
-hasClass
-removeAttribute
-removeClass
-removeDataset
-removeMeta        -> single or namespace
-removeStylesheet  -> single
-setAttribute
-toggleAttribute
-toggleClass
-updateAttribute
-updateDataset
-updateElement     -> single
-updateHead        
-updateMeta        -> single k/v or k/v-array or object or string
-updateTitle       -> string
-
-
+```md
 --- allgemein
 events
 stylesheets
