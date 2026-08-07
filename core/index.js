@@ -1,6 +1,7 @@
 // @ts-self-types="./types.d.ts"
 // @domina/core
 
+export * from './attr.js';
 export * from './create.js';
 export * from './dispose.js';
 export * from './events.js';
