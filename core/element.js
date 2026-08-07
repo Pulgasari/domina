@@ -1,7 +1,7 @@
 // @domina/core/element.js
 
 import { _doc, _slct, _el }     from './internal/resolve.js';
-import { isArray }              from './internal/is.js';
+import { isArray, isFn }        from './internal/is.js';
 import { getValue, setValue }   from './values.js';
 import { moveTo, unwrap, wrap } from './misc.js';
 import * from './attr.js';
