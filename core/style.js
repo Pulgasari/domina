@@ -31,6 +31,9 @@ export const updateStyleElement = (css, { id, media } = {}) => {
 
 // :::::: stylesheets
 
+//const is           = value => typeof value !== 'undefined';
+//const isInstanceOf = value => value instanceof CSSStyleSheet;
+
 // root -> Map<key, Promise<CSSStyleSheet|null>>
 const registry = new WeakMap;
 const isSheet  = v => typeof CSSStyleSheet !== 'undefined' && v instanceof CSSStyleSheet;
@@ -56,7 +59,7 @@ const rootOf = target => {
 
 const storeOf = root => {
   let store = registry.get(root);
-  if (!store) registry.set(root, store = new Map());
+  if (!store) registry.set(root, store = new Map);
   return store;
 };
 
