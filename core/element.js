@@ -1,6 +1,11 @@
 // @domina/core/element.js
 
-import { _doc, _slct, _el } from './internal/resolve.js';
+import { _doc, _slct, _el }     from './internal/resolve.js';
+import { isArray }              from './internal/is.js';
+import { getValue, setValue }   from './values.js';
+import { moveTo, unwrap, wrap } from './misc.js';
+import * from './attr.js';
+import * from './events.js';
 
 export const
 
@@ -69,14 +74,12 @@ export const updateElement = (spec, props = {}, ...children) => {
 };
 
 
-import { _el }                    from './internal/resolve.js';
-import { isArray }                from './internal/is.js';
-import { getElement, getElements } from './query.js';
-import { getAttr, hasAttr, setAttr, removeAttr, toggleAttr } from './attr.js';
-import { getValue, setValue }     from './values.js';
-import { updateElement }          from './update.js';
-import * from './events.js';
-import { moveTo, unwrap, wrap }   from './misc.js';
+
+
+createElement = (tag = 'div', props = {}, ...children) =>
+  updateElement(document.createElement(tag), props, ...children),
+
+// ::::::
 
 // registered globally so resolve.js can detect a wrapper without importing this file
 const NODE = Symbol.for('domina.node');
