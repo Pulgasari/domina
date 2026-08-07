@@ -11,6 +11,7 @@ export * from './misc.js';
 export * from './observer.js';
 //export * from './query.js';
 export * from './raf.js';
+export * from './style.js';
 export * from './update.js';
 export * from './values.js';
 export * from './collection/index.js';
