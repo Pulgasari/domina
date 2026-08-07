@@ -2,7 +2,7 @@
 
 import { getElement } from '../query.js';
 import { getValue } from '../values.js';
-import { createElement } from '../create.js';
+import { createElement } from '../element.js';
 import { isFn, isString } from '../internal/is.js';
 import { resolveScope } from './shared.js';
 
