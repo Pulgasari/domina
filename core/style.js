@@ -7,7 +7,7 @@ import { isString } from './internal/is.js';
 
 import { createElement, updateElement } from './element.js';
 
-export const createStyleElement = sth => createElement('style', isString(sth) ? { textContent: sth } : sth);    
+export const createStyleElement = sth => createElement('style', isString(sth) ? { textContent: sth } : sth);
 
 /**
  * updateStylesheet(css)                      -> anonymes <style>, jedes Mal neu
@@ -35,6 +35,11 @@ export const updateStyleElement = (css, { id, media } = {}) => {
 const registry = new WeakMap;
 const isSheet  = v => typeof CSSStyleSheet !== 'undefined' && v instanceof CSSStyleSheet;
 const isCssUrl = v => isString(v) && (/^(https?:|blob:|data:|\.{0,2}\/)/.test(v) || /\.css($|[?#])/.test(v));
+
+// wraps css in a cascade layer. adopted sheets come after author styles, so an
+// unlayered sheet wins at equal specificity. that is right for an override and
+// wrong for base styles, which belong in a layer so page css beats them again.
+const layered = (css, layer) => layer ? `@layer ${layer} { ${css} }` : String(css);
 
 /**
  * where the sheet gets adopted. a shadow root or document is used as is,
@@ -91,10 +96,10 @@ scopeStylesheet = (sheetOrRules, scope) => {
   return sheetOrRules;
 },
 
-/** css text -> constructable stylesheet, optionally scoped */
-createStylesheet = (css, { scope = null, media, disabled = false } = {}) => {
+/** css text -> constructable stylesheet, optionally scoped and layered */
+createStylesheet = (css, { scope = null, layer = null, media, disabled = false } = {}) => {
   const sheet = new CSSStyleSheet(media ? { media } : undefined);
-  sheet.replaceSync(String(css));
+  sheet.replaceSync(layered(css, layer));
   if (scope) scopeStylesheet(sheet, scope);
   sheet.disabled = disabled;
   return sheet;
@@ -115,19 +120,21 @@ createStylesheet = (css, { scope = null, media, disabled = false } = {}) => {
  * options:
  *   target  element, shadow root or document (default document)
  *   scope   selector prefix applied to every rule
- *   key     dedup key, url plus scope by default. a repeated call with the same
- *           key returns the cached promise instead of adopting twice
+ *   layer   wraps the css in @layer <name>, which makes it lose against every
+ *           unlayered author rule. use for component base styles
+ *   key     dedup key, url plus scope plus layer by default. a repeated call
+ *           with the same key returns the cached promise instead of adopting twice
  *   replace swaps the content of an already adopted sheet in place, which keeps
  *           the cascade position stable when switching themes
  */
-adoptStylesheet = (source, { target = document, scope = null, key, replace = false, media } = {}) => {
+adoptStylesheet = (source, { target = document, scope = null, layer = null, key, replace = false, media } = {}) => {
   if (typeof CSSStyleSheet === 'undefined' || !('adoptedStyleSheets' in Document.prototype)) {
     return Promise.resolve(null);
   }
 
   const root  = rootOf(target);
   const store = storeOf(root);
-  const id    = key ?? (isCssUrl(source) ? `${source}::${scope ?? ''}` : null);
+  const id    = key ?? (isCssUrl(source) ? `${source}::${scope ?? ''}::${layer ?? ''}` : null);
 
   if (id && store.has(id) && !replace) return store.get(id);
 
@@ -146,12 +153,12 @@ adoptStylesheet = (source, { target = document, scope = null, key, replace = fal
 
     // reuse the existing sheet object so its position in the cascade survives
     if (existing) {
-      existing.replaceSync(css);
+      existing.replaceSync(layered(css, layer));
       if (scope) scopeStylesheet(existing, scope);
       return existing;
     }
 
-    const sheet = createSheet(css, { scope, media });
+    const sheet = createStylesheet(css, { scope, layer, media });
     root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     return sheet;
   })().catch(error => {
