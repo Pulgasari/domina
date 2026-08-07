@@ -1,23 +1,36 @@
 // events.js
 
-import { _el } from './internal/resolve.js';
+import { _el, _tgt } from './internal/resolve.js';
 import { isArray, isFn, isString } from './internal/is.js';
 import { arrayfied } from './internal/normalize.js';
 import { getElements } from './query.js';
+
+const isIterable = v => !isString(v) && isFn(v?.[Symbol.iterator]);
 
 // Events, die nicht bubbeln -> auf bubbelndes Äquivalent mappen
 const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };
 
 // 'click keydown' oder ['click','keydown'] -> ['click','keydown']
-const typesOf = types =>
-  (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
+const typesOf = types => (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
 
+/*
 // Targets: Selektor (alle Treffer), Node, Array von beidem, window/document
 const targetsOf = targets =>
   arrayfied(targets).flatMap(t =>
       t === window || t?.nodeType ? [t]
     : isString(t)                 ? getElements(t)
     : [_el(t)].filter(Boolean));
+*/
+
+const targetsOf = targets => {
+  return arrayfied (isIterable(targets) ? [...targets] : targets).flatMap(t =>
+      !t            ? []
+    : isString(t)   ? getElements(t)
+    : isFn(t.addEventListener) ? [t]
+    : isIterable(t) ? targetsOf(t)
+    : [_el(t)].filter(Boolean));
+};
+
 
 export const
 
@@ -58,9 +71,8 @@ off = (targets, types, handler, options) => {
  * emit(el, 'domina:ready', { id: 5 })
  */
 emit = (target, type, detail = null, { bubbles = true, cancelable = true, composed = false } = {}) => {
-  const el = _el(target);
-  if (!el) return false;
-  return el.dispatchEvent(new CustomEvent(type, { detail, bubbles, cancelable, composed }));
+  const el = _tgt(target);
+  return el ? el.dispatchEvent(new CustomEvent(type, { detail, bubbles, cancelable, composed })) : false;
 },
 
 /** Wie on(), aber der Handler bekommt e.detail statt dem Event. */
@@ -74,20 +86,20 @@ waitFor = (target, type, { signal, timeout } = {}) => new Promise((resolve, reje
   signal?.addEventListener('abort', () => { stop(); clearTimeout(timer); reject(signal.reason); });
 }),
 
-delegate = (container, type, selector, fn, opts = {}) => {
-  const $c = _el(container);
-  if (!$c) return () => {};
-
-  const real = BUBBLE_MAP[type] ?? type;
+delegate = (container, types, selector, fn, options) => {
+  const $c   = _el(container);
+  const list = typesOf(types);
+  if (!$c || !list.length || !isFn(fn)) return () => {};
 
   const handler = e => {
     const match = e.target?.closest?.(selector);
     if (match && $c.contains(match)) fn.call(match, e, match);
   };
 
-  $c.addEventListener(real, handler, opts);
-  return () => $c.removeEventListener(real, handler, opts);
-},
+  const real = list.map(t => BUBBLE_MAP[t] ?? t);
+  for (const type of real) $c.addEventListener(type, handler, options);
+  return () => { for (const type of real) $c.removeEventListener(type, handler, options); };
+};
 
 onOutside = (spec, fn, { events = ['pointerdown'], escape = true, root = document } = {}) => {
   const el = _el(spec);
