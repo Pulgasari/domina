@@ -4,6 +4,7 @@
 export * from './attr.js';
 export * from './create.js';
 export * from './dispose.js';
+export * from './elements.js';
 export * from './events.js';
 export * from './form.js';
 export * from './misc.js';
