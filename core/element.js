@@ -4,8 +4,8 @@ import { _doc, _slct, _el }     from './internal/resolve.js';
 import { isArray, isFn }        from './internal/is.js';
 import { getValue, setValue }   from './values.js';
 import { moveTo, unwrap, wrap } from './misc.js';
-import { * } from './attr.js';
-import { * } from './events.js';
+import { getAttr, hasAttr, removeAttr, setAttr, toggleAttr } from './attr.js';
+import { emitEvent, offEvent, onEvent, onceEvent, delegate } from './events.js';
 
 export const
 
