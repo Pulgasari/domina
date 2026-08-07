@@ -3,7 +3,7 @@
 import { _el } from './internal/resolve.js';
 import { isString } from './internal/is.js';
 import { flatNodes } from './internal/normalize.js';
-import { createElement } from './create.js';
+import { createElement } from './element.js';
 
 export const
 
