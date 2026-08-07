@@ -24,6 +24,4 @@ createHTML = html => {
   return template.content;
 },
 
-createStylesheet = sth => createElement('style', isString(sth) ? { textContent: sth } : sth),
-
 createTextNode = text => document.createTextNode(String(text));
