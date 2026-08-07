@@ -85,24 +85,4 @@ updateMeta = (spec = {}) => {
 
   const el = upsertHead(selector, () => document.createElement('meta'));
   return updateElement(el, spec);
-},
-
-/**
- * updateStylesheet(css)                      -> anonymes <style>, jedes Mal neu
- * updateStylesheet(css, { id: 'theme' })     -> idempotent, ersetzt Inhalt
- * updateStylesheet(null, { id: 'theme' })    -> entfernt
- */
-updateStylesheet = (css, { id, media } = {}) => {
-  if (css === null && id) {
-    document.getElementById(id)?.remove();
-    return null;
-  }
-
-  const el = id
-    ? upsertHead(`style#${id}`, () => updateElement(document.createElement('style'), { id }))
-    : (() => { const s = document.createElement('style'); document.head.append(s); return s; })();
-
-  el.textContent = String(css ?? '');
-  if (media) el.media = media;
-  return el;
 };
