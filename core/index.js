@@ -14,9 +14,3 @@ export * from './raf.js';
 export * from './update.js';
 export * from './values.js';
 export * from './collection/index.js';
-
-// aliases
-export { 
-  getElement  as element, 
-  getElements as elements
-} from './query.js';
