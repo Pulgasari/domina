@@ -6,7 +6,7 @@ import { getElement, getElements } from './query.js';
 import { getAttr, hasAttr, setAttr, removeAttr, toggleAttr } from './attr.js';
 import { getValue, setValue }     from './values.js';
 import { updateElement }          from './update.js';
-import { * } from './events.js';
+import * from './events.js';
 import { moveTo, unwrap, wrap }   from './misc.js';
 
 // registered globally so resolve.js can detect a wrapper without importing this file
