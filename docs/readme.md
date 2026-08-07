@@ -46,6 +46,11 @@ updateStylesheet
 updateTitle
 ```
 
+```md
+element()
+elements()
+```
+
 ## chain
 
 chainable approach (hommage to jQuery)
