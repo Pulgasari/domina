@@ -2,6 +2,7 @@
 // @domina/core
 
 export * from './create.js';
+export * from './dispose.js';
 export * from './events.js';
 export * from './form.js';
 export * from './misc.js';
