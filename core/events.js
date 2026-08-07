@@ -99,7 +99,7 @@ delegate = (container, types, selector, fn, options) => {
   const real = list.map(t => BUBBLE_MAP[t] ?? t);
   for (const type of real) $c.addEventListener(type, handler, options);
   return () => { for (const type of real) $c.removeEventListener(type, handler, options); };
-};
+},
 
 onOutside = (spec, fn, { events = ['pointerdown'], escape = true, root = document } = {}) => {
   const el = _el(spec);
