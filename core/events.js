@@ -3,7 +3,7 @@
 import { _el, _tgt } from './internal/resolve.js';
 import { isArray, isFn, isString } from './internal/is.js';
 import { arrayfied } from './internal/normalize.js';
-import { getElements } from './query.js';
+import { getElements } from './element.js';
 
 const isIterable = v => !isString(v) && isFn(v?.[Symbol.iterator]);
 
