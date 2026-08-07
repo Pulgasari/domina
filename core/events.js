@@ -39,7 +39,7 @@ export const
  * on('.btn', 'click keydown', fn)
  * on([el1, el2], ['pointerdown'], fn, { passive: true })
  */
-on = (targets, types, handler, options) => {
+onEvent = (targets, types, handler, options) => {
   const nodes = targetsOf(targets);
   const list  = typesOf(types);
   if (!nodes.length || !list.length || !isFn(handler)) return () => {};
@@ -52,15 +52,15 @@ on = (targets, types, handler, options) => {
 },
 
 /** Feuert genau einmal – über alle targets/types hinweg, nicht pro Paar. */
-once = (targets, types, handler, options) => {
+onceEvent = (targets, types, handler, options) => {
   let stop;
   const wrapped = e => { stop(); handler(e); };
-  stop = on(targets, types, wrapped, options);
+  stop = onEvent(targets, types, wrapped, options);
   return stop;
 },
 
 /** Spiegel zu on(). Options müssen zum Registrieren passen (capture!). */
-off = (targets, types, handler, options) => {
+offEvent = (targets, types, handler, options) => {
   for (const node of targetsOf(targets))
     for (const type of typesOf(types))
       node.removeEventListener(BUBBLE_MAP[type] ?? type, handler, options);
@@ -70,14 +70,14 @@ off = (targets, types, handler, options) => {
  * emit(target, type, detail?, options?) -> boolean (false = preventDefault)
  * emit(el, 'domina:ready', { id: 5 })
  */
-emit = (target, type, detail = null, { bubbles = true, cancelable = true, composed = false } = {}) => {
+emitEvent = (target, type, detail = null, { bubbles = true, cancelable = true, composed = false } = {}) => {
   const el = _tgt(target);
   return el ? el.dispatchEvent(new CustomEvent(type, { detail, bubbles, cancelable, composed })) : false;
 },
 
 /** Wie on(), aber der Handler bekommt e.detail statt dem Event. */
 onCustom = (targets, types, handler, options) =>
-  on(targets, types, e => handler(e.detail, e), options),
+  onEvent(targets, types, e => handler(e.detail, e), options),
 
 /** Wartet auf das nächste Vorkommen. -> Promise<Event> */
 waitFor = (target, type, { signal, timeout } = {}) => new Promise((resolve, reject) => {
