@@ -2,14 +2,11 @@
 
 import { isString } from './internal/is.js';
 import { flatNodes } from './internal/normalize.js';
-import { updateElement } from './update.js';
+import { createElement, updateElement } from './element.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export const
-
-createElement = (tag = 'div', props = {}, ...children) =>
-  updateElement(document.createElement(tag), props, ...children),
 
 createSVG = (tag = 'svg', props = {}, ...children) =>
   updateElement(document.createElementNS(SVG_NS, tag), props, ...children),
