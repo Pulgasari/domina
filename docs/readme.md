@@ -89,6 +89,12 @@ doc.scripts
 doc.stylesheets
 doc.templates
 doc.title
+
+doc.meta
+doc.meta = {...};
+
+doc.title
+doc.title = 'new title';
 ```
 
 ```md
