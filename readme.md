@@ -6,6 +6,20 @@ JavaScript-Toolkit für die Arbeit mit dem DOM.
 Es ist die Sammlung von Hilfsmethoden, die man sich in Vanilla-JS ohnehin jedes Mal
 selbst schreibt — nur einmal richtig, mit konsistenten Signaturen und ohne Boilerplate.
 
+---
+
+### Level 1
+
+### Level 2
+
+[`element`](#element)
+[`elements`](#elements)
+[`font`](#font)
+[`fonts`](#fonts)
+[`meta`](#meta)
+[`stylesheet`](#stylesheet)
+[`stylesheets`](#stylesheets)
+
 ```javascript
 import { getElements, addClass, onEvent, setMeta } from '@pulgasari/domina';
 
