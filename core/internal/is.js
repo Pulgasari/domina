@@ -5,12 +5,17 @@ export const
 isArray   = Array.isArray,
 isFn      = v => typeof v === 'function',
 isString  = v => typeof v === 'string',
+isNumber  = v => typeof v === 'number' && Number.isFinite(v),
 isNullish = v => v == null,
 
 isObject = v => v !== null && typeof v === 'object' && !isArray(v),
 
+isNode       = v => typeof v?.nodeType === 'number',
+isElement    = v => v?.nodeType === 1,
+isDocument   = v => v?.nodeType === 9,
 isFragment   = v => v?.nodeType === 11,
 isElementish = v => v?.nodeType === 1 || v?.nodeType === 9 || v?.nodeType === 11,
+isWindow     = v => v != null && v === v.window,
 
 // DOM-Formen
 isEDO      = v => isObject(v) && !isElementish(v) && !!(v.tag || v.tagName),

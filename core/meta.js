@@ -1,91 +1,107 @@
-// core/meta.js
+// @domina/core/meta.js
 
-const $head = document.head;
+import { isObject, isString } from './internal/is.js';
+import { createElement } from './element.js';
 
-/**
- * Bestimmt das korrekte Attribut für einen Meta-Key
- * - OpenGraph / Twitter / Custom Namespaces (mit `:`) -> 'property'
- * - HTTP-Header Keys -> 'http-equiv'
- * - Standard-Keys -> 'name'
- */
-const HTTP_EQUIV_KEYS = new Set ([
+// Das Attribut ergibt sich aus dem Key:
+// OpenGraph/Twitter/eigene Namespaces (mit ':') -> property, HTTP-Header -> http-equiv, sonst name
+const HTTP_EQUIV_KEYS = new Set([
   'content-type',
   'default-style',
   'refresh',
   'x-ua-compatible',
-  'content-security-policy'
+  'content-security-policy',
 ]);
 
-export const getMetaAttr = (key) => {
-  if (!key || typeof key !== 'string')        return 'name';
-  if (HTTP_EQUIV_KEYS.has(key.toLowerCase())) return 'http-equiv';
-  if (key.includes(':'))                      return 'property';
-  return 'name';
-};
+const head = () => document.head;
 
-export const getMetaElement = (key) => {
-  if (!key || typeof key !== 'string') return null;
-  
-  const attr    = getMetaAttr(key);
-  const safeKey = typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
-  
-  return $head.querySelector(`meta[${attr}="${safeKey}"]`) 
-      || $head.querySelector(`meta[name="${safeKey}"], meta[property="${safeKey}"]`);    
-};
+const escapeKey = key =>
+  typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
 
-export const 
-getMeta = key => getMetaElement(key)?.getAttribute('content') ?? null,
-hasMeta = key => getMetaElement(key) !== null;
+export const
 
-export const setMeta = (keyOrObj, value) => {
-  // Massen-Update per Objekt: setMeta({ bla: '123', 'og:image': '...' })
-  if (keyOrObj && typeof keyOrObj === 'object') {
-    const results = {};
-    for (const [k, v] of Object.entries(keyOrObj)) {
-      results[k] = setMeta(k, v);
+getMetaAttr = key =>
+    !isString(key)                          ? 'name'
+  : HTTP_EQUIV_KEYS.has(key.toLowerCase())  ? 'http-equiv'
+  : key.includes(':')                       ? 'property'
+  : 'name',
+
+getMetaElement = key => {
+  if (!isString(key) || !key) return null;
+  const safe = escapeKey(key);
+  return head()?.querySelector(`meta[${getMetaAttr(key)}="${safe}"]`)
+      ?? head()?.querySelector(`meta[name="${safe}"], meta[property="${safe}"]`)
+      ?? null;
+},
+
+// getMeta()      -> { key: content } aller Meta-Tags
+// getMeta('key') -> string | null
+getMeta = key => {
+  if (key === undefined) {
+    const all = {};
+    for (const el of head()?.querySelectorAll('meta') ?? []) {
+      const name = el.getAttribute('name') ?? el.getAttribute('property') ?? el.getAttribute('http-equiv');
+      if (name) all[name] = el.getAttribute('content') ?? '';
+      else if (el.hasAttribute('charset')) all.charset = el.getAttribute('charset');
     }
-    return results;
+    return all;
+  }
+  return getMetaElement(key)?.getAttribute('content') ?? null;
+},
+
+hasMeta = key => getMetaElement(key) !== null,
+
+/**
+ * setMeta('description', '…')
+ * setMeta({ description: '…', 'og:image': '…' })
+ * null/undefined als Wert entfernt das Tag.
+ */
+setMeta = (keyOrMap, value) => {
+  if (isObject(keyOrMap)) {
+    const written = {};
+    for (const [key, val] of Object.entries(keyOrMap)) written[key] = setMeta(key, val);
+    return written;
   }
 
-  const key = keyOrObj;
-  if (!key || typeof key !== 'string') return null;
+  const key = keyOrMap;
+  if (!isString(key) || !key) return null;
 
-  // Null/Undefined -> Entfernen
   if (value == null) {
     removeMeta(key);
     return null;
   }
 
-  const strVal = String(value);
-  const attr   = getMetaAttr(key);
-  
-  return getMetaElement(key)?.setAttribute('content', strVal)
-      ?? createElement('meta', { [attr]: key, content: strVal, appendTo: $head });
-};
+  const content = String(value);
+  const element = getMetaElement(key);
 
-// Core-Alias für konsistente Naming-Conventions
-export const updateMeta = setMeta;
+  if (element) {
+    element.setAttribute('content', content);
+    return element;
+  }
+  return createElement('meta', { [getMetaAttr(key)]: key, content, appendTo: head() });
+},
 
-export const removeMeta = (...keys) => {
+// removeMeta('description', 'og:image')
+// Ein Key mit abschliessendem ':' loescht den ganzen Namespace: removeMeta('og:')
+removeMeta = (...keys) => {
   const removed = [];
-  const flatKeys = keys.flat(Infinity);
 
-  for (const key of flatKeys) {
-    if (!key || typeof key !== 'string') continue;
+  for (const key of keys.flat(Infinity)) {
+    if (!isString(key) || !key) continue;
 
-    // Namespace-Löschung (z.B. 'og:' entfernt alle <meta property="og:*">)
     if (key.endsWith(':')) {
-      const prefix = key;
-      const metas = $head.querySelectorAll('meta');
-      metas.forEach((el) => {
-        const nameVal = el.getAttribute('name') || el.getAttribute('property') || '';
-        if (nameVal.startsWith(prefix)) { el.remove(); removed.push(el); }
-      });
-    } else {
-      const el = getMetaElement(key);
-      if (el) { el.remove(); removed.push(el); }
+      for (const el of head()?.querySelectorAll('meta') ?? []) {
+        const name = el.getAttribute('name') ?? el.getAttribute('property') ?? '';
+        if (name.startsWith(key)) { el.remove(); removed.push(el); }
+      }
+      continue;
     }
+
+    const element = getMetaElement(key);
+    if (element) { element.remove(); removed.push(element); }
   }
 
   return removed;
 };
+
+export const updateMeta = setMeta;
