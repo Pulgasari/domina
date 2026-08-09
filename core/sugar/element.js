@@ -25,22 +25,42 @@ const API2 = {
   // umbenennen: getCssVar
   stop  : { delegate, onEvent, onceEvent, onOutside },
   value : {
-    getAttr, getClass, getCssVar, getData, getHTML, getStyle, getText, getValue,
-    hasAttr, hasClass, hasData,
-    emitEvent, offEvent, isInViewport, unwrap,
+    getAttr, 
+    getClass, 
+    getCssVar, 
+    getData, 
+    getHTML, 
+    getStyle, 
+    getText,
+    getValue,
+    
+    hasAttr, 
+    hasClass,
+    hasData,
+    
+    emitEvent, 
+    offEvent, 
+    
+    isInViewport, unwrap,
 
     getChildren, getParents, getSiblings,
     getIndex, getOffset, getPosition, getRect, getSize,
+    
     matches: matchesElement,
     replaceWith: replaceElement,
     remove: removeElement,
   },
   chain : {
-    empty: emptyElement,
-    update: updateElement,
+    empty  : emptyElement,
+    update : updateElement,
+
+    setHTML, 
+    setStyle, 
+    setText,
+    setValue,
 
                    addClass,
-       setAttr,    setClass, setCssVar, setContent,    setData, setHTML, setStyle, setText,
+       setAttr,    setClass, setCssVar, setContent,    setData, 
     removeAttr, removeClass,                        removeData,
     toggleAttr, toggleClass,
     
@@ -52,33 +72,6 @@ const API2 = {
 // value: wird durchgereicht
 // stop:  Disposer
 const API = {
-
-  // element
-  update      : [updateElement,  'chain'],
-
-  // attr
-  setAttr     : [setAttr,        'chain'],
-  removeAttr  : [removeAttr,     'chain'],
-  toggleAttr  : [toggleAttr,     'chain'],
-
-  // class
-  setClass    : [setClass,       'chain'],
-  addClass    : [addClass,       'chain'],
-  removeClass : [removeClass,    'chain'],
-  toggleClass : [toggleClass,    'chain'],
-
-  // data
-  setData     : [setData,        'chain'],
-  removeData  : [removeData,     'chain'],
-
-  
-  setText     : [setText,        'chain'],
-  setHTML     : [setHTML,        'chain'],
-  setContent  : [setContent,     'chain'],
-  empty       : [emptyElement,   'chain'],
-  setValue    : [setValue,       'chain'],
-  setStyle    : [setStyle,       'chain'],
-  setCssVar   : [setCssVar,      'chain'],
   
   appendTo    : [appendTo,       'chain'],
   prependTo   : [prependTo,      'chain'],
@@ -92,39 +85,19 @@ const API = {
   prev        : [getPrev,        'chain'],
   clone       : [clone,          'chain'],
   scrollTo    : [scrollIntoView, 'chain'],
-
-  getAttr     : [getAttr,         'value'],
-  hasAttr     : [hasAttr,         'value'],
-  getClass    : [getClass,        'value'],
-  hasClass    : [hasClass,        'value'],
-  getData     : [getData,         'value'],
-  hasData     : [hasData,         'value'],
-  getText     : [getText,         'value'],
-  getHTML     : [getHTML,         'value'],
-  getValue    : [getValue,        'value'],
-  getStyle    : [getStyle,        'value'],
-  getCssVar   : [getCssVar,       'value'],
-  getRect     : [getRect,         'value'],
-  getSize     : [getSize,         'value'],
-  getOffset   : [getOffset,       'value'],
-  getPosition : [getPosition,     'value'],
-  getIndex    : [getIndex,        'value'],
-  isInViewport: [isInViewport,    'value'],
-  matches     : [matchesElement,  'value'],
-  children    : [getChildren,     'value'],
-  parents     : [getParents,      'value'],
-  siblings    : [getSiblings,     'value'],
-  unwrap      : [unwrap,          'value'],
-  replaceWith : [replaceElement,  'value'],
-  remove      : [removeElement,   'value'],
   
-  emitEvent   : [emitEvent,       'value'],
-  offEvent    : [offEvent,        'value'],
-  onEvent     : [onEvent,     'stop'],
-  onceEvent   : [onceEvent,   'stop'],
-  onOutside   : [onOutside,   'stop'],
-  delegate    : [delegate,    'stop'],
+  
+  
 };
+
+// Map API2 structure into flat API lookup map: method -> [fn, kind]
+const API = {};
+
+for (const [kind, methods] of Object.entries(API2)) {
+  for (const [name, fn] of Object.entries(methods)) {
+    API[name] = [fn, kind];
+  }
+}
 
 const proto = { [NODE]: true, node: null };
 
