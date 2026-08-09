@@ -71,8 +71,23 @@ functional approach
 
 `doc` bietet ne art `document` ersatz mit cleanem interface bestehend aus gettern und settern und objekt-like zugriff.
 
-```md
+hängt direkt an `domina` oder kann sich via `doc` rausgezogen werden.
+
+```javascript
+import * as dom from '@domina/core'; // hier als 'doc' verfügbar
+import      dom from '@domina/core'; // hier als 'doc' verfügbar und hängt direkt an 'dom'
+```
+
+```javascript
 doc.id  ->  access element by id
+
+dom.meta.bla = '123';
+dom.meta['og:image'] = '123';
+dom.meta.og.image = '123';
+dom.meta.set({ bla: '123', blu: 'abc', 'og:image': '123' }); // set/update multiple
+
+dom.meta.remove('og:'); // remove by namespace
+dom.meta.remove('bla', 'blu'); // remove multiple at once
 ```
 
 ```md
