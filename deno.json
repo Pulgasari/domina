@@ -4,8 +4,8 @@
     "./chain"
   ],
   "tasks": {
-    "check": "deno check packages/*/mod.js",
-    "test": "deno test -A test/",
+    "check": "deno check core/**/*.js",
+    "lint": "deno lint core/",
     "fmt": "deno fmt",
     "publish:dry": "deno publish --dry-run"
   },

@@ -2,168 +2,70 @@
 
 [https://pulgasari.github.io/domina/docs/](https://pulgasari.github.io/domina/docs/)
 
-## internal
+Die vollständige API-Referenz steht in **[core/readme.md](../core/readme.md)**.
+Diese Seite ist der Index: welcher Name liegt in welchem Modul.
+
+## Interna
+
+Diese drei laufen unter `core/internal/` und sind nicht Teil der öffentlichen API.
 
 ```md
-_el    ->  resolveElement
-_slct  ->  resolveSelector
-_tgt   ->  resolveTarget
+_el    ->  resolveElement    Selektor | EDO | Node  -> Element | null
+_doc   ->  resolveContext    Kontext für Queries, default document
+_slct  ->  resolveSelector   EDO -> CSS-Selektor
+_tgt   ->  resolveTarget     alles mit addEventListener passiert unverändert
 ```
 
-## core methods
+## Modulindex
+
+| Modul | Exporte |
+|---|---|
+| `query` | `getElement` `getElements` `getElementById` `getElementsByClass` `getElementsByName` `getElementsByTag` `getElementsByDataAttr` `getElementsByDataKey` `clone` |
+| `element` | `createElement` `updateElement` |
+| `create` | `createSVG` `createFragment` `createHTML` `createTemplate` `createTextNode` `createStyleElement` |
+| `attr` | `getAttr` `hasAttr` `setAttr` `removeAttr` `toggleAttr` |
+| `class` | `getClass` `hasClass` `setClass` `addClass` `removeClass` `toggleClass` `replaceClass` |
+| `data` | `getData` `hasData` `setData` `removeData` |
+| `content` | `getText` `setText` `getHTML` `setHTML` `setContent` `emptyElement` |
+| `values` | `getValue` `setValue` `notifyChange` |
+| `style` | `getStyle` `setStyle` `removeStyle` `getCssVar` `setCssVar` |
+| `traverse` | `getParent` `getParents` `getClosest` `getChildren` `getSiblings` `getNext` `getPrev` `getNextAll` `getPrevAll` `getFirst` `getLast` `getIndex` `containsElement` `matchesElement` |
+| `insert` | `appendTo` `prependTo` `insertBefore` `insertAfter` `moveTo` `insertAt` `wrap` `unwrap` `replaceElement` `removeElement` |
+| `geometry` | `getRect` `getSize` `getOffset` `getPosition` `getOffsetParent` `getScroll` `setScroll` `scrollIntoView` `isInViewport` |
+| `head` | `getHead` `getTitle` `setTitle` `setLink` `setHead` `upsertHead` |
+| `meta` | `getMeta` `hasMeta` `setMeta` `removeMeta` `getMetaAttr` `getMetaElement` |
+| `fonts` | `addFont` `hasFont` `loadFont` `getFonts` `removeFont` `fontsReady` `getFontStatus` `eachFont` |
+| `stylesheet` | `setStyleElement` `createStylesheet` `adoptStylesheet` `releaseStylesheet` `hasStylesheet` `getStylesheets` `scopeStylesheet` |
+| `events` | `onEvent` `onceEvent` `offEvent` `emitEvent` `onCustom` `waitForEvent` `delegate` `onOutside` |
+| `observer` | `observe` `onConnected` `onDisconnected` `onAdded` `onRemoved` `onAttr` `onResize` `onVisible` |
+| `raf` | `measure` `mutate` `frame` `nextFrame` `flushSync` |
+| `dispose` | `disposer` |
+| `form` | `getFormValues` `setFormValues` |
+| `collection` | `sortElements` `filterElements` `groupElements` |
+
+## Aliase
+
+`update*` bleibt als Alias für die umbenannten Funktionen erhalten:
+`updateTitle`, `updateHead`, `updateMeta`, `updateStyleElement`, `waitFor`.
+
+## sugar
 
 ```md
-addClass
-addFont
-createElement
-createFragment
-createStyleElement
-createStylesheet
-createTemplate
-createTextNode
-emitEvent
-getAttribute
-getClass
-getDataset
-getProperties
-getStyleElement
-getStylesheet
-hasAttribute
-hasClass
-offEvent
-onEvent
-onceEvent
-removeAttribute
-removeClass
-removeDataset
-removeMeta
-removeStyleElement
-removeStylesheet
-setAttribute
-toggleAttribute
-toggleClass
-updateAttribute
-updateClass
-updateClassList
-updateDataset
-updateElement
-updateHead        
-updateMeta
-updateStyleElement
-updateStylesheet
-updateTitle
-```
-
-## namespaces
-
-```md
-element
-elements
-font
-fonts
-meta
+element    elements
 form
-stylesheet
-stylesheets
+meta
+font       fonts
+stylesheet stylesheets
 ```
 
 ## chain
 
-chainable approach (hommage to jQuery)
+Verkettender Zugriff, Hommage an jQuery. Eigenes Paket, in Arbeit.
 
 ## pipe
 
-functional approach
+Funktionaler Zugriff. Eigenes Paket, in Arbeit.
 
-## doc
+## Ideen
 
-`doc` bietet ne art `document` ersatz mit cleanem interface bestehend aus gettern und settern und objekt-like zugriff.
-
-hängt direkt an `domina` oder kann sich via `doc` rausgezogen werden.
-
-```javascript
-import * as dom from '@domina/core'; // hier als 'doc' verfügbar
-import      dom from '@domina/core'; // hier als 'doc' verfügbar und hängt direkt an 'dom'
-```
-
-```javascript
-doc.id  ->  access element by id
-
-dom.meta.bla = '123';
-dom.meta['og:image'] = '123';
-dom.meta.og.image = '123';
-dom.meta.set({ bla: '123', blu: 'abc', 'og:image': '123' }); // set/update multiple
-
-dom.meta.remove('og:'); // remove by namespace
-dom.meta.remove('bla', 'blu'); // remove multiple at once
-```
-
-```md
-doc.meta
-doc.meta = {...};
-doc.meta.og
-doc.meta.og.title
-
-doc.title
-doc.title = 'new title';
-```
-
-```md
-domina.css.layers
-domina.css.scopes
-domina.css.tokens
-domina.dataset
-domina.element/node
-domina.elements/nodes
-domina.element.position (viewport, document, offet-parent, other element)
-domina.element.size
-domina.font
-domina.form
-domina.form.data
-domina.image
-domina.meta
-domina.shadow
-domina.stylesheet
-domina.template
-domina.title
-
-doc.datasets
-doc.elements
-doc.eventListeners
-doc.events
-doc.fonts
-doc.forms
-doc.images
-doc.links
-doc.meta
-doc.nodes
-doc.scripts
-doc.stylesheets
-doc.templates
-doc.title
-```
-
-```md
---- allgemein
-events
-stylesheets
-
---- am element
-attributes
-classNames
-content
-nodes
-properties
-style
-
--- elemente
-create
-delete
-insert (append prepend after before)
-move
-remove
-update
-
-##
-- es muss durchgehend camelcase/kebabcase gemanaged werden
-```
+Gesammelte Notizen und Wunschlisten liegen in [ideas.md](./ideas.md).
