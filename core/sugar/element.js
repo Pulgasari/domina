@@ -22,8 +22,8 @@ export const isWrapped = value => value?.[NODE] === true;
 
 const API2 = {
   // fehlen: on, 
-  // missing (via observer.js): onIntersect
-  // umbenennen: getCssVar
+  // missing (via observer.js): onIntersect usw.
+  // rename: getCssVar, delegate -> bubbleEvent(???)
   stop  : { delegate, onEvent, onceEvent, onOutside },
   value : {
     getAttr, getClass,  getCssVar, getData, getHTML, getStyle, getText, getValue,
