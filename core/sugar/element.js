@@ -37,13 +37,11 @@ const API2 = {
   },
   chain : {
     empty: emptyElement, update: updateElement,
+    addClass,
+    setAttr, setClass, setCssVar, setContent, setData, 
     setHTML, setStyle, setText, setValue,
-
-                   addClass,
-       setAttr,    setClass, setCssVar, setContent,    setData, 
-    removeAttr, removeClass,                        removeData,
+    removeAttr, removeClass, removeData,
     toggleAttr, toggleClass,
-    
   },
 };
 
