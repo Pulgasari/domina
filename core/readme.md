@@ -3,7 +3,9 @@
 - alle methoden haben einen klaren präfix
 - methoden, die aus nur einem wort bestehen, sind besondere namespaces
 
-##
+## namespace: `element` and `elements`
+
+## namespace: `form`
 
 ```javascript
 dom.element(form).on({
@@ -20,3 +22,7 @@ dom.element(form).on({
 dom.form(form).getValues();
 dom.form(form).values;
 ```
+
+## namespace: `meta`
+
+## namespace: `stylesheet` and `stylesheets`
