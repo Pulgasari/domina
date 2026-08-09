@@ -15,6 +15,8 @@ import { getChildren, getClosest, getIndex, getNext, getParent, getParents, getP
 import { appendTo, insertAfter, insertBefore, moveTo, prependTo, removeElement, replaceElement, unwrap, wrap } from '../insert.js';
 import { delegate, emitEvent, offEvent, onEvent, onOutside, onceEvent } from '../events.js';
 
+
+
 // registered globally so resolve.js can detect a wrapper without importing this file
 const NODE = Symbol.for('domina.node');
 
@@ -58,12 +60,9 @@ const API2 = {
 
 // Map API2 structure into flat API lookup map: method -> [fn, kind]
 const API = {};
-
-for (const [kind, methods] of Object.entries(API2)) {
-  for (const [name, fn] of Object.entries(methods)) {
-    API[name] = [fn, kind];
-  }
-}
+for (const [kind, fns] of Object.entries(API2))
+for (const [name, fn]  of Object.entries(fns))
+API[name] = [fn, kind];
 
 const proto = { [NODE]: true, node: null };
 
