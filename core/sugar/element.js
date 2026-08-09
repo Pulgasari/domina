@@ -21,7 +21,8 @@ const NODE = Symbol.for('domina.node');
 export const isWrapped = value => value?.[NODE] === true;
 
 const API2 = {
-  // fehlen: on
+  // fehlen: on, 
+  // missing (via observer.js): onIntersect
   // umbenennen: getCssVar
   stop  : { delegate, onEvent, onceEvent, onOutside },
   value : {
@@ -36,12 +37,17 @@ const API2 = {
     
   },
   chain : {
+    appendTo, prependTo, insertBefore, insertAfter,
+    clone, moveTo,
     empty: emptyElement, update: updateElement,
     addClass,
+    getClosest, getNext, getParent, getPrev,
+    scrollTo: scrollIntoView,
     setAttr, setClass, setCssVar, setContent, setData, 
     setHTML, setStyle, setText, setValue,
     removeAttr, removeClass, removeData,
     toggleAttr, toggleClass,
+    wrapWith: wrap,
   },
 };
 
@@ -49,24 +55,6 @@ const API2 = {
 // chain: gibt ein Element zurück -> wird neu gewrappt
 // value: wird durchgereicht
 // stop:  Disposer
-const API = {
-  
-  appendTo    : [appendTo,       'chain'],
-  prependTo   : [prependTo,      'chain'],
-  insertBefore: [insertBefore,   'chain'],
-  insertAfter : [insertAfter,    'chain'],
-  moveTo      : [moveTo,         'chain'],
-  wrapWith    : [wrap,           'chain'],
-  parent      : [getParent,      'chain'],
-  closest     : [getClosest,     'chain'],
-  next        : [getNext,        'chain'],
-  prev        : [getPrev,        'chain'],
-  clone       : [clone,          'chain'],
-  scrollTo    : [scrollIntoView, 'chain'],
-  
-  
-  
-};
 
 // Map API2 structure into flat API lookup map: method -> [fn, kind]
 const API = {};
