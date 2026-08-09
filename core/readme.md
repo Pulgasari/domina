@@ -20,7 +20,7 @@ dom.elements('.sth');
 ## namespace: `form`
 
 ```javascript
-dom.element(form).on({
+dom.form('#myForm').on({
   input  : show,
   change : show,
   reset  : () => setTimeout(show),
