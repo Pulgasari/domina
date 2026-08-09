@@ -1,99 +1,71 @@
-// core/meta-namespace.js
+// core/namespaces/meta.js
+import { getMeta, setMeta, removeMeta, hasMeta } from '../meta.js';
 
-const isOgOrTwitter = (key) =>
-  key.startsWith('og:') || key.startsWith('twitter:') || key.includes(':');
+const ensureNoColon = prefix => prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
+const withColon = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}` : `${prefix}:${prop}`;    
 
-const getMetaAttr = (key) => (isOgOrTwitter(key) ? 'property' : 'name');
-
-const findMeta = (key) => {
-  const attr = getMetaAttr(key);
-  return document.head.querySelector(`meta[${attr}="${key}"]`);
-};
-
-// Standalone Helper
-export const getMeta = (key) => {
-  if (!key) return null;
-  return findMeta(key)?.getAttribute('content') ?? null;
-};
-
-export const setMeta = (keyOrObj, value) => {
-  if (typeof keyOrObj === 'object' && keyOrObj !== null) {
-    for (const [k, v] of Object.entries(keyOrObj)) {
-      setMeta(k, v);
-    }
-    return;
-  }
-
-  const key = keyOrObj;
-  if (!key) return;
-
-  if (value === null || value === undefined) {
-    removeMeta(key);
-    return;
-  }
-
-  const attr = getMetaAttr(key);
-  let el = findMeta(key);
-
-  if (!el) {
-    el = document.createElement('meta');
-    el.setAttribute(attr, key);
-    document.head.appendChild(el);
-  }
-
-  el.setAttribute('content', String(value));
-};
-
-export const removeMeta = (...keys) => {
-  for (const key of keys.flat()) {
-    if (!key) continue;
-
-    // Namespace-Löschung z. B. remove('og:')
-    if (typeof key === 'string' && key.endsWith(':')) {
-      const prefix = key;
-      const metas = document.head.querySelectorAll('meta');
-      metas.forEach((el) => {
-        const name = el.getAttribute('name') || el.getAttribute('property') || '';
-        if (name.startsWith(prefix)) el.remove();
-      });
-    } else {
-      findMeta(key)?.remove();
-    }
-  }
-};
-
-// Rekursiver Proxy für geschachtelte Zugriffe (dom.meta.og.image = '...')
 const createMetaProxy = (prefix = '') => {
   const dummyTarget = Object.create(null);
 
   return new Proxy(dummyTarget, {
     get(target, prop) {
-      if (typeof prop !== 'string' || prop === 'then') return undefined;
-
-      // Built-in API-Methoden auf Root-Ebene
-      if (prefix === '') {
-        if (prop === 'get') return getMeta;
-        if (prop === 'set') return setMeta;
-        if (prop === 'remove') return removeMeta;
+      // Ignoriere interne Symbole (außer Konvertierung)
+      if (typeof prop === 'symbol') {
+        if (prop === Symbol.toPrimitive) {
+          const key = prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
+          return () => getMeta(key) ?? '';
+        }
+        return undefined;
       }
 
-      const fullKey = prefix ? `${prefix}${prop}` : prop;
+      // Core-API-Methoden auf Root-Ebene bereitstellen
+      if (prefix === '') switch (prop) {
+        case 'get'    : return getMeta;
+        case 'set'    : return setMeta;
+        case 'has'    : return hasMeta;
+        case 'remove' : return removeMeta;
+      }
 
-      // Sub-Proxy für Verschachtelung erzeugen (z. B. meta.og -> Proxy('og:'))
-      const subProxy = createMetaProxy(`${fullKey}:`);
+      switch (prop) {
+        case 'toString' : return () => getMeta(ensureNoColon(key)) ?? '';
+        case 'valueOf'  : return () => getMeta(ensureNoColon(key)) ?? '';
+        case 'valueOf'  : return () => getMeta(ensureNoColon(key));
+        case 'catch'    : return undefined;
+        case 'catch'    : return undefined;
+      }
 
-      // Primitive Konvertierungen abfangen (z. B. String(dom.meta.og.image))
-      subProxy[Symbol.toPrimitive] = () => getMeta(fullKey);
-      subProxy.toString = () => getMeta(fullKey) ?? '';
-      subProxy.valueOf = () => getMeta(fullKey);
+      // Konvertierungsmethoden für direkte String-Auswertung
+      if (prop === 'toString' || prop === 'valueOf') {
+        return () => getMeta(ensureNoColon(key)) ?? '';
+      }
 
-      return subProxy;
+      if (prop === 'toJSON') {
+        return () => getMeta(ensureNoColon(key));
+      }
+
+      if (prop === 'then' || prop === 'catch') {
+        return undefined;
+      }
+
+      // Nächste Namespace-Ebene berechnen
+      // e.g. 'og' -> 'og:', oder wenn prop bereits ':' enthält ('og:image')
+      const nextKey    = prefix ? withColon(prefix, prop) : prop;
+      const nextPrefix = nextKey.includes(':') ? nextKey : `${nextKey}:`;
+
+      return createMetaProxy(nextPrefix);
     },
 
-    set(target, prop, value) {
+    set (target, prop, value) {
       if (typeof prop !== 'string') return false;
-      const fullKey = prefix ? `${prefix}${prop}` : prop;
+      const fullKey = prefix ? withColon(prefix, prop) : prop;
       setMeta(fullKey, value);
+      return true;
+    },
+
+    deleteProperty (target, prop) {
+      if (typeof prop !== 'string') return false;
+      const fullKey = prefix  ? withColon(prefix, prop) : prop;
+      removeMeta(fullKey);
       return true;
     }
   });
