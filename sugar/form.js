@@ -73,3 +73,54 @@ export const form = (spec) => {
     }
   });
 };
+
+export const form = (spec) => {
+  const raw = _el(spec);
+
+  const api = {
+    raw,
+
+    // getter + setter
+    get values ()    { return getFormValues(raw); },
+    set values (obj) { setFormValues(raw, obj); },
+
+    // methods: domina 
+    getValues: (options)      => getFormValues(raw, options),
+    setValues: (obj, options) => { setFormValues(raw, obj, options); return proxy; },
+    on: (listeners, options) => {
+      if (!raw) return () => {};
+      const unbinds = Object.entries(listeners).map(([types, handler]) =>
+        onEvent(raw, types, handler, options)
+      );
+      return () => unbinds.forEach(off => off());
+    },
+
+    // methods: form (native)
+    checkValidity  : () => raw?. checkValidity() ?? false,
+    reportValidity : () => raw?.reportValidity() ?? false,
+    submit         : () => { raw?.requestSubmit?.() ?? raw?.submit(); return proxy; },
+    reset          : () => { raw?.reset(); return proxy; }
+  };
+
+  const proxy = new Proxy(api, {
+    get(target, prop) {
+      if (prop in target) return target[prop];
+      if (typeof prop === 'string' && raw?.elements) {
+        return raw.elements.namedItem(prop) ?? undefined;
+      }
+    },
+    set(target, prop, value) {
+      if (prop in target) {
+        target[prop] = value;
+        return true;
+      }
+      if (typeof prop === 'string' && raw?.elements) {
+        setFormValues(raw, { [prop]: value });
+        return true;
+      }
+      return false;
+    }
+  });
+
+  return proxy;
+};
