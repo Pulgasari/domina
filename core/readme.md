@@ -5,6 +5,18 @@
 
 ## namespace: `element` and `elements`
 
+```javascript
+dom.element('#sth');
+dom.elements('.sth');
+```
+
+```md
+.on
+.onEvent
+.onceEvent
+.offEvent
+```
+
 ## namespace: `form`
 
 ```javascript
