@@ -1,21 +1,21 @@
 // core/namespaces/meta.js
 import { getMeta, setMeta, removeMeta, hasMeta } from '../meta.js';
 
-const ensureNoColon = prefix => prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
-const withColon = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}` : `${prefix}:${prop}`;    
+const ensureNoColon =  prefix        => prefix.endsWith(':') ? prefix.slice(0,-1) : prefix;
+const withColon     = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}` : `${prefix}:${prop}`;    
+
+const _getMeta = key => getMeta(ensureNoColon(key));
 
 const createMetaProxy = (prefix = '') => {
   const dummyTarget = Object.create(null);
 
   return new Proxy(dummyTarget, {
-    get(target, prop) {
+    get (target, prop) {
       // Ignoriere interne Symbole (außer Konvertierung)
       if (typeof prop === 'symbol') {
-        if (prop === Symbol.toPrimitive) {
-          const key = prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
-          return () => getMeta(key) ?? '';
-        }
-        return undefined;
+        return (prop === Symbol.toPrimitive)
+          ? () => _getMeta(prefix) ?? ''
+          : undefined;
       }
 
       // Core-API-Methoden auf Root-Ebene bereitstellen
@@ -25,27 +25,28 @@ const createMetaProxy = (prefix = '') => {
         case 'has'    : return hasMeta;
         case 'remove' : return removeMeta;
       }
+      /*
+      return = (prop) => match({
+        [or('toString', 'valueOf')] : () => _getMeta(key) ?? '';
+        toJSON                      : () => _getMeta(key);
+        [or('catch', 'then']        : undefined
+      }, () => 'unbekannt');
 
       switch (prop) {
-        case 'toString' : return () => getMeta(ensureNoColon(key)) ?? '';
-        case 'valueOf'  : return () => getMeta(ensureNoColon(key)) ?? '';
-        case 'valueOf'  : return () => getMeta(ensureNoColon(key));
+        case 'toString' : return () => _getMeta(key) ?? '';
+        case 'valueOf'  : return () => _getMeta(key) ?? '';
+        case 'toJSON'   : return () => _getMeta(key);
         case 'catch'    : return undefined;
-        case 'catch'    : return undefined;
+        case 'then'     : return undefined;
       }
-
+      */
+      
       // Konvertierungsmethoden für direkte String-Auswertung
-      if (prop === 'toString' || prop === 'valueOf') {
-        return () => getMeta(ensureNoColon(key)) ?? '';
-      }
-
-      if (prop === 'toJSON') {
-        return () => getMeta(ensureNoColon(key));
-      }
-
-      if (prop === 'then' || prop === 'catch') {
-        return undefined;
-      }
+      if (prop === 'toString') return () => _getMeta(key) ?? '';
+      if (prop === 'valueOf')  return () => _getMeta(key) ?? '';
+      if (prop === 'toJSON')   return () => _getMeta(key);
+      if (prop === 'catch')    return undefined;
+      if (prop === 'then')     return undefined;
 
       // Nächste Namespace-Ebene berechnen
       // e.g. 'og' -> 'og:', oder wenn prop bereits ':' enthält ('og:image')
