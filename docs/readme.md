@@ -54,9 +54,17 @@ updateStylesheet
 updateTitle
 ```
 
+## namespaces
+
 ```md
-element()
-elements()
+element
+elements
+font
+fonts
+meta
+form
+stylesheet
+stylesheets
 ```
 
 ## chain
