@@ -47,6 +47,15 @@ const createMetaProxy = (prefix = '') => {
       if (prop === 'toJSON')   return () => _getMeta(key);
       if (prop === 'catch')    return undefined;
       if (prop === 'then')     return undefined;
+      /*
+      const hmm = {
+        toString : () => _getMeta(key) ?? '',
+        valueOf  : () => _getMeta(key) ?? '',
+        toJSON   : () => _getMeta(key),
+        catch    : undefined,
+        then     : undefined,
+      }[prop]; if (hmm) return hmm;
+      */
 
       // Nächste Namespace-Ebene berechnen
       // e.g. 'og' -> 'og:', oder wenn prop bereits ':' enthält ('og:image')
