@@ -25,39 +25,19 @@ const API2 = {
   // umbenennen: getCssVar
   stop  : { delegate, onEvent, onceEvent, onOutside },
   value : {
-    getAttr, 
-    getClass, 
-    getCssVar, 
-    getData, 
-    getHTML, 
-    getStyle, 
-    getText,
-    getValue,
-    
-    hasAttr, 
-    hasClass,
-    hasData,
-    
-    emitEvent, 
-    offEvent, 
-    
-    isInViewport, unwrap,
-
+    getAttr, getClass,  getCssVar, getData, getHTML, getStyle, getText, getValue,
     getChildren, getParents, getSiblings,
     getIndex, getOffset, getPosition, getRect, getSize,
-    
+    hasAttr, hasClass, hasData,
+    emitEvent, offEvent, 
+    isInViewport, 
+    replaceWith: replaceElement, remove: removeElement, unwrap,
     matches: matchesElement,
-    replaceWith: replaceElement,
-    remove: removeElement,
+    
   },
   chain : {
-    empty  : emptyElement,
-    update : updateElement,
-
-    setHTML, 
-    setStyle, 
-    setText,
-    setValue,
+    empty: emptyElement, update: updateElement,
+    setHTML, setStyle, setText, setValue,
 
                    addClass,
        setAttr,    setClass, setCssVar, setContent,    setData, 
