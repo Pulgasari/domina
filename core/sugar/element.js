@@ -20,21 +20,58 @@ const NODE = Symbol.for('domina.node');
 
 export const isWrapped = value => value?.[NODE] === true;
 
+const API2 = {
+  // fehlen: on
+  // umbenennen: getCssVar
+  stop  : { delegate, onEvent, onceEvent, onOutside },
+  value : {
+    getAttr, getClass, getCssVar, getData, getHTML, getStyle, getText, getValue,
+    hasAttr, hasClass, hasData,
+    emitEvent, offEvent, isInViewport, unwrap,
+
+    getChildren, getParents, getSiblings,
+    getIndex, getOffset, getPosition, getRect, getSize,
+    matches: matchesElement,
+    replaceWith: replaceElement,
+    remove: removeElement,
+  },
+  chain : {
+    empty: emptyElement,
+    update: updateElement,
+
+                   addClass,
+       setAttr,    setClass, setCssVar, setContent,    setData, setHTML, setStyle, setText,
+    removeAttr, removeClass,                        removeData,
+    toggleAttr, toggleClass,
+    
+  },
+};
+
 // name -> [fn, kind]
 // chain: gibt ein Element zurück -> wird neu gewrappt
 // value: wird durchgereicht
 // stop:  Disposer
 const API = {
+
+  // element
   update      : [updateElement,  'chain'],
+
+  // attr
   setAttr     : [setAttr,        'chain'],
   removeAttr  : [removeAttr,     'chain'],
   toggleAttr  : [toggleAttr,     'chain'],
+
+  // class
   setClass    : [setClass,       'chain'],
   addClass    : [addClass,       'chain'],
   removeClass : [removeClass,    'chain'],
   toggleClass : [toggleClass,    'chain'],
+
+  // data
   setData     : [setData,        'chain'],
   removeData  : [removeData,     'chain'],
+
+  
   setText     : [setText,        'chain'],
   setHTML     : [setHTML,        'chain'],
   setContent  : [setContent,     'chain'],
@@ -42,6 +79,7 @@ const API = {
   setValue    : [setValue,       'chain'],
   setStyle    : [setStyle,       'chain'],
   setCssVar   : [setCssVar,      'chain'],
+  
   appendTo    : [appendTo,       'chain'],
   prependTo   : [prependTo,      'chain'],
   insertBefore: [insertBefore,   'chain'],
@@ -79,9 +117,9 @@ const API = {
   unwrap      : [unwrap,          'value'],
   replaceWith : [replaceElement,  'value'],
   remove      : [removeElement,   'value'],
+  
   emitEvent   : [emitEvent,       'value'],
   offEvent    : [offEvent,        'value'],
-
   onEvent     : [onEvent,     'stop'],
   onceEvent   : [onceEvent,   'stop'],
   onOutside   : [onOutside,   'stop'],
