@@ -1,6 +1,6 @@
-// namespaces.js
+// core/namespaces.js
 
-import { getFormValues, setFormValues } from './form';
+import { getFormValues, setFormValues } from './form.js';
 
 // :::::: element + elements
 
