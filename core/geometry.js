@@ -68,10 +68,26 @@ setScroll = (spec, { top, left, behavior = 'auto' } = {}) => {
   return target;
 },
 
-scrollTo = (spec, options = { block: 'nearest', inline: 'nearest' }) => {
+// smooth als default; block/inline nearest wie gehabt. jumpTo ist derselbe
+// aufruf ohne scroll-animation.
+scrollTo = (spec, options = {}) => {
   const element = _el(spec);
-  element?.scrollIntoView(options);
+  element?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest', ...options });
   return element;
+},
+
+jumpTo = (spec, options = {}) => scrollTo(spec, { behavior: 'auto', ...options }),
+
+// erstes arg ist top (zahl) oder options. ziel ist immer der seitenanfang.
+scrollToTop = (arg = {}) => {
+  const { top = 0, behavior = 'smooth' } = typeof arg === 'number' ? { top: arg } : arg;
+  window.scrollTo({ top, behavior });
+  return window;
+},
+
+jumpToTop = (arg = {}) => {
+  const opts = typeof arg === 'number' ? { top: arg } : arg;
+  return scrollToTop({ behavior: 'auto', ...opts });
 },
 
 /** ratio: 0 = ein Pixel reicht, 1 = das Element muss vollständig sichtbar sein */
