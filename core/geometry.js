@@ -71,7 +71,7 @@ setScroll = (spec, { top, left, behavior = 'auto' } = {}) => {
 // smooth als default; block/inline nearest wie gehabt. jumpTo ist derselbe
 // aufruf ohne scroll-animation.
 scrollTo = (spec, options = {}) => {
-  const element = _el(spec);
+  const element = _el(spec) ?? window;
   element?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest', ...options });
   return element;
 },
