@@ -14,14 +14,18 @@ MO = callback            => new     MutationObserver(callback),
 IO = (callback, options) => new IntersectionObserver(callback, options),
 RO = callback            => new       ResizeObserver(callback),
 
-$root = document.documentElement,
+// lazy on purpose. this module is reachable from non-dom scopes through the
+// barrel, and touching `document` at module scope there is a ReferenceError that
+// takes down every importer — a service worker hitting it does not install at
+// all, silently. call time is also the only point where the value is needed.
+$root = () => document.documentElement,
 
 STRUCTURAL = { childList: true, subtree: true },
 
 ensureBody = callback => {
   if (document.body) return callback();
   let observer = MO(() => document.body && (observer.disconnect(), callback()));
-  observer.observe($root, STRUCTURAL);
+  observer.observe($root(), STRUCTURAL);
 },
 
 traverseNodes = (nodes, selector, callback) => {
