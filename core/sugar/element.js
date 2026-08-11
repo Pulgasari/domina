@@ -44,7 +44,7 @@ const API2 = {
     empty: emptyElement, update: updateElement,
     addClass,
     getClosest, getNext, getParent, getPrev,
-    scrollTo: scrollIntoView,
+    scrollTo,
     setAttr, setClass, setCssVar, setContent, setData, 
     setHTML, setStyle, setText, setValue,
     removeAttr, removeClass, removeData,
