@@ -14,4 +14,7 @@ getElementsByClass = (name, ctx) => getElements(`.${name}`, ctx),
 getElementsByDataAttr = (key, ctx) => getElements(`[data-${key}]`, ctx),
 getElementsByDataKey  = (key, ctx) => getElements(`[data-key="${key}"]`, ctx),
 
+eachElements = (spec, fn, ctx) => getElements(spec, ctx).forEach (fn),
+mapElements  = (spec, fn, ctx) => getElements(spec, ctx).map     (fn),
+  
 clone = (spec, deep = true) => _el(spec)?.cloneNode(deep) ?? null;
