@@ -10,7 +10,7 @@ import { getData, hasData, removeData, setData } from '../data.js';
 import { emptyElement, getHTML, getText, setContent, setHTML, setText } from '../content.js';
 import { getValue, setValue } from '../values.js';
 import { getCssVar, getStyle, setCssVar, setStyle } from '../style.js';
-import { getOffset, getPosition, getRect, getSize, isInViewport, scrollIntoView } from '../geometry.js';
+import { getOffset, getPosition, getRect, getSize, isInViewport, scrollTo } from '../geometry.js';
 import { getChildren, getClosest, getIndex, getNext, getParent, getParents, getPrev, getSiblings, matchesElement } from '../traverse.js';
 import { appendTo, insertAfter, insertBefore, moveTo, prependTo, removeElement, replaceElement, unwrap, wrap } from '../insert.js';
 import { delegate, emitEvent, offEvent, onEvent, onOutside, onceEvent } from '../events.js';
