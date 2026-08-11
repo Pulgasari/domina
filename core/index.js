@@ -30,3 +30,7 @@ export * from './form.js';
 export * from './collection/index.js';
 
 export * from './sugar/index.js';
+
+export const 
+root = document.documentElement,
+body = document.body;
