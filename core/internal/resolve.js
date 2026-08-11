@@ -43,3 +43,10 @@ export const _slct = sth => {
 // any eventtarget passes through untouched (window, mediaquerylist, worker, audio …),
 // everything else takes the selector path
 export const _tgt = (sth, ctx) => isFn(sth?.addEventListener) ? sth : _el(sth, ctx);
+
+
+export const
+resolveElement  = _el,
+resolveSelector = _slct;
+
+
