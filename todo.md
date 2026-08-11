@@ -7,6 +7,9 @@ dom.element(':root').setData({ theme });
 dom.element(':root').dataset = { theme };
 dom.root.dataset = { theme };
 ```
+
+## scrolling
+
 ```javascript
 // original
 if (anchor) {
@@ -33,4 +36,10 @@ dom.scrollToTop(10) // with offset
 dom.jumpToTop(10) // with offset
 
 dom.scrollToTop({ offset: 10, behaviour: smooth }) // with options
+```
+
+## on
+
+```javascript
+dom.element(spec).onResize
 ```
