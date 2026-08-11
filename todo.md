@@ -24,3 +24,13 @@ if (anchor) {
 dom.scrollTo(spec); // default behaviour smooth
 dom.jumpTo(spec);   // a wrapper without default behaviour smooth
 ```
+
+```javascript
+dom.scrollToTop()
+dom.jumpToTop()
+
+dom.scrollToTop(10) // with offset
+dom.jumpToTop(10) // with offset
+
+dom.scrollToTop({ offset: 10, behaviour: smooth }) // with options
+```
