@@ -1,10 +1,8 @@
 // @domina/core/internal/resolve.js
 /*
-import { isElementish, isFn, isObject } from './internal/is.js';
+import { isElementish, isFn, isObject, toKebabCase } from './vendors.js';
 
-const NODE = Symbol.for('domina.node');
-
-// Static allocation outside function to avoid GC thrashing and enable O(1) lookups
+const NODE      = Symbol.for('domina.node');
 const SKIP_KEYS = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
 // scapes attribute values safely for CSS query selectors.
@@ -13,9 +11,6 @@ const escapeAttr = val => {
   return typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(str) : str.replace(/"/g, '\\"');
   //return CSS?.escape(str) ?? str.replace(/"/g, '\\"');
 };
-
-// converts camelCase keys (like dataset properties) to kebab-case.
-const toKebabCase = str => str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 // Converts a selector string or Element Descriptor Object (EDO) into a valid CSS selector string.
 export const buildSelector = sth => {
