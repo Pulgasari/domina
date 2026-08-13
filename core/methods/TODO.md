@@ -8,6 +8,8 @@
 - [ ] create: `clearClassList`
 - [ ] create: `copyClassList`
 - [ ] create: `setClassList`
+- [ ] enhance: `getStyle`
+- [ ] enhance: `setStyle`
 - [ ] fix: `onceEvent` -> wrong behaviour
 - [ ] rename: `delegateEvent` ???
 - [ ] rename: `emitEvent` ???
