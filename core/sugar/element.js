@@ -15,7 +15,11 @@ import { getChildren, getClosest, getIndex, getNext, getParent, getParents, getP
 import { appendTo, insertAfter, insertBefore, moveTo, prependTo, removeElement, replaceElement, unwrap, wrap } from '../insert.js';
 import { delegate, emitEvent, offEvent, onEvent, onOutside, onceEvent } from '../events.js';
 
-
+/*
+import * from './../methods.js';
+import * from './../query.js';
+import * from './../resolve.js';
+*/
 
 // registered globally so resolve.js can detect a wrapper without importing this file
 const NODE = Symbol.for('domina.node');
