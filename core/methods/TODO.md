@@ -4,6 +4,7 @@
 
 - [ ] cleanup + utilize: `adoptStylesheet`
 - [ ] cleanup + utilize: `onEvent`, `offEvent`, `delegateEvent`
+- [ ] create: generell schauen wegen singular/plural-varianten
 - [ ] create: `on`
 - [ ] create: `once`
 - [ ] create: `clearClassList`
