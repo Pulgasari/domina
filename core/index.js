@@ -1,6 +1,25 @@
 // @ts-self-types="./types.d.ts"
 // @domina/core
 
+/*
+  guarded because this barrel is reachable from non-dom scopes. an unguarded
+  `document` here is a ReferenceError at module evaluation time in a worker, and
+  that failure takes down everything importing it — a service worker that hits it
+  does not install at all, silently, with nothing in the page's console.
+
+  see ./fonts.js for the same pattern applied to document.fonts.
+*/
+const hasDocument = typeof document !== 'undefined';
+
+export const
+root = hasDocument ? document.documentElement : null,
+body = hasDocument ? document.body            : null;
+
+export * from './methods/index.js';
+
+//export * from './sugar/index.js';
+
+/*
 export * from './query.js';
 export * from './element.js';
 export * from './create.js';
@@ -28,19 +47,4 @@ export * from './dispose.js';
 
 export * from './form.js';
 export * from './collection/index.js';
-
-export * from './sugar/index.js';
-
-/*
-  guarded because this barrel is reachable from non-dom scopes. an unguarded
-  `document` here is a ReferenceError at module evaluation time in a worker, and
-  that failure takes down everything importing it — a service worker that hits it
-  does not install at all, silently, with nothing in the page's console.
-
-  see ./fonts.js for the same pattern applied to document.fonts.
 */
-const hasDocument = typeof document !== 'undefined';
-
-export const
-root = hasDocument ? document.documentElement : null,
-body = hasDocument ? document.body            : null;
