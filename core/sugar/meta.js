@@ -1,13 +1,22 @@
 // @domina/core/sugar/meta.js
 
-import { getMeta, hasMeta, removeMeta, setMeta } from '../meta.js';
+import 
+  getMeta,
+  hasMeta,
+  removeMeta,
+  setMeta
+} from './../methods/index.js';
 
 const stripColon = prefix => prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
-const withColon  = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}` : `${prefix}:${prop}`;
-
+const  withColon = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}` : `${prefix}:${prop}`;    
 const read = prefix => getMeta(stripColon(prefix));
 
-const ROOT_API = { get: getMeta, set: setMeta, has: hasMeta, remove: removeMeta };
+const ROOT_API = {
+  get    : getMeta, 
+  set    : setMeta, 
+  has    : hasMeta, 
+  remove : removeMeta
+};
 
 /**
  * meta.description = '…'          -> <meta name="description">
