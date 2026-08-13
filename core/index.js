@@ -15,6 +15,7 @@ export const
 root = hasDocument ? document.documentElement : null,
 body = hasDocument ? document.body            : null;
 
+export * from './query.js';
 export * from './methods/index.js';
 
 //export * from './sugar/index.js';
