@@ -1,5 +1,28 @@
 // @domina/core/fonts.js
 
+export {
+  addFont,
+  eachFont,
+  fontsReady,
+  getFontStatus,
+  hasFont,
+  loadFont,
+  getFonts,
+  removeFont,
+} from './methods/index.js';
+
+/*
+export addFont from './methods/index.js';
+export hasFont from './methods/index.js';
+export loadFont from './methods/index.js';
+export getFonts from './methods/index.js';
+export removeFont from './methods/index.js';
+export fontsReady from './methods/index.js';
+export getFontStatus from './methods/index.js';
+export eachFont from './methods/index.js';
+*/
+
+/*
 import { isString } from './internal/is.js';
 
 // überflüssig? -> document?.fonts
@@ -12,13 +35,12 @@ const asSpec = spec => /^\d/.test(spec.trim()) ? spec : `1em ${spec}`;
 // 'Inter' -> 'url(Inter)' ist falsch, '/f.woff2' -> 'url(/f.woff2)' ist richtig
 const asSource = source => isString(source) && !source.includes('url(') ? `url(${source})` : source;
 
+
+
+export {} from './methods/index.js';
+
 export const
 
-/**
- * addFont('Inter', '/fonts/inter.woff2', { weight: '400', display: 'swap' })
- * addFont('Inter', new FontFace(…))  -> reicht die FontFace durch
- * -> FontFace | null
- */
 addFont = (family, source, descriptors = {}) => {
   const fonts = fontSet();
   if (!fonts) return null;
@@ -64,3 +86,4 @@ fontsReady = () => fontSet()?.ready ?? Promise.resolve(null),
 getFontStatus = () => fontSet()?.status ?? 'loaded',
 
 eachFont = callback => { fontSet()?.forEach(callback); };
+*/
