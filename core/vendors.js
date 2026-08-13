@@ -1,7 +1,7 @@
 // @domina/core/vendors.js
 
-import Logger from 'https://pulgasari.github.io/js/logger.js';
-import str    from 'https://pulgasari.github.io/js/str.js';
+import Logger from 'https://code.pulgasari.dev/js/logger.js';
+import str    from 'https://code.pulgasari.dev/js/str.js';
 
 export {
   str,
