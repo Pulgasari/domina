@@ -2,7 +2,7 @@
 
 ## methods
 
-- [ ] cleanup + utilize: `onEvent`, `offEvent`
+- [ ] cleanup + utilize: `onEvent`, `offEvent`, `delegateEvent`
 - [ ] create: `on`
 - [ ] fix: `onceEvent` -> wrong behaviour
 - [ ] rename: `delegateEvent` ???
