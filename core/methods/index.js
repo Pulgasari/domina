@@ -3,7 +3,7 @@
 export * from './addClass.js';
 export * from './addFont.js';
 export * from './adoptStylesheet.js';
-export * from './appendTo.js';
+export * from './appendToElement.js';
 
 export * from './createStylesheet.js';
 
@@ -64,7 +64,7 @@ export * from './onEvent.js';
 export * from './onOutside.js';
 export * from './onceEvent.js';
 
-export * from './prependTo.js';
+export * from './prependToElement.js';
 
 export * from './releaseStylesheet.js';
 export * from './removeAttr.js';
@@ -96,8 +96,8 @@ export * from './setValue.js';
 export * from './toggleAttr.js';
 export * from './toggleClass.js';
 
-export * from './unwrap.js';
+export * from './unwrapElement.js';
 export * from './updateMeta.js';
 
 export * from './waitForEvent.js';
-export * from './wrap.js';
+export * from './wrapElement.js';
