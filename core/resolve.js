@@ -47,6 +47,18 @@ export const _tgt = (sth, ctx) => isFn(sth?.addEventListener) ? sth : _el(sth, c
 
 export const
 
+contextOf  = _doc,
+elementOf  = _el,
+nodeOf     = _el,
+selectorOf = _slct
+targetOf   = _tgt,
+
+castContext  = _doc,
+castElement  = _el,
+castNode     = _el,
+castSelector = _slct
+castTarget   = _tgt,
+
 resolveSpec     = _el,
 resolveSelector = _slct,
 
