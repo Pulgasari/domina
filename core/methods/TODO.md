@@ -15,4 +15,5 @@
 - [ ] rename: `delegateEvent` ???
 - [ ] rename: `emitEvent` ???
 - [ ] rename: `notifyChange` -> `emitValueChange` ???
+- [ ] rename: `scopeStylesheet` and the others to `scopeStyleSheet` ???
 - [ ] rename: `waitForEvent` ???
