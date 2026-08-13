@@ -5,6 +5,8 @@ import { isString } from './internal/is.js';
 import { flatNodes } from './internal/normalize.js';
 import { createElement } from './element.js';
 
+// todo: sollten wohl besser "Element" präfix bekommen ???
+
 // Alle Insert-Funktionen nehmen das Subjekt zuerst und geben es zurück,
 // damit sich Aufrufe verketten lassen.
 export const
