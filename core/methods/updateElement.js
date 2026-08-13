@@ -7,7 +7,7 @@ import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVi
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
 
-export const updateElement = (spec, props = {}, ...children) => {
+export default const updateElement = (spec, props = {}, ...children) => {
   const element = _el(spec);
   if (!element) return null;
 
