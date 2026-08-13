@@ -78,6 +78,7 @@ export * from './setCustomProperty.js';
 export * from './setData.js';
 export * from './setFormValues.js';
 export * from './setHTML.js';
+export * from './setHead.js';
 export * from './setMeta.js';
 export * from './setScroll.js';
 export * from './setStyle.js';
