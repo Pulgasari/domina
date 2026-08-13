@@ -27,6 +27,7 @@ export const setStyleElement = (css, { id, media } = {}) => {
   return element;
 };
 
+export const removeStyleElement = removeElement;
 export const updateStyleElement = setStyleElement;
 
 // :::::: Constructable Stylesheets
