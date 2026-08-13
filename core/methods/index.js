@@ -89,6 +89,7 @@ export * from './toggleAttr.js';
 export * from './toggleClass.js';
 export * from './unwrapElement.js';
 export * from './updateElement.js';
+export * from './updateLink.js';
 export * from './updateMeta.js';
 export * from './waitForEvent.js';
 export * from './wrapElement.js';
