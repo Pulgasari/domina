@@ -1,6 +1,13 @@
 // @domina/core/sugar/stylesheet.js
 
-import { adoptStylesheet, getStylesheets, hasStylesheet, releaseStylesheet, scopeStylesheet, setStyleElement } from '../stylesheet.js';
+import {
+  adoptStylesheet, 
+  getStylesheets, 
+  hasStylesheet,
+  releaseStylesheet,
+  scopeStylesheet,
+  setStyleElement
+} from './../methods/index.js';
 
 /**
  * stylesheet('/themes/nord.css', { scope: '[data-theme="nord"]' })
