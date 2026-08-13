@@ -1,26 +1,13 @@
 // @domina/core/sugar/element.js
 
-import { _el } from '../internal/resolve.js';
-import { isArray } from '../internal/is.js';
-import { clone, getElement, getElements } from '../query.js';
+// :::::: IMPORTS
 
-import { updateElement } from '../element.js';
-import { getAttr, hasAttr, removeAttr, setAttr, toggleAttr } from '../attr.js';
-import { addClass, getClass, hasClass, removeClass, setClass, toggleClass } from '../class.js';
-import { getData, hasData, removeData, setData } from '../data.js';
-import { emptyElement, getHTML, getText, setContent, setHTML, setText } from '../content.js';
-import { getValue, setValue } from '../values.js';
-import { getCssVar, getStyle, setCssVar, setStyle } from '../style.js';
-import { getOffset, getPosition, getRect, getSize, isInViewport, jumpTo, scrollTo } from '../geometry.js';
-import { getChildren, getClosest, getIndex, getNext, getParent, getParents, getPrev, getSiblings, matchesElement } from '../traverse.js';
-import { appendTo, insertAfter, insertBefore, moveTo, prependTo, removeElement, replaceElement, unwrap, wrap } from '../insert.js';
-import { delegate, emitEvent, offEvent, onEvent, onOutside, onceEvent } from '../events.js';
+import *           from './../methods/index.js';
+import *           from './../query.js';
+import { _el }     from './../resolve.js';
+import { isArray } from './../utils.js';
 
-/*
-import * from './../methods.js';
-import * from './../query.js';
-import * from './../resolve.js';
-*/
+// :::::: HELPERS
 
 // registered globally so resolve.js can detect a wrapper without importing this file
 const NODE = Symbol.for('domina.node');
