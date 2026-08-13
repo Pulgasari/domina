@@ -2,6 +2,8 @@
 
 import { isString } from './internal/is.js';
 
+// überflüssig? -> document?.fonts
+// oder besserer name
 const fontSet = () => (typeof document !== 'undefined' ? document.fonts : null);
 
 // document.fonts.check() will '<size> <family>', nicht nur die Familie
