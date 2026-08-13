@@ -1,8 +1,11 @@
 // @domina/core/sugar/form.js
 
-import { _el } from '../internal/resolve.js';
-import { getFormValues, setFormValues } from '../form.js';
-import { onEvent } from '../events.js';
+import { _el } from './../resolve.js';
+import { 
+  getFormValues,
+  setFormValues,
+  onEvent,
+} from './../methods/index.js';
 
 /**
  * form('#login')
