@@ -1,3 +1,4 @@
 # todo
 
-- [ ] rename import { notifyChange } from './notifyChange.js'; // emitValueChange
+- [ ] rename notifyChange -> emitValueChange ?
+- [ ] clean up + utilize onEvent, offEvent
