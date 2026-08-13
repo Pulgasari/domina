@@ -1,0 +1,34 @@
+# .github/workflows/generate-index.yml
+
+name: Auto-generate Methods Index
+
+on:
+  push:
+    paths:
+      - 'core/methods/**'
+    branches:
+      - main # or your default branch
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for pushing back to the repo
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/checkout@v4
+        with:
+          node-version: 20
+
+      - name: Generate index.js
+        run: node scripts/generate-methods-index.js
+
+      - name: Commit & push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(core): auto-generate methods/index.js'
+          file_pattern: 'core/methods/index.js'
