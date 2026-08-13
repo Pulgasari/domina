@@ -1,5 +1,23 @@
 // @domina/core/create.js
 
+import createFragment     from './methods/createFragment.js';
+import createHTML         from './methods/createHTML.js';
+import createStyleElement from './methods/createStyleElement.js';
+import createSVG          from './methods/createSVG.js';
+import createTemplate     from './methods/createTemplate.js';
+import createTextNode     from './methods/createTextNode.js';
+
+export {
+  createFragment,
+  createHTML,
+  createStyleElement,
+  createSVG,
+  createTemplate,
+  createTextNode,
+}
+
+/*
+
 import { isString } from './internal/is.js';
 import { flatNodes } from './internal/normalize.js';
 import { createElement, updateElement } from './element.js';
@@ -33,3 +51,5 @@ createTextNode = text => document.createTextNode(String(text)),
 
 createStyleElement = source =>
   createElement('style', isString(source) ? { textContent: source } : source ?? {});
+
+*/
