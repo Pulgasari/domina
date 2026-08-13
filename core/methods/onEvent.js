@@ -1,4 +1,4 @@
-// @domina/core/methods/onEvent.js
+// onEvent.js
 
 import { _el } from './../resolve.js';
 import { arrayfied, isFn, isIterable, isString } from './../vendors.js';
