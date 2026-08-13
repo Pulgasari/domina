@@ -1,23 +1,24 @@
-// @domina/core/methods/index.js
-
 export * from './addClass.js';
 export * from './addFont.js';
 export * from './adoptStylesheet.js';
 export * from './appendToElement.js';
-
+export * from './clearElement.js';
+export * from './createElement.js';
+export * from './createFragment.js';
+export * from './createHTML.js';
+export * from './createSVG.js';
+export * from './createStyleElement.js';
 export * from './createStylesheet.js';
-
+export * from './createTemplate.js';
+export * from './createTextNode.js';
 export * from './delegateEvent.js';
-
 export * from './eachFont.js';
 export * from './emitEvent.js';
-export * from './emptyElement.js';
-
 export * from './fontsReady.js';
-
 export * from './getAttr.js';
 export * from './getClass.js';
-export * from './getCssVar.js';
+export * from './getClassList.js';
+export * from './getCustomProperty.js';
 export * from './getData.js';
 export * from './getElementOffset.js';
 export * from './getElementOffsetToParent.js';
@@ -36,36 +37,27 @@ export * from './getStyle.js';
 export * from './getStylesheets.js';
 export * from './getText.js';
 export * from './getValue.js';
-
 export * from './hasAttr.js';
 export * from './hasClass.js';
 export * from './hasData.js';
 export * from './hasFont.js';
 export * from './hasMeta.js';
 export * from './hasStylesheet.js';
-
 export * from './insertAfter.js';
 export * from './insertAt.js';
 export * from './insertBefore.js';
 export * from './isElementInViewport.js';
-
 export * from './jumpTo.js';
 export * from './jumpToTop.js';
-
 export * from './loadFont.js';
-
-export * from './moveTo.js';
-
+export * from './moveToElement.js';
 export * from './notifyChange.js';
-
 export * from './offEvent.js';
-export * from './onCustom.js';
+export * from './onCustomEvent.js';
 export * from './onEvent.js';
-export * from './onOutside.js';
+export * from './onOutsideEvent.js';
 export * from './onceEvent.js';
-
 export * from './prependToElement.js';
-
 export * from './releaseStylesheet.js';
 export * from './removeAttr.js';
 export * from './removeClass.js';
@@ -76,28 +68,26 @@ export * from './removeMeta.js';
 export * from './removeStyle.js';
 export * from './replaceClass.js';
 export * from './replaceElement.js';
-
 export * from './scopeStylesheet.js';
 export * from './scrollTo.js';
 export * from './scrollToTop.js';
 export * from './setAttr.js';
 export * from './setClass.js';
 export * from './setContent.js';
-export * from './setCssVar.js';
+export * from './setCustomProperty.js';
 export * from './setData.js';
 export * from './setFormValues.js';
 export * from './setHTML.js';
 export * from './setMeta.js';
 export * from './setScroll.js';
 export * from './setStyle.js';
+export * from './setStyleElement.js';
 export * from './setText.js';
 export * from './setValue.js';
-
 export * from './toggleAttr.js';
 export * from './toggleClass.js';
-
 export * from './unwrapElement.js';
+export * from './updateElement.js';
 export * from './updateMeta.js';
-
 export * from './waitForEvent.js';
 export * from './wrapElement.js';
