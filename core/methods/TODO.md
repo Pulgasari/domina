@@ -7,6 +7,7 @@
 - [ ] create: `once`
 - [ ] create: `clearClassList`
 - [ ] create: `copyClassList`
+- [ ] create: `defineCustomProperty` (oder `createCustomProperty` ???)
 - [ ] create: `setClassList`
 - [ ] enhance: `getStyle`
 - [ ] enhance: `setStyle`
