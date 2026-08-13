@@ -1,6 +1,6 @@
 // @domina/core/sugar/fonts.js
 
-import { addFont, eachFont, fontsReady, getFontStatus, getFonts, hasFont, loadFont, removeFont } from '../fonts.js';
+import { addFont, eachFont, fontsReady, getFontStatus, getFonts, hasFont, loadFont, removeFont } from './../methods/index.js';    
 
 /**
  * font('Inter')
