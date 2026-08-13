@@ -1,9 +1,9 @@
 // @domina/core/stylesheet.js
 
-import { _el } from './internal/resolve.js';
-import { isString } from './internal/is.js';
 import { updateElement } from './element.js';
-import { upsertHead } from './head.js';
+import { upsertHead }    from './head.js';
+import { isString }      from './internal/is.js';
+import { _el }           from './internal/resolve.js';
 
 // :::::: <style>-Elemente
 
