@@ -3,6 +3,7 @@
 ## methods
 
 - [ ] cleanup + utilize: `onEvent`, `offEvent`, `delegateEvent`
+- [ ] cleanup + utilize: `adoptStylesheet`
 - [ ] create: `on`
 - [ ] create: `once`
 - [ ] create: `clearClassList`
