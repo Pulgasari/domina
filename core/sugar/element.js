@@ -3,6 +3,7 @@
 import { _el } from '../internal/resolve.js';
 import { isArray } from '../internal/is.js';
 import { clone, getElement, getElements } from '../query.js';
+
 import { updateElement } from '../element.js';
 import { getAttr, hasAttr, removeAttr, setAttr, toggleAttr } from '../attr.js';
 import { addClass, getClass, hasClass, removeClass, setClass, toggleClass } from '../class.js';
