@@ -1,86 +1,103 @@
 // @domina/core/methods/index.js
 
-export { addClass }          from './addClass.js';
-export { addFont }           from './addFont.js';
-export { adoptStylesheet }   from './adoptStylesheet.js';
-export { appendTo }          from './appendTo.js';
-export { createStylesheet }  from './createStylesheet.js';
-export { delegate }          from './delegate.js';
-export { eachFont }          from './eachFont.js';
-export { emitEvent }         from './emitEvent.js';
-export { emptyElement }      from './emptyElement.js';
-export { fontsReady }        from './fontsReady.js';
-export { getAttr }           from './getAttr.js';
-export { getClass }          from './getClass.js';
-export { getCssVar }         from './getCssVar.js';
-export { getData }           from './getData.js';
-export { getFontStatus }     from './getFontStatus.js';
-export { getFonts }          from './getFonts.js';
-export { getFormValues }     from './getFormValues.js';
-export { getHTML }           from './getHTML.js';
-export { getMeta }           from './getMeta.js';
-export { getMetaAttr }       from './getMetaAttr.js';
-export { getMetaElement }    from './getMetaElement.js';
-export { getOffset }         from './getOffset.js';
-export { getOffsetParent }   from './getOffsetParent.js';
-export { getPosition }       from './getPosition.js';
-export { getRect }           from './getRect.js';
-export { getScroll }         from './getScroll.js';
-export { getSize }           from './getSize.js';
-export { getStyle }          from './getStyle.js';
-export { getStylesheets }    from './getStylesheets.js';
-export { getText }           from './getText.js';
-export { getValue }          from './getValue.js';
-export { hasAttr }           from './hasAttr.js';
-export { hasClass }          from './hasClass.js';
-export { hasData }           from './hasData.js';
-export { hasFont }           from './hasFont.js';
-export { hasMeta }           from './hasMeta.js';
-export { hasStylesheet }     from './hasStylesheet.js';
-export { insertAfter }       from './insertAfter.js';
-export { insertAt }          from './insertAt.js';
-export { insertBefore }      from './insertBefore.js';
-export { isInViewport }      from './isInViewport.js';
-export { jumpTo }            from './jumpTo.js';
-export { jumpToTop }         from './jumpToTop.js';
-export { loadFont }          from './loadFont.js';
-export { moveTo }            from './moveTo.js';
-export { notifyChange }      from './notifyChange.js';
-export { offEvent }          from './offEvent.js';
-export { onCustom }          from './onCustom.js';
-export { onEvent }           from './onEvent.js';
-export { onOutside }         from './onOutside.js';
-export { onceEvent }         from './onceEvent.js';
-export { prependTo }         from './prependTo.js';
-export { releaseStylesheet } from './releaseStylesheet.js';
-export { removeAttr }        from './removeAttr.js';
-export { removeClass }       from './removeClass.js';
-export { removeData }        from './removeData.js';
-export { removeElement }     from './removeElement.js';
-export { removeFont }        from './removeFont.js';
-export { removeMeta }        from './removeMeta.js';
-export { removeStyle }       from './removeStyle.js';
-export { replaceClass }      from './replaceClass.js';
-export { replaceElement }    from './replaceElement.js';
-export { scopeStylesheet }   from './scopeStylesheet.js';
-export { scrollTo }          from './scrollTo.js';
-export { scrollToTop }       from './scrollToTop.js';
-export { setAttr }           from './setAttr.js';
-export { setClass }          from './setClass.js';
-export { setContent }        from './setContent.js';
-export { setCssVar }         from './setCssVar.js';
-export { setData }           from './setData.js';
-export { setFormValues }     from './setFormValues.js';
-export { setHTML }           from './setHTML.js';
-export { setMeta }           from './setMeta.js';
-export { setScroll }         from './setScroll.js';
-export { setStyle }          from './setStyle.js';
-export { setText }           from './setText.js';
-export { setValue }          from './setValue.js';
-export { toggleAttr }        from './toggleAttr.js';
-export { toggleClass }       from './toggleClass.js';
-export { unwrap }            from './unwrap.js';
-export { updateMeta }        from './updateMeta.js';
-export { waitFor }           from './waitFor.js';
-export { waitForEvent }      from './waitForEvent.js';
-export { wrap }              from './wrap.js';
+export * from './addClass.js';
+export * from './addFont.js';
+export * from './adoptStylesheet.js';
+export * from './appendTo.js';
+
+export * from './createStylesheet.js';
+
+export * from './delegateEvent.js';
+
+export * from './eachFont.js';
+export * from './emitEvent.js';
+export * from './emptyElement.js';
+
+export * from './fontsReady.js';
+
+export * from './getAttr.js';
+export * from './getClass.js';
+export * from './getCssVar.js';
+export * from './getData.js';
+export * from './getElementOffset.js';
+export * from './getElementOffsetToParent.js';
+export * from './getElementPosition.js';
+export * from './getElementRect.js';
+export * from './getElementSize.js';
+export * from './getFontStatus.js';
+export * from './getFonts.js';
+export * from './getFormValues.js';
+export * from './getHTML.js';
+export * from './getMeta.js';
+export * from './getMetaAttr.js';
+export * from './getMetaElement.js';
+export * from './getScroll.js';
+export * from './getStyle.js';
+export * from './getStylesheets.js';
+export * from './getText.js';
+export * from './getValue.js';
+
+export * from './hasAttr.js';
+export * from './hasClass.js';
+export * from './hasData.js';
+export * from './hasFont.js';
+export * from './hasMeta.js';
+export * from './hasStylesheet.js';
+
+export * from './insertAfter.js';
+export * from './insertAt.js';
+export * from './insertBefore.js';
+export * from './isElementInViewport.js';
+
+export * from './jumpTo.js';
+export * from './jumpToTop.js';
+
+export * from './loadFont.js';
+
+export * from './moveTo.js';
+
+export * from './notifyChange.js';
+
+export * from './offEvent.js';
+export * from './onCustom.js';
+export * from './onEvent.js';
+export * from './onOutside.js';
+export * from './onceEvent.js';
+
+export * from './prependTo.js';
+
+export * from './releaseStylesheet.js';
+export * from './removeAttr.js';
+export * from './removeClass.js';
+export * from './removeData.js';
+export * from './removeElement.js';
+export * from './removeFont.js';
+export * from './removeMeta.js';
+export * from './removeStyle.js';
+export * from './replaceClass.js';
+export * from './replaceElement.js';
+
+export * from './scopeStylesheet.js';
+export * from './scrollTo.js';
+export * from './scrollToTop.js';
+export * from './setAttr.js';
+export * from './setClass.js';
+export * from './setContent.js';
+export * from './setCssVar.js';
+export * from './setData.js';
+export * from './setFormValues.js';
+export * from './setHTML.js';
+export * from './setMeta.js';
+export * from './setScroll.js';
+export * from './setStyle.js';
+export * from './setText.js';
+export * from './setValue.js';
+
+export * from './toggleAttr.js';
+export * from './toggleClass.js';
+
+export * from './unwrap.js';
+export * from './updateMeta.js';
+
+export * from './waitForEvent.js';
+export * from './wrap.js';
