@@ -2,11 +2,12 @@
 
 export const
 
-isArray   = Array.isArray,
-isFn      = v => typeof v === 'function',
-isString  = v => typeof v === 'string',
-isNumber  = v => typeof v === 'number' && Number.isFinite(v),
-isNullish = v => v == null,
+isArray    = Array.isArray,
+isFn       = v => typeof v === 'function',
+isIterable = v => !isString(v) && isFn(v?.[Symbol.iterator]),
+isString   = v => typeof v === 'string',
+isNumber   = v => typeof v === 'number' && Number.isFinite(v),
+isNullish  = v => v == null,
 
 isObject = v => v !== null && typeof v === 'object' && !isArray(v),
 
