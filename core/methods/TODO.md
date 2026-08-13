@@ -5,4 +5,5 @@
 - [ ] cleanup + utilize: `onEvent`, `offEvent`
 - [ ] create: `on`
 - [ ] fix: `onceEvent` -> wrong behaviour
-- [ ] rename: `notifyChange` -> `emitValueChange` ?
+- [ ] rename: `emitEvent` ???
+- [ ] rename: `notifyChange` -> `emitValueChange` ???
