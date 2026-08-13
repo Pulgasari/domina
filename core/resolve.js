@@ -1,5 +1,5 @@
 // @domina/core/internal/resolve.js
-/*
+
 import { isElementish, isFn, isObject, toKebabCase } from './vendors.js';
 
 const NODE      = Symbol.for('domina.node');
@@ -85,10 +85,13 @@ _doc  = resolveContext,
 _el   = resolveElement,
 _slct = buildSelector,
 _tgt  = resolveTarget;
-*/
+
+
+
+// ==================== OLD ========================================
 
 // @domina/core/internal/resolve.js
-
+/*
 import { isElementish, isFn, isObject } from './internal/is.js';
 
 const NODE = Symbol.for('domina.node');
@@ -99,10 +102,6 @@ _el = (sth, ctx) =>
     sth?.[NODE] === true ? sth.node
   : isElementish(sth)    ? sth
   : _doc(ctx).querySelector(_slct(sth)) ?? null;
-/**
- * Selektor-String oder EDO -> CSS-Selektor.
- * tag/tagName, id, class/className, dataset/data + beliebige Attribute.
- */
 export const _slct = sth => {
   if (!isObject(sth)) return sth;
 
@@ -154,3 +153,4 @@ toElement  = _el,
 toNode     = _el,
 toSelector = _slct
 toTarget   = _tgt;
+*/
