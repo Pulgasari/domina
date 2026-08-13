@@ -1,13 +1,13 @@
-// @domina/core/methods/updateElement.js
+// updateElement.js
 
-import { isFn, isString }    from './internal/is.js';
-import { flatNodes, toList } from './internal/normalize.js';
-import { _el }               from './internal/resolve.js';
-import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from './observer.js';
+import { isFn, isString }    from './../internal/is.js';
+import { flatNodes, toList } from './../internal/normalize.js';
+import { _el }               from './../internal/resolve.js';
+import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from './../observer.js';
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
 
-export default const updateElement = (spec, props = {}, ...children) => {
+export const updateElement = (spec, props = {}, ...children) => {
   const element = _el(spec);
   if (!element) return null;
 
@@ -51,3 +51,5 @@ export default const updateElement = (spec, props = {}, ...children) => {
 
   return element;
 };
+
+export default updateElement;
