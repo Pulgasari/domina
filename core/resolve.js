@@ -6,8 +6,8 @@ const NODE      = Symbol.for('domina.node');
 const SKIP_KEYS = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
 // scapes attribute values safely for CSS query selectors.
-const escapeAttr = val => {
-  const str = String(val);
+const escapeAttr = value => {
+  const str = String(value);
   return typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(str) : str.replace(/"/g, '\\"');
   //return CSS?.escape(str) ?? str.replace(/"/g, '\\"');
 };
