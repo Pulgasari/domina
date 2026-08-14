@@ -4,7 +4,5 @@ import { resolveElement } from './resolveElement.js';
 import { buildSelector }  from './buildSelector.js';
 import { walk }           from './../utils.js';
 
-const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
-
 export function getNextAll (spec, filter) { return walk(resolveElement(spec), 'nextElementSibling', filter, true); }
-export default getNextAll;
+export default  getNextAll;
