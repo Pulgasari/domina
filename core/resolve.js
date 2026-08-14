@@ -6,6 +6,13 @@ import { resolveContext } from './methods/resolveContext.js';
 import { resolveNode }    from './methods/resolveNode.js';
 import { resolveTarget }  from './methods/resolveTarget.js';
 
+export const
+_doc  = resolveContext,
+_el   = resolveElement,
+_slct = buildSelector,
+_tgt  = resolveTarget;
+
+/*
 const NODE = Symbol.for('domina.node');
 
 // Resolves input to a valid query root context (Document, Element, or ShadowRoot).
@@ -43,7 +50,7 @@ _doc  = resolveContext,
 _el   = resolveElement,
 _slct = buildSelector,
 _tgt  = resolveTarget;
-
+*/
 
 
 // ==================== OLD ========================================
