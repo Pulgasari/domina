@@ -117,6 +117,7 @@ export * from './setStyleElement.js';
 export * from './setText.js';
 export * from './setTitle.js';
 export * from './setValue.js';
+export * from './sortElements.js';
 export * from './toggleAttr.js';
 export * from './toggleClass.js';
 export * from './unwrapElement.js';
