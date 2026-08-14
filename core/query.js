@@ -9,7 +9,7 @@ export * from './methods/getElementsByClass.js';
 export * from './methods/getElementsByDataAttr.js';
 export * from './methods/getElementsByDataKey.js';
 
-export * from './methods/cloneElements.js';
+export * from './methods/cloneElement.js';
 export * from './methods/eachElements.js';
 export * from './methods/mapElements.js';
 
