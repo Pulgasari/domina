@@ -99,6 +99,7 @@ export * from './removeMeta.js';
 export * from './removeStyle.js';
 export * from './replaceClass.js';
 export * from './replaceElement.js';
+export * from './resolveElement.js';
 export * from './resolveNode.js';
 export * from './resolveTarget.js';
 export * from './scopeStylesheet.js';
