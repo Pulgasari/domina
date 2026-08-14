@@ -1,11 +1,10 @@
-// @domina/core/collection/sort.js
+// sortElements.js
 
-import { getElement } from '../query.js';
-import { getValue } from '../values.js';
-import { isFn } from '../internal/is.js';
-import { shuffle } from '../internal/normalize.js';
-import { parseDate, toNum } from '../internal/coerce.js';
-import { resolveScope, toSpecs, sortShape } from './shared.js';
+import { getElement } from './getElement.js';
+import { getValue }   from './getValue.js';
+import { resolveScope, toSpecs, sortShape } from './../shared.js';
+import { parseDate, shuffle, toNum }        from './../utils.js';
+import { isFn }                             from './../vendors.js';
 
 const DEFAULT_ORDER = 'auto-asc';
 
@@ -31,7 +30,7 @@ const sortModes = {
     : sortModes.regular(a, b, dir),
 };
 
-export function sortElements({ container, item, indicators }) {
+export function sortElements ({ container, item, indicators }) {
   const scope = resolveScope('sortElements', container, item);
   if (!scope) return [];
 
@@ -65,3 +64,5 @@ export function sortElements({ container, item, indicators }) {
   $container.append(...items);   // reine Bewegung, kein Fragment nötig
   return items;
 }
+
+export default sortElements;
