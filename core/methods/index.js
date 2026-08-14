@@ -80,6 +80,7 @@ export * from './jumpToTop.js';
 export * from './loadFont.js';
 export * from './mapElements.js';
 export * from './matchesElement.js';
+export * from './moveTo.js';
 export * from './moveToElement.js';
 export * from './notifyChange.js';
 export * from './offEvent.js';
