@@ -1,9 +1,12 @@
 // @domina/core/internal/resolve.js
 
 import { isElementish, isFn, isObject, toKebabCase } from './vendors.js';
-import { buildSelector } from './methods/buildSelector.js';
+import { buildSelector }  from './methods/buildSelector.js';
+import { resolveContext } from './methods/resolveContext.js';
+import { resolveNode }    from './methods/resolveNode.js';
+import { resolveTarget }  from './methods/resolveTarget.js';
 
-const NODE      = Symbol.for('domina.node');
+const NODE = Symbol.for('domina.node');
 
 // Resolves input to a valid query root context (Document, Element, or ShadowRoot).
 export const resolveContext = sth => {
