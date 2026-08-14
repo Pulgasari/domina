@@ -2,6 +2,7 @@
 // @domina/core
 
 export * from './methods/index.js';
+export * from './dispose.js';
 
 /*
   guarded because this barrel is reachable from non-dom scopes. an unguarded
