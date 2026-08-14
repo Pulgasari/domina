@@ -26,6 +26,7 @@ export * from './getElementOffsetToParent.js';
 export * from './getElementPosition.js';
 export * from './getElementRect.js';
 export * from './getElementSize.js';
+export * from './getFirst.js';
 export * from './getFontStatus.js';
 export * from './getFonts.js';
 export * from './getFormValues.js';
