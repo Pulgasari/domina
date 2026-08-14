@@ -1,7 +1,7 @@
 // @domina/core/methods/replaceClass.js
 
 import { resolveElement } from './resolveElement.js';
-import { toList }         from './../utils.js';
+import { toList } from './../shared.js';
 
 export function replaceClass (spec, from, to) {
   const element = resolveElement(spec); if (!element) return null;

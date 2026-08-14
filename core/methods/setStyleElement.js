@@ -2,7 +2,7 @@
 
 import { updateElement }  from './updateElement.js';
 import { upsertHead }     from './upsertHead.js';
-import { isString }       from './../vendors.js';
+import { isString } from './../shared.js';
 import { resolveElement } from './resolveElement.js';
 
 export function setStyleElement (css, { id, media } = {}) {

@@ -1,7 +1,7 @@
 // offEvent.js
 
 import { resolveElement } from './resolveElement.js';
-import { arrayfied, isFn, isIterable, isString } from './../vendors.js';
+import { arrayfied, isFn, isIterable, isString } from './../shared.js';
 import { getElements } from './getElements.js';
 
 const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };

@@ -1,7 +1,7 @@
 // onEvent.js
 
 import { resolveElement } from './resolveElement.js';
-import { arrayfied, isFn, isIterable, isString } from './../vendors.js';
+import { arrayfied, isFn, isIterable, isString } from './../shared.js';
 import { getElements } from './getElements.js';
 import { offEvent }    from './offEvent.js';
 

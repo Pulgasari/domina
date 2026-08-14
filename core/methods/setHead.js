@@ -1,6 +1,6 @@
 // setHead.js
 
-import { arrayfied, isObject } from './../vendors.js';
+import { arrayfied, isObject } from './../shared.js';
 import { setLink }       from './setLink.js';
 import { setMeta }       from './setMeta.js';
 import { setTitle }      from './setTitle.js';

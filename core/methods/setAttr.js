@@ -1,7 +1,7 @@
 // @domina/core/methods/setAttr.js
 
 import { resolveElement } from './resolveElement.js';
-import { isString, toKebabCase } from './../vendors.js';
+import { isString, toKebabCase } from './../shared.js';
 
 /**
  * setAttr(spec, { ariaLabel: 'x', disabled: false })

@@ -1,6 +1,6 @@
 // @domina/core/methods/setMeta.js
 
-import { isObject, isString } from './../vendors.js';
+import { isObject, isString } from './../shared.js';
 import { createElement }  from './createElement.js';
 import { getMetaAttr }    from './getMetaAttr.js';
 import { getMetaElement } from './getMetaElement.js';

@@ -1,6 +1,6 @@
 // @domina/core/methods/getMetaElement.js
 
-import { isString }    from './../vendors.js';
+import { isString } from './../shared.js';
 import { getMetaAttr } from './getMetaAttr.js';
 
 const head = () => document.head;

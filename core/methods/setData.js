@@ -1,7 +1,7 @@
 // @domina/core/methods/setData.js
 
 import { resolveElement } from './resolveElement.js';
-import { isArray, isObject, isString, toCamelCase } from './../vendors.js';
+import { isArray, isObject, isString, toCamelCase } from './../shared.js';
 
 const encode = value =>
   isString(value) ? value : (isObject(value) || isArray(value)) ? JSON.stringify(value) : String(value);

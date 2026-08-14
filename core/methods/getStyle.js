@@ -1,7 +1,7 @@
 // getStyle.js
 
 import { resolveElement } from './resolveElement.js';
-import { toKebabCase }    from './../vendors.js';
+import { toKebabCase } from './../shared.js';
 
 const isVar = property => property.startsWith('--');
 

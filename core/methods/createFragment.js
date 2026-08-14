@@ -1,6 +1,6 @@
 // createFragment.js
 
-import { flatNodes } from './../utils.js';
+import { flatNodes } from './../shared.js';
 
 export function createFragment (...nodes) {
   const fragment = document.createDocumentFragment();

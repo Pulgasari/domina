@@ -5,33 +5,8 @@
   "exports": {
     ".": "./index.js",
 
-    "./query": "./query.js",
-    "./element": "./element.js",
-    "./create": "./create.js",
-
-    "./attr": "./attr.js",
-    "./class": "./class.js",
-    "./data": "./data.js",
-    "./content": "./content.js",
-    "./values": "./values.js",
-    "./style": "./style.js",
-
-    "./traverse": "./traverse.js",
-    "./insert": "./insert.js",
-    "./geometry": "./geometry.js",
-
-    "./head": "./head.js",
-    "./meta": "./meta.js",
-    "./fonts": "./fonts.js",
-    "./stylesheet": "./stylesheet.js",
-
-    "./events": "./events.js",
     "./observer": "./observer.js",
     "./raf": "./raf.js",
-    "./dispose": "./dispose.js",
-
-    "./form": "./form.js",
-    "./collection": "./collection/index.js",
 
     "./sugar": "./sugar/index.js",
     "./sugar/element": "./sugar/element.js",
@@ -43,14 +18,15 @@
   "publish": {
     "include": [
       "index.js",
+      "shared.js",
+      "observer.js",
+      "raf.js",
       "types.d.ts",
-      "*.js",
-      "internal",
-      "collection",
+      "methods",
       "sugar",
-      "readme.md",
+      "README.md",
       "LICENSE"
     ],
-    "exclude": ["**/*.test.js"]
+    "exclude": ["**/*.test.js", "_"]
   }
 }

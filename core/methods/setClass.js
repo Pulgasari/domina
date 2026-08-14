@@ -1,7 +1,7 @@
 // setClass.js
 
 import { resolveElement } from './resolveElement.js';
-import { toList }         from './../utils.js';
+import { toList } from './../shared.js';
 
 // Ersetzt das gesamte class-Attribut
 export function setClass (spec, names) {

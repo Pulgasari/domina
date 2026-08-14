@@ -1,7 +1,7 @@
 // @domina/core/methods/replaceElement.js
 
 import { resolveElement } from './resolveElement.js';
-import { flatNodes }      from './../utils.js';
+import { flatNodes } from './../shared.js';
 
 // Replaces element with given nodes. Returns new nodes.
 export function replaceElement (spec, ...nodes) {

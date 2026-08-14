@@ -1,7 +1,7 @@
 // setStyle.js
 
 import { resolveElement } from './resolveElement.js';
-import { isNumber, isString, toKebabCase } from './../vendors.js';
+import { isNumber, isString, toKebabCase } from './../shared.js';
 
 // Numbers almost always need px - these properties are exceptions
 const UNITLESS = new Set([

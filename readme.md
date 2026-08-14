@@ -57,8 +57,8 @@ await font('Inter').add('/fonts/inter.woff2', { weight: '400' }).load();
 Alles wird aus einem Paket exportiert. Wer nur ein Modul braucht, nimmt den Subpath:
 
 ```javascript
-import { getAttr, setAttr } from '@pulgasari/domina/attr';
-import { element }          from '@pulgasari/domina/sugar/element';
+import { observe } from '@pulgasari/domina/observer';
+import { element } from '@pulgasari/domina/sugar/element';
 ```
 
 ## Installation

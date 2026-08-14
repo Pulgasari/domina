@@ -3,7 +3,7 @@
 import { buildSelector }  from './methods/buildSelector.js';
 import { getElements }    from './methods/getElements.js';
 import { resolveContext } from './methods/resolveContext.js';
-import { arrayfied, isElementish, isFn, isObject } from './vendors.js';
+import { arrayfied, isElementish, isFn, isObject } from './shared.js';
 
 const _doc  = resolveContext;
 const _slct = buildSelector;

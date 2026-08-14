@@ -39,7 +39,6 @@ _tgt   ->  resolveTarget     alles mit addEventListener passiert unverändert
 | `events` | `onEvent` `onceEvent` `offEvent` `emitEvent` `onCustom` `waitForEvent` `delegate` `onOutside` |
 | `observer` | `observe` `onConnected` `onDisconnected` `onAdded` `onRemoved` `onAttr` `onResize` `onVisible` |
 | `raf` | `measure` `mutate` `frame` `nextFrame` `flushSync` |
-| `dispose` | `disposer` |
 | `form` | `getFormValues` `setFormValues` |
 | `collection` | `sortElements` `filterElements` `groupElements` |
 

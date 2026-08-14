@@ -1,7 +1,7 @@
 // getScroll.js
 
 import { resolveElement } from './resolveElement.js';
-import { isWindow } from './../vendors.js';
+import { isWindow } from './../shared.js';
 
 const scrollRoot = spec => !spec || isWindow(spec) || spec === document ? null : resolveElement(spec);
 

@@ -1,7 +1,7 @@
 // @domina/core/methods/toggleAttr.js
 
 import { resolveElement } from './resolveElement.js';
-import { toKebabCase }    from './../vendors.js';
+import { toKebabCase } from './../shared.js';
 
 // force omitted -> flip. attributes are presence-based, so the value stays ''
 export function toggleAttr (spec, name, force) {
