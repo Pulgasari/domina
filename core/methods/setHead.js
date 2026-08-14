@@ -1,9 +1,9 @@
 // setHead.js
 
 import { arrayfied, isObject } from './../vendors.js';
-import { setTitle }      from './setTitle.js';
-import { setMeta }       from './setMeta.js';
 import { setLink }       from './setLink.js';
+import { setMeta }       from './setMeta.js';
+import { setTitle }      from './setTitle.js';
 import { updateElement } from './updateElement.js';
 
 /**
