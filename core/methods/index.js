@@ -52,6 +52,7 @@ export * from './isElementInViewport.js';
 export * from './jumpTo.js';
 export * from './jumpToTop.js';
 export * from './loadFont.js';
+export * from './matchesElement.js';
 export * from './moveToElement.js';
 export * from './notifyChange.js';
 export * from './offEvent.js';
