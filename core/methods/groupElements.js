@@ -1,14 +1,14 @@
-// @domina/core/collection/group.js
+// groupElements.js
 
-import { getElement } from '../query.js';
-import { getValue } from '../values.js';
-import { createElement } from '../element.js';
-import { isFn, isString } from '../internal/is.js';
-import { resolveScope } from './shared.js';
+import { createElement }  from './createElement.js';
+import { getElement }     from './getElement.js';
+import { getValue }       from './getValue.js';
+import { isFn, isString } from './../vendors.js';
+import { resolveScope }   from './../shared.js';
 
 const MARK = 'data-domina-group';
 
-export function groupElements({
+export function groupElements ({
   container,
   item,
   by,                       // Selector-String | fn(el) -> key
@@ -68,3 +68,5 @@ export function groupElements({
   $c.append(frag);
   return groups;
 }
+
+export default groupElements;
