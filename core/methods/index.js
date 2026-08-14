@@ -3,6 +3,7 @@ export * from './addFont.js';
 export * from './adoptStylesheet.js';
 export * from './appendToElement.js';
 export * from './clearElement.js';
+export * from './containsElement.js';
 export * from './createElement.js';
 export * from './createFragment.js';
 export * from './createHTML.js';
