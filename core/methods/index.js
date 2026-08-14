@@ -94,5 +94,6 @@ export * from './unwrapElement.js';
 export * from './updateElement.js';
 export * from './updateLink.js';
 export * from './updateMeta.js';
+export * from './upsertHead.js';
 export * from './waitForEvent.js';
 export * from './wrapElement.js';
