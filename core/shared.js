@@ -1,7 +1,7 @@
 // shared.js (by filterElements, sortElements etc.)
 
 import { getElements }             from './methods/getElements.js';
-import { _el }                     from './resolve.js';
+import { resolveElement }          from './methods/resolveElement.js';
 import { isArray, isFn, isString } from './vendors.js';
 
 /**
@@ -9,7 +9,7 @@ import { isArray, isFn, isString } from './vendors.js';
  * -> { $container, items } | null   (null = Container nicht gefunden)
  */
 export const resolveScope = (name, container, item) => {
-  const $container = _el(container);
+  const $container = resolveElement(container);
   if (!$container) {
     console.warn(`${name}: container not found.`, container);
     return null;
