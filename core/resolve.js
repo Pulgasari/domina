@@ -17,7 +17,7 @@ export const resolveContext = sth => {
   return resolved?.nodeType ? resolved : document;
 };
 
-export const resolveNode = sth => sth instanceof Node ? sth : _el(sth);
+export const resolveNode = sth => sth instanceof Node ? sth : resolveElement(sth);
 
 
 // resolves input (Selector, EDO, Node, or Wrapper) to a single DOM Element.
