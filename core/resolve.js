@@ -15,7 +15,7 @@ const escapeAttr = val => {
 // Converts a selector string or Element Descriptor Object (EDO) into a valid CSS selector string.
 export const buildSelector = sth => {
   if (typeof sth === 'string') return sth;
-  if (!isObject(sth)) return '*';
+  if (!isObject(sth))          return '*';
 
   let selector = String(sth.tag || sth.tagName || '').toLowerCase();
 
@@ -48,9 +48,9 @@ export const buildSelector = sth => {
 
 // Resolves input to a valid query root context (Document, Element, or ShadowRoot).
 export const resolveContext = sth => {
-  if (!sth) return document;
-  if (sth.nodeType) return sth;
-  if (sth.document) return sth.document; // Window instance
+  if (!sth)               return document;
+  if (sth.nodeType)       return sth;
+  if (sth.document)       return sth.document; // Window instance
   if (sth[NODE] === true) return sth.node ?? document;
   
   // If a wrapper or descriptor was passed as context, attempt resolving it
@@ -58,21 +58,19 @@ export const resolveContext = sth => {
   return resolved?.nodeType ? resolved : document;
 };
 
+export const resolveNode = sth => sth instanceof Node ? sth : _el(sth);
+
+
 // resolves input (Selector, EDO, Node, or Wrapper) to a single DOM Element.
 export const resolveElement = (sth, ctx) => {
-  if (!sth) return null;
+  if (!sth)               return null;
   if (sth[NODE] === true) return sth.node ?? null;
-  if (isElementish(sth)) return sth;
+  if (isElementish(sth))  return sth;
 
-  const selector = buildSelector(sth);
-  if (!selector) return null;
+  const selector = buildSelector(sth); if (!selector) return null;
 
-  try {
-    return resolveContext(ctx).querySelector(selector) ?? null;
-  } catch {
-    // Return null on invalid selector DOMExceptions
-    return null;
-  }
+  try   { return resolveContext(ctx).querySelector(selector) ?? null; }
+  catch { return null; } // Return null on invalid selector DOMExceptions
 };
 
 // Resolves input to a valid EventTarget (Window, Worker, Element, etc.).
