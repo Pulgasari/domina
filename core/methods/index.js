@@ -4,6 +4,7 @@ export * from './adoptStylesheet.js';
 export * from './appendToElement.js';
 export * from './buildSelector.js';
 export * from './clearElement.js';
+export * from './cloneElement.js';
 export * from './containsElement.js';
 export * from './createElement.js';
 export * from './createFragment.js';
