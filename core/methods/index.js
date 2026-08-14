@@ -41,6 +41,7 @@ export * from './getMetaAttr.js';
 export * from './getMetaElement.js';
 export * from './getNext.js';
 export * from './getNextAll.js';
+export * from './getParents.js';
 export * from './getPrev.js';
 export * from './getPrevAll.js';
 export * from './getScroll.js';
