@@ -1,9 +1,12 @@
 // observer.js
 
-import { _doc, _slct }   from './internal/resolve.js';
-import { getElements }   from './query.js';
-import { isElementish, isFn, isObject } from './internal/is.js';
-import { arrayfied }     from './internal/normalize.js';
+import { buildSelector }  from './methods/buildSelector.js';
+import { getElements }    from './methods/getElements.js';
+import { resolveContext } from './methods/resolveContext.js';
+import { arrayfied, isElementish, isFn, isObject } from './vendors.js';
+
+const _doc  = resolveContext;
+const _slct = buildSelector;
 
 //========================================================================
 // INTERNAL SHORTHANDS
