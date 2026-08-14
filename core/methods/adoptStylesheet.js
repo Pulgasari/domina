@@ -1,14 +1,14 @@
 // adoptStylesheet.js
 
-import { resolveElement }   from './resolveElement.js';
 import { isString }         from './../vendors.js';
-import { scopeStylesheet }  from './scopeStylesheet.js';
 import { createStylesheet } from './createStylesheet.js';
+import { resolveElement }   from './resolveElement.js';
+import { scopeStylesheet }  from './scopeStylesheet.js';
 
 // Constructable Stylesheets state registry
 export const registry = new WeakMap;
-export function isSheet (v) { return typeof CSSStyleSheet !== 'undefined' && v instanceof CSSStyleSheet; }
-export function isCssUrl (v) { return isString(v) && (/^(https?:|blob:|data:|\.{0,2}\/)/.test(v) || /\.css($|[?#])/.test(v)); }
+export function isCssUrl (v) { return isString(v) && (/^(https?:|blob:|data:|\.{0,2}\/)/.test(v) || /\.css($|[?#])/.test(v)); }    
+export function isSheet  (v) { return typeof CSSStyleSheet !== 'undefined' && v instanceof CSSStyleSheet; }      
 export function layered (css, layer) { return layer ? `@layer ${layer} {${css} }` : String(css); }
 
 /**
@@ -26,7 +26,7 @@ export function rootOf (target) {
 
 export function storeOf (root) {
   let store = registry.get(root);
-  if (!store) registry.set(root, store = new Map());
+  if (!store) registry.set(root, store = new Map);
   return store;
 }
 
