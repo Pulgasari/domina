@@ -67,6 +67,7 @@ export * from './jumpToTop.js';
 export * from './loadFont.js';
 export * from './matchesElement.js';
 export * from './moveToElement.js';
+export * from './moveToNode.js';
 export * from './notifyChange.js';
 export * from './offEvent.js';
 export * from './onCustomEvent.js';
