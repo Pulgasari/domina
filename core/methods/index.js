@@ -29,6 +29,7 @@ export * from './getFontStatus.js';
 export * from './getFonts.js';
 export * from './getFormValues.js';
 export * from './getHTML.js';
+export * from './getHead.js';
 export * from './getMeta.js';
 export * from './getMetaAttr.js';
 export * from './getMetaElement.js';
