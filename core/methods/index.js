@@ -2,6 +2,7 @@ export * from './addClass.js';
 export * from './addFont.js';
 export * from './adoptStylesheet.js';
 export * from './appendToElement.js';
+export * from './buildSelector.js';
 export * from './clearElement.js';
 export * from './containsElement.js';
 export * from './createElement.js';
