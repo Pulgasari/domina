@@ -3,9 +3,9 @@
 // :::::: IMPORTS
 
 import { * }       from './../methods/index.js';
-import { isArray } from './../utils.js';
+import { isArray } from './../vendors.js';
 
-const _el = resoleElement;
+const _el = resolveElement;
 
 // :::::: HELPERS
 
