@@ -55,10 +55,10 @@ const entryOf = root => {
   let entry = registry.get(root);
   if (!entry) registry.set(root, entry = {
     root,
-    subs       : new Set(),
-    structural : null,       // MutationObserver | null
-    attrs      : null,       // MutationObserver | null
-    filter     : new Set(),  // Attributnamen; null == "alle"
+    subs       : new Set,
+    structural : null,    // MutationObserver | null
+    attrs      : null,    // MutationObserver | null
+    filter     : new Set, // Attributnamen; null == "alle"
   });
   return entry;
 };
@@ -71,7 +71,7 @@ const ensureStructural = entry => {
       if (!sub.structural) continue;
       for (const { addedNodes, removedNodes } of records) {
         if (removedNodes.length) onRemovedNodes(sub, removedNodes);
-        if (addedNodes.length)   onAddedNodes(sub, addedNodes);
+        if   (addedNodes.length)   onAddedNodes(sub,   addedNodes);
       }
     }
   });
@@ -112,10 +112,10 @@ const ensureAttrs = entry => {
 
 const dispatchAttrs = (entry, records) => {
   // Coalescing: pro (element, name) das aelteste oldValue behalten
-  const batch = new Map();
+  const batch = new Map;
   for (const { target, attributeName: name, oldValue } of records) {
     let names = batch.get(target);
-    if (!names) batch.set(target, names = new Map());
+    if (!names) batch.set(target, names = new Map);
     if (!names.has(name)) names.set(name, oldValue);
   }
 
@@ -136,7 +136,7 @@ const attrHandlerFor = (sub, name) =>
 // SHARED INTERSECTION / RESIZE POOLS
 //========================================================================
 
-const ioPool = new Map(); // signature -> { observer, targets }
+const ioPool = new Map; // signature -> { observer, targets }
 
 const ioEntry = options => {
   const signature = JSON.stringify([
@@ -144,7 +144,7 @@ const ioEntry = options => {
   ]);
   let pool = ioPool.get(signature);
   if (!pool) {
-    const targets = new Map(); // element -> Set<callback>
+    const targets = new Map; // element -> Set<callback>
     const observer = IO(items => {
       for (const item of items) targets.get(item.target)?.forEach(callback => callback(item));
     }, options);
@@ -157,7 +157,7 @@ const ioEntry = options => {
 let roPool = null;
 const roEntry = () => {
   if (!roPool) {
-    const targets = new Map();
+    const targets = new Map;
     const observer = RO(items => {
       for (const item of items) targets.get(item.target)?.forEach(callback => callback(item));
     });
@@ -231,8 +231,8 @@ const subscribe = (target, { within, ...handlers } = {}) => {
     element,
     selector   : element ? null : _slct(target),
     h          : handlers,
-    matched    : new Set(),
-    cleanups   : new Map(),
+    matched    : new Set,
+    cleanups   : new Map,
     bindings   : [],
     structural : false,
     attrs      : null,
@@ -244,7 +244,7 @@ const subscribe = (target, { within, ...handlers } = {}) => {
   //----- Attribute
   if (handlers.onAttr) {
     const spec = handlers.onAttr;
-    sub.attrs = { all: null, names: [], byName: new Map() };
+    sub.attrs = { all: null, names: [], byName: new Map };
     if (isFn(spec)) sub.attrs.all = spec;
     else for (const [name, handler] of Object.entries(spec)) {
       const norm = normalizeHandler(handler);
