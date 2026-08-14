@@ -25,6 +25,7 @@ export * from './getClosest.js';
 export * from './getCustomProperty.js';
 export * from './getData.js';
 export * from './getElement.js';
+export * from './getElementById.js';
 export * from './getElementOffset.js';
 export * from './getElementOffsetToParent.js';
 export * from './getElementPosition.js';
