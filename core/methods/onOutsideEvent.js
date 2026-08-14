@@ -1,10 +1,10 @@
 // onOutsideEvent.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
 /** Click/tap outside element - common for dropdowns and dialogs. */
-export const onOutsideEvent = (spec, handler, { events = ['pointerdown'], escape = true, root = document } = {}) => {
-  const element = _el(spec);
+export function onOutsideEvent (spec, handler, { events = ['pointerdown'], escape = true, root = document } = {}) {
+  const element = resolveElement(spec);
   if (!element) return () => {};
 
   // Armed on next frame to prevent immediate closing on initial trigger click
@@ -27,6 +27,6 @@ export const onOutsideEvent = (spec, handler, { events = ['pointerdown'], escape
     events.forEach(type => root.removeEventListener(type, onPointer, true));
     if (escape) root.removeEventListener('keydown', onKey);
   };
-};
+}
 
 export default onOutsideEvent;

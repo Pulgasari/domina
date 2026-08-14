@@ -1,7 +1,7 @@
 // getHTML.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const getHTML = spec => _el(spec)?.innerHTML ?? null;
+export function getHTML (spec) { return resolveElement(spec)?.innerHTML ?? null; }
 
 export default getHTML;

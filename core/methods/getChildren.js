@@ -1,13 +1,14 @@
 // getChildren.js
 
-import { _el, _slct } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
+import { buildSelector }  from './buildSelector.js';
 
-const passes = (element, filter) => !filter || element.matches(_slct(filter));
+const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
 
-export const getChildren = (spec, filter) => {
-  const element = _el(spec);
+export function getChildren (spec, filter) {
+  const element = resolveElement(spec);
   if (!element) return [];
   return [...element.children].filter(child => passes(child, filter));
-};
+}
 
 export default getChildren;

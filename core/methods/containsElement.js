@@ -1,11 +1,11 @@
 // containsElement.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const containsElement = (spec, other) => {
-  const element = _el(spec);
-  const target  = _el(other);
+export function containsElement (spec, other) {
+  const element = resolveElement(spec);
+  const target  = resolveElement(other);
   return !!element && !!target && element !== target && element.contains(target);
-};
+}
 
 export default containsElement;

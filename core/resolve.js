@@ -3,6 +3,7 @@
 import { isElementish, isFn, isObject, toKebabCase } from './vendors.js';
 import { buildSelector }  from './methods/buildSelector.js';
 import { resolveContext } from './methods/resolveContext.js';
+import { resolveElement } from './methods/resolveElement.js';
 import { resolveNode }    from './methods/resolveNode.js';
 import { resolveTarget }  from './methods/resolveTarget.js';
 

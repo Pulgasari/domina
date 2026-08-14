@@ -1,6 +1,7 @@
 // getClosest.js
 
-import { _el, _slct } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
+import { buildSelector }  from './buildSelector.js';
 
-export const   getClosest = (spec, selector) => _el(spec)?.closest(_slct(selector)) ?? null;
+export function getClosest (spec, selector) { return resolveElement(spec)?.closest(buildSelector(selector)) ?? null; }
 export default getClosest;

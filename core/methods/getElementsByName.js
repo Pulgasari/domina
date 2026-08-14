@@ -1,6 +1,6 @@
 // getElementsByName.js
 
-import getElements    from './getElements.js';
+import { getElements } from './getElements.js';
 
-export const   getElementsByName = (name, ctx) => getElements(`[name="${name}"]`, ctx);  
+export function getElementsByName (name, ctx) { return getElements(`[name="${name}"]`, ctx); }
 export default getElementsByName;

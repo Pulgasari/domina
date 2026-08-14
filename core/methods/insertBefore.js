@@ -2,6 +2,6 @@
 
 import { moveTo } from './moveTo.js';
 
-export const insertBefore = (spec, target) => moveTo(spec, target, 'before');
+export function insertBefore (spec, target) { return moveTo(spec, target, 'before'); }
 
 export default insertBefore;

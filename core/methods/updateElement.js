@@ -1,14 +1,14 @@
 // updateElement.js
 
-import { isFn, isString }    from './../internal/is.js';
-import { flatNodes, toList } from './../internal/normalize.js';
-import { _el }               from './../internal/resolve.js';
+import { isFn, isString }    from './../vendors.js';
+import { flatNodes, toList } from './../utils.js';
+import { resolveElement }    from './resolveElement.js';
 import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from './../observer.js';
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
 
-export const updateElement = (spec, props = {}, ...children) => {
-  const element = _el(spec);
+export function updateElement (spec, props = {}, ...children) {
+  const element = resolveElement(spec);
   if (!element) return null;
 
   // SVG-Elemente haben read-only Props (className, href) -> immer setAttribute
@@ -47,9 +47,9 @@ export const updateElement = (spec, props = {}, ...children) => {
 
   const kids = flatNodes(children);
   if (kids.length) element.append(...kids);
-  if (mountTo) _el(mountTo)?.[mountFn](element);
+  if (mountTo) resolveElement(mountTo)?.[mountFn](element);
 
   return element;
-};
+}
 
 export default updateElement;

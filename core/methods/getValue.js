@@ -1,6 +1,6 @@
 // getValue.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 import { parseDate, toNum } from './../utils.js';
 import { isArray, isCheckable, isMultiSelect } from './../vendors.js';
 
@@ -11,8 +11,8 @@ const casts = {
   string : v => isArray(v) ? v.join(', ') : String(v ?? ''),
 };
 
-export const getValue = (node, mode = null) => {
-  const el = _el(node);
+export function getValue (node, mode = null) {
+  const el = resolveElement(node);
   if (!el) return null;
 
   const raw = isCheckable(el)   ? el.checked
@@ -21,6 +21,6 @@ export const getValue = (node, mode = null) => {
             : el.textContent ?? '';
 
   return mode && casts[mode] ? casts[mode](raw) : raw;
-};
+}
 
 export default getValue;

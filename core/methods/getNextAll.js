@@ -1,9 +1,10 @@
 // @domina/core/methods/getNextAll.js
 
-import { _el, _slct } from './../resolve.js';
-import { walk }       from './../utils.js';
+import { resolveElement } from './resolveElement.js';
+import { buildSelector }  from './buildSelector.js';
+import { walk }           from './../utils.js';
 
-const passes = (element, filter) => !filter || element.matches(_slct(filter));
+const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
 
-export const   getNextAll = (spec, filter) => walk(_el(spec), 'nextElementSibling', filter, true);   
+export function getNextAll (spec, filter) { return walk(resolveElement(spec), 'nextElementSibling', filter, true); }
 export default getNextAll;

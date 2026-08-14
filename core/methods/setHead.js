@@ -11,7 +11,7 @@ import { updateElement } from './updateElement.js';
  * meta takes a key/value map (or an array of them), link descriptor objects.
  * Remaining props are applied directly to <head> via updateElement.
  */
-export const setHead = ({ title, meta, link, ...props } = {}) => {
+export function setHead ({ title, meta, link, ...props } = {}) {
   const head = document.head;
   if (!head) return null;
 
@@ -21,6 +21,6 @@ export const setHead = ({ title, meta, link, ...props } = {}) => {
   if (Object.keys(props).length) updateElement(head, props);
 
   return head;
-};
+}
 
 export default setHead;

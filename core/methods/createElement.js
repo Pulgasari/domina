@@ -1,14 +1,14 @@
 // createElement.js
 
-import updateElement from './updateElement.js';
+import { updateElement } from './updateElement.js';
 
-export const createElement = (
+export function createElement (
   tag = 'div', 
   props = {}, 
   ...children
-) => {
+) {
   const element = document.createElement(tag);
-  updateElement(element, props, ...children);
-};
+  return updateElement(element, props, ...children);
+}
 
 export default createElement;

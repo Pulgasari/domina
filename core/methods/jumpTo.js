@@ -2,6 +2,6 @@
 
 import { scrollTo } from './scrollTo.js';
 
-export const jumpTo = (spec, options = {}) => scrollTo(spec, { behavior: 'auto', ...options });
+export function jumpTo (spec, options = {}) { return scrollTo(spec, { behavior: 'auto', ...options }); }
 
 export default jumpTo;

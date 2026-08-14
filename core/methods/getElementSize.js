@@ -1,14 +1,14 @@
 // getElementSize.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
 /**
  * getSize(spec)                    -> Border-Box including border and padding
  * getSize(spec, { box: 'content' })-> Content-Box (clientWidth / clientHeight)
  * getSize(spec, { box: 'scroll' }) -> Full scroll dimensions
  */
-export const getElementSize = (spec, { box = 'border' } = {}) => {
-  const element = _el(spec);
+export function getElementSize (spec, { box = 'border' } = {}) {
+  const element = resolveElement(spec);
   if (!element) return null;
 
   if (box === 'content') return { width: element.clientWidth, height: element.clientHeight };
@@ -19,6 +19,6 @@ export const getElementSize = (spec, { box = 'border' } = {}) => {
     width  : rect.width, 
     height : rect.height 
   };
-};
+}
 
 export default getElementSize;

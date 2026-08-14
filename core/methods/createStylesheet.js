@@ -1,6 +1,6 @@
 // createStylesheet.js
 
-import scopeStylesheet from './scopeStylesheet.js';
+import { scopeStylesheet } from './scopeStylesheet.js';
 
 // Wraps CSS in a cascade layer. Adopted sheets come after author styles, so an
 // unlayered sheet wins at equal specificity. That is right for an override and
@@ -8,7 +8,7 @@ import scopeStylesheet from './scopeStylesheet.js';
 const layered = (css, layer) => layer ? `@layer ${layer} { ${css} }` : String(css);
 
 /** CSS text -> constructable stylesheet, optionally scoped and layered */
-export const createStylesheet = (css, options) => {
+export function createStylesheet (css, options) {
   const { disabled = false, layer = null, media, scope = null } = options;
   const sheet = new CSSStyleSheet(media ? { media } : undefined);
   
@@ -16,6 +16,6 @@ export const createStylesheet = (css, options) => {
   if (scope) scopeStylesheet(sheet, scope);
   sheet.disabled = disabled;
   return sheet;
-};
+}
 
 export default createStylesheet;

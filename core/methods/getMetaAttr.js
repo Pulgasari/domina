@@ -14,10 +14,11 @@ const HTTP_EQUIV_KEYS = new Set([
 // OpenGraph/Twitter/eigene Namespaces (mit ':')
 // -> property, HTTP-Header -> http-equiv, sonst name
 
-export const getMetaAttr = key =>
-    !isString(key)                          ? 'name'
-  : HTTP_EQUIV_KEYS.has(key.toLowerCase())  ? 'http-equiv'
-  : key.includes(':')                       ? 'property'
-  : 'name';
+export function getMetaAttr (key) {
+  return !isString(key)                          ? 'name'
+       : HTTP_EQUIV_KEYS.has(key.toLowerCase())  ? 'http-equiv'
+       : key.includes(':')                       ? 'property'
+       : 'name';
+}
 
 export default getMetaAttr;

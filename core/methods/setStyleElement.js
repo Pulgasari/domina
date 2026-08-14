@@ -1,11 +1,11 @@
 // @domina/core/methods/setStyleElement.js
 
-import updateElement from './updateElement.js';
-import upsertHead    from './upsertHead.js';
-import { isString }  from './../internal/is.js';
-import { _el }       from './../internal/resolve.js';
+import { updateElement }  from './updateElement.js';
+import { upsertHead }     from './upsertHead.js';
+import { isString }       from './../vendors.js';
+import { resolveElement } from './resolveElement.js';
 
-export const setStyleElement = (css, { id, media } = {}) => {
+export function setStyleElement (css, { id, media } = {}) {
   if (css === null && id) {
     document.getElementById(id)?.remove();
     return null;
@@ -18,6 +18,6 @@ export const setStyleElement = (css, { id, media } = {}) => {
   element.textContent = String(css ?? '');
   if (media) element.media = media;
   return element;
-};
+}
 
 export default setStyleElement;

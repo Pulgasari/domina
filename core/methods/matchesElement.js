@@ -1,6 +1,7 @@
 // matchesElement.js
 
-import { _el, _slct } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
+import { buildSelector }  from './buildSelector.js';
 
-export const   matchesElement = (spec, selector) => _el(spec)?.matches(_slct(selector)) ?? false;   
+export function matchesElement (spec, selector) { return resolveElement(spec)?.matches(buildSelector(selector)) ?? false; }
 export default matchesElement;

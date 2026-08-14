@@ -1,12 +1,12 @@
 // setValue.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 import { toDateInput } from './../utils.js';
 import { arrayfied, isCheckable, isMultiSelect } from './../vendors.js';
-import notifyChange from './notifyChange.js';
+import { notifyChange } from './notifyChange.js';
 
-export const setValue = (node, value, { notify = false } = {}) => {
-  const el = _el(node);
+export function setValue (node, value, { notify = false } = {}) {
+  const el = resolveElement(node);
   if (!el) return null;
 
   if (isCheckable(el)) {
@@ -28,6 +28,6 @@ export const setValue = (node, value, { notify = false } = {}) => {
   if (notify) notifyChange(el);
 
   return el;
-};
+}
 
 export default setValue;

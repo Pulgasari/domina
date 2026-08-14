@@ -1,8 +1,8 @@
 // @domina/core/methods/getFormValues.js
 
-import { _el }      from './../resolve.js';
-import { isString } from './../vendors.js';
-import { getValue } from './getValue.js';
+import { resolveElement } from './resolveElement.js';
+import { isString }       from './../vendors.js';
+import { getValue }       from './getValue.js';
 
 const SKIP = ['submit', 'reset', 'button', 'image'];
 
@@ -10,8 +10,8 @@ const controlsOf = (form, includeDisabled) =>
   [...form.elements].filter(el =>
     el.name && !SKIP.includes(el.type) && (includeDisabled || !el.disabled));
 
-export const getFormValues = (form, { trim = true, includeDisabled = false } = {}) => {
-  const $f = _el(form);
+export function getFormValues (form, { trim = true, includeDisabled = false } = {}) {
+  const $f = resolveElement(form);
   if (!$f?.elements) return {};
 
   const controls = controlsOf($f, includeDisabled);
@@ -55,6 +55,6 @@ export const getFormValues = (form, { trim = true, includeDisabled = false } = {
   }
 
   return out;
-};
+}
 
 export default getFormValues;

@@ -1,5 +1,5 @@
 // createTextNode.js
 
-export const createTextNode = text => document.createTextNode(String(text));
+export function createTextNode (text) { return document.createTextNode(String(text)); }
 
 export default createTextNode;

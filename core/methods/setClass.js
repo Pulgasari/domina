@@ -1,14 +1,14 @@
 // setClass.js
 
-import { _el }    from './../resolve.js';
-import { toList } from './../utils.js';
+import { resolveElement } from './resolveElement.js';
+import { toList }         from './../utils.js';
 
 // Ersetzt das gesamte class-Attribut
-export const setClass = (spec, names) => {
-  const element = _el(spec);
+export function setClass (spec, names) {
+  const element = resolveElement(spec);
   if (!element) return null;
   element.setAttribute('class', toList(names).join(' '));
   return element;
-};
+}
 
 export default setClass;
