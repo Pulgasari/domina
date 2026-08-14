@@ -1,6 +1,8 @@
 // @ts-self-types="./types.d.ts"
 // @domina/core
 
+export * from './methods/index.js';
+
 /*
   guarded because this barrel is reachable from non-dom scopes. an unguarded
   `document` here is a ReferenceError at module evaluation time in a worker, and
@@ -14,9 +16,6 @@ const hasDocument = typeof document !== 'undefined';
 export const
 root = hasDocument ? document.documentElement : null,
 body = hasDocument ? document.body            : null;
-
-export * from './query.js';
-export * from './methods/index.js';
 
 //export * from './sugar/index.js';
 
