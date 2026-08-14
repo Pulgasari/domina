@@ -14,6 +14,7 @@ export * from './createStylesheet.js';
 export * from './createTemplate.js';
 export * from './createTextNode.js';
 export * from './delegateEvent.js';
+export * from './eachElements.js';
 export * from './eachFont.js';
 export * from './emitEvent.js';
 export * from './fontsReady.js';
