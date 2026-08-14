@@ -42,6 +42,7 @@ export * from './getNextAll.js';
 export * from './getPrev.js';
 export * from './getPrevAll.js';
 export * from './getScroll.js';
+export * from './getSiblings.js';
 export * from './getStyle.js';
 export * from './getStylesheets.js';
 export * from './getText.js';
