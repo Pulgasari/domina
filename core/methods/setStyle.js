@@ -1,6 +1,6 @@
 // setStyle.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 import { isNumber, isString, toKebabCase } from './../vendors.js';
 
 // Numbers almost always need px - these properties are exceptions
@@ -24,8 +24,8 @@ const cssValue = (property, value) =>
  * Numbers get 'px' appended, except for unitless properties.
  * null/undefined/false removes the property.
  */
-export const setStyle = (spec, propertyOrMap, value) => {
-  const element = _el(spec);
+export function setStyle (spec, propertyOrMap, value) {
+  const element = resolveElement(spec);
   if (!element) return null;
 
   const map = isString(propertyOrMap) ? { [propertyOrMap]: value } : propertyOrMap;
@@ -36,6 +36,6 @@ export const setStyle = (spec, propertyOrMap, value) => {
     else element.style.setProperty(property, cssValue(property, val));
   }
   return element;
-};
+}
 
 export default setStyle;

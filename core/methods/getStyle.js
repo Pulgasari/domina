@@ -1,7 +1,7 @@
 // getStyle.js
 
-import { _el }         from './../resolve.js';
-import { toKebabCase } from './../vendors.js';
+import { resolveElement } from './resolveElement.js';
+import { toKebabCase }    from './../vendors.js';
 
 const isVar = property => property.startsWith('--');
 
@@ -13,14 +13,14 @@ const propertyName = property => isVar(property) ? property : toKebabCase(proper
  * getStyle(spec, 'fontSize')  -> '16px'
  * getStyle(spec, 'x', true)   -> reads inline style instead of computed
  */
-export const getStyle = (spec, property, inline = false) => {
-  const element = _el(spec);
+export function getStyle (spec, property, inline = false) {
+  const element = resolveElement(spec);
   if (!element) return null;
 
   const declaration = inline ? element.style : getComputedStyle(element);
   if (!property) return declaration;
 
   return declaration.getPropertyValue(propertyName(property)).trim() || null;
-};
+}
 
 export default getStyle;

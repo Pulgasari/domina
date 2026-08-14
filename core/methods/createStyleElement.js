@@ -1,11 +1,11 @@
 // createStyleElement.js
 
-import { isString }  from './../internal/is.js';
-import createElement from './createElement.js';
+import { isString }      from './../vendors.js';
+import { createElement } from './createElement.js';
 
-export const createStyleElement = source => {
+export function createStyleElement (source) {
   const body = isString(source) ? { textContent: source } : source ?? {};
   return createElement('style', body);
-};
+}
 
 export default createStyleElement;

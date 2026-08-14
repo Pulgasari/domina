@@ -1,7 +1,7 @@
 // getElementRect.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const getElementRect = spec => _el(spec)?.getBoundingClientRect() ?? null;
+export function getElementRect (spec) { return resolveElement(spec)?.getBoundingClientRect() ?? null; }
 
 export default getElementRect;

@@ -1,6 +1,6 @@
 // getClassList.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const   getClassList = (spec) => _el(spec)?.classList;
+export function getClassList (spec) { return resolveElement(spec)?.classList; }
 export default getClassList;

@@ -1,7 +1,7 @@
 // getText.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const getText = spec => _el(spec)?.textContent ?? null;
+export function getText (spec) { return resolveElement(spec)?.textContent ?? null; }
 
 export default getText;

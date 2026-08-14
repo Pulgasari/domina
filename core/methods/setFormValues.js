@@ -1,9 +1,9 @@
 // setFormValues.js
 
-import { _el }          from './../resolve.js';
-import { isArray }      from './../vendors.js';
-import { setValue }     from './setValue.js';
-import { notifyChange } from './notifyChange.js';
+import { resolveElement } from './resolveElement.js';
+import { isArray }        from './../vendors.js';
+import { setValue }       from './setValue.js';
+import { notifyChange }   from './notifyChange.js';
 
 const SKIP = ['submit', 'reset', 'button', 'image'];
 
@@ -11,8 +11,8 @@ const controlsOf = (form, includeDisabled) =>
   [...form.elements].filter(el =>
     el.name && !SKIP.includes(el.type) && (includeDisabled || !el.disabled));
 
-export const setFormValues = (form, values = {}, { notify = false, missing = 'skip' } = {}) => {
-  const $f = _el(form);
+export function setFormValues (form, values = {}, { notify = false, missing = 'skip' } = {}) {
+  const $f = resolveElement(form);
   if (!$f?.elements) return null;
 
   const byName = {};
@@ -46,6 +46,6 @@ export const setFormValues = (form, values = {}, { notify = false, missing = 'sk
   }
 
   return $f;
-};
+}
 
 export default setFormValues;

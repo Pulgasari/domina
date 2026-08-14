@@ -1,5 +1,5 @@
 // getTitle.js
 
-export const getTitle = () => document.title;
+export function getTitle () { return document.title; }
 
 export default getTitle;

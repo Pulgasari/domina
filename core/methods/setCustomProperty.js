@@ -3,13 +3,13 @@
 import { isString } from './../vendors.js';
 import { setStyle } from './setStyle.js';
 
-export const setCustomProperty = (spec, nameOrMap, value) => {
+export function setCustomProperty (spec, nameOrMap, value) {
   const map = isString(nameOrMap) ? { [nameOrMap]: value } : nameOrMap;
   const prefixed = {};
   for (const [name, val] of Object.entries(map ?? {})) {
     prefixed[name.startsWith('--') ? name : `--${name}`] = val;
   }
   return setStyle(spec, prefixed);
-};
+}
 
 export default setCustomProperty;

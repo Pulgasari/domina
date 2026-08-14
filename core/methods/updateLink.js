@@ -7,7 +7,7 @@ import { updateElement } from './updateElement.js';
  * updateLink({ rel: 'stylesheet', href: '/app.css' })
  * Identifies via rel + href, making it idempotent.
  */
-export const updateLink = (spec = {}) => {
+export function updateLink (spec = {}) {
   const rel  = spec.rel ?? 'stylesheet';
   const href = spec.href ?? '';
   const element = upsertHead(
@@ -15,6 +15,6 @@ export const updateLink = (spec = {}) => {
     () => document.createElement('link')
   );
   return updateElement(element, { rel, ...spec });
-};
+}
 
 export default updateLink;

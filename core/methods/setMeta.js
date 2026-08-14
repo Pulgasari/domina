@@ -1,10 +1,10 @@
 // @domina/core/methods/setMeta.js
 
 import { isObject, isString } from './../vendors.js';
-import createElement  from './createElement.js';
-import getMetaAttr    from './getMetaAttr.js';
-import getMetaElement from './getMetaElement.js';
-import removeMeta     from './removeMeta.js';
+import { createElement }  from './createElement.js';
+import { getMetaAttr }    from './getMetaAttr.js';
+import { getMetaElement } from './getMetaElement.js';
+import { removeMeta }     from './removeMeta.js';
 
 const head = () => document.head;
 
@@ -13,7 +13,7 @@ const head = () => document.head;
  * setMeta({ description: '…', 'og:image': '…' })
  * null/undefined als Wert entfernt das Tag.
  */
-export const setMeta = (keyOrMap, value) => {
+export function setMeta (keyOrMap, value) {
   if (isObject(keyOrMap)) {
     const written = {};
     for (const [key, val] of Object.entries(keyOrMap)) written[key] = setMeta(key, val);
@@ -36,6 +36,6 @@ export const setMeta = (keyOrMap, value) => {
     return element;
   }
   return createElement('meta', { [getMetaAttr(key)]: key, content, appendTo: head() });
-};
+}
 
 export default setMeta;

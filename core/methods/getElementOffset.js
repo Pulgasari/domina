@@ -1,16 +1,16 @@
 // getElementOffset.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
 // Relative to document - persists across scrolling, unlike getBoundingClientRect()
-export const getElementOffset = spec => {
-  const element = _el(spec);
+export function getElementOffset (spec) {
+  const element = resolveElement(spec);
   if (!element) return null;
   const rect = element.getBoundingClientRect();
   return { 
     top  : rect.top  + window.scrollY, 
     left : rect.left + window.scrollX 
   };
-};
+}
 
 export default getElementOffset;

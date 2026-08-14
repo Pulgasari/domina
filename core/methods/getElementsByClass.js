@@ -1,6 +1,6 @@
 // getElementsByClass.js
 
-import getElements    from './getElements.js';
+import { getElements } from './getElements.js';
 
-export const   getElementsByClass = (name, ctx) => getElements(`.${name}`, ctx);   
+export function getElementsByClass (name, ctx) { return getElements(`.${name}`, ctx); }
 export default getElementsByClass;

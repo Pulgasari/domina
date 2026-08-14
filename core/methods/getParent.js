@@ -1,12 +1,13 @@
 // getParent.js
 
-import { _el, _slct } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
+import { buildSelector }  from './buildSelector.js';
 
-const passes = (element, filter) => !filter || element.matches(_slct(filter));
+const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
 
-export const getParent = (spec, filter) => {
-  const parent = _el(spec)?.parentElement ?? null;
+export function getParent (spec, filter) {
+  const parent = resolveElement(spec)?.parentElement ?? null;
   return parent && passes(parent, filter) ? parent : null;
-};
+}
 
 export default getParent;

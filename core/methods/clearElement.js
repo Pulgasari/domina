@@ -1,6 +1,6 @@
 // clearElement.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const   clearElement = spec => _el(spec)?.replaceChildren() ?? null;
+export function clearElement (spec) { return resolveElement(spec)?.replaceChildren() ?? null; }
 export default clearElement;

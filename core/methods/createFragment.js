@@ -1,8 +1,8 @@
 // createFragment.js
 
-import { flatNodes } from './../internal/normalize.js';
+import { flatNodes } from './../utils.js';
 
-export const createFragment = (...nodes) => {
+export function createFragment (...nodes) {
   const fragment = document.createDocumentFragment();
   const children = flatNodes(nodes);
   

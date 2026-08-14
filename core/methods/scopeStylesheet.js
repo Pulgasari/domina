@@ -5,7 +5,7 @@
  * on one page. Descends into @media, @supports and @layer. :root is replaced by
  * the scope rather than nested inside it.
  */
-export const scopeStylesheet = (sheetOrRules, scope) => {
+export function scopeStylesheet (sheetOrRules, scope) {
   const rules = sheetOrRules?.cssRules ?? sheetOrRules;
   if (!rules || !scope) return sheetOrRules;
 
@@ -23,6 +23,6 @@ export const scopeStylesheet = (sheetOrRules, scope) => {
     }
   }
   return sheetOrRules;
-};
+}
 
 export default scopeStylesheet;

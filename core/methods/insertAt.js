@@ -1,11 +1,11 @@
 // insertAt.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 import { flatNodes } from './../utils.js';
 
 // Negative index counts from back: -1 = before last child, 0 = at very front
-export const insertAt = (target, index, ...nodes) => {
-  const element = _el(target);
+export function insertAt (target, index, ...nodes) {
+  const element = resolveElement(target);
   if (!element) return null;
 
   const kids = flatNodes(nodes);
@@ -17,6 +17,6 @@ export const insertAt = (target, index, ...nodes) => {
 
   ref ? ref.before(...kids) : element.append(...kids);
   return element;
-};
+}
 
 export default insertAt;

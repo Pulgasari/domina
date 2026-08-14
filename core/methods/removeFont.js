@@ -4,7 +4,7 @@ import { getFonts } from './getFonts.js';
 
 const fontSet = () => (typeof document !== 'undefined' ? document.fonts : null);
 
-export const removeFont = (...families) => {
+export function removeFont (...families) {
   const fonts = fontSet();
   if (!fonts) return [];
 
@@ -13,6 +13,6 @@ export const removeFont = (...families) => {
     for (const face of getFonts(family)) { fonts.delete(face); removed.push(face); }
   }
   return removed;
-};
+}
 
 export default removeFont;

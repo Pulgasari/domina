@@ -1,7 +1,7 @@
 // filterElements.js
 
-import { getElement } from 'getElement.js';
-import { getValue }   from 'getValue.js';
+import { getElement } from './getElement.js';
+import { getValue }   from './getValue.js';
 import { filterShape, resolveScope, toSpecs } from './../shared.js';
 import { parseDate, startOfDay, toNum }       from './../utils.js';
 import { isEmpty, isFn }                      from './../vendors.js';

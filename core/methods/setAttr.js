@@ -1,6 +1,6 @@
 // @domina/core/methods/setAttr.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 import { isString, toKebabCase } from './../vendors.js';
 
 /**
@@ -8,8 +8,8 @@ import { isString, toKebabCase } from './../vendors.js';
  * setAttr(spec, 'aria-label', 'x')
  * false/null/undefined remove, true sets an empty attribute, rest stringifies
  */
-export const setAttr = (spec, nameOrMap, value) => {
-  const el  = _el(spec); if (!el) return null;
+export function setAttr (spec, nameOrMap, value) {
+  const el  = resolveElement(spec); if (!el) return null;
   const map = isString(nameOrMap) ? { [nameOrMap]: value } : nameOrMap;
 
   for (const [key, val] of Object.entries(map ?? {})) {
@@ -19,6 +19,6 @@ export const setAttr = (spec, nameOrMap, value) => {
     else                                   el.setAttribute(name, String(val));
   }
   return el;
-};
+}
 
 export default setAttr;

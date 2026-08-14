@@ -1,14 +1,14 @@
 // removeElement.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const removeElement = (...specs) => {
+export function removeElement (...specs) {
   const removed = [];
   for (const spec of specs.flat(Infinity)) {
-    const element = _el(spec);
+    const element = resolveElement(spec);
     if (element) { element.remove(); removed.push(element); }
   }
   return removed;
-};
+}
 
 export default removeElement;

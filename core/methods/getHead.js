@@ -1,4 +1,4 @@
 // getHead.js
 
-export const   getHead = () => document.head;
+export function getHead () { return document.head; }
 export default getHead;

@@ -1,8 +1,10 @@
 // getNext.js
 
-import { _el, _slct } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
+import { buildSelector }  from './buildSelector.js';
+import { walk }           from './../utils.js';
 
-const passes = (element, filter) => !filter || element.matches(_slct(filter));
+const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
 
-export const   getNext = (spec, filter) => walk(_el(spec), 'nextElementSibling', filter, false)[0] ?? null;   
+export function getNext (spec, filter) { return walk(resolveElement(spec), 'nextElementSibling', filter, false)[0] ?? null; }
 export default getNext;

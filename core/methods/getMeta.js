@@ -6,7 +6,7 @@ const head = () => document.head;
 
 // getMeta()      -> { key: content } aller Meta-Tags
 // getMeta('key') -> string | null
-export const getMeta = key => {
+export function getMeta (key) {
   if (key === undefined) {
     const all = {};
     for (const el of head()?.querySelectorAll('meta') ?? []) {
@@ -17,6 +17,6 @@ export const getMeta = key => {
     return all;
   }
   return getMetaElement(key)?.getAttribute('content') ?? null;
-};
+}
 
 export default getMeta;

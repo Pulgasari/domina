@@ -1,15 +1,13 @@
 // moveToNode.js
 
-import { resolveNode } from './../resolve.js';
-
 // Accepts any Node (Element, TextNode, DocumentFragment) or selector for target
-const resolveNode = sth => sth instanceof Node ? sth : _el(sth);
+import { resolveNode } from './resolveNode.js';
 
 /**
  * position: 'append' | 'prepend' | 'before' | 'after'
  * Works with Elements, TextNodes, and DocumentFragments.
  */
-export const moveToNode = (spec, target, position = 'append') => {
+export function moveToNode (spec, target, position = 'append') {
   const node        = resolveNode(spec);
   const destination = resolveNode(target);
 
@@ -21,6 +19,6 @@ export const moveToNode = (spec, target, position = 'append') => {
   else                             destination.append(node);
 
   return node;
-};
+}
 
 export default moveToNode;

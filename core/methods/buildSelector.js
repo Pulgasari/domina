@@ -12,7 +12,7 @@ const escapeAttr = value => {
 };
 
 // Converts a selector string or Element Descriptor Object (EDO) into a valid CSS selector string.
-export const buildSelector = sth => {
+export function buildSelector (sth) {
   if  (isString(sth)) return sth;
   if (!isObject(sth)) return '*';
 
@@ -43,4 +43,4 @@ export const buildSelector = sth => {
   }
 
   return selector || '*';
-};
+}

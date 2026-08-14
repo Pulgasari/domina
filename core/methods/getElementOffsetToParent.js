@@ -1,7 +1,7 @@
 // getElementOffsetToParent.js
 
-import { _el } from './../resolve.js';
+import { resolveElement } from './resolveElement.js';
 
-export const getElementOffsetToParent = spec => _el(spec)?.offsetParent ?? null;
+export function getElementOffsetToParent (spec) { return resolveElement(spec)?.offsetParent ?? null; }
 
 export default getElementOffsetToParent;

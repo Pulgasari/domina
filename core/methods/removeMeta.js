@@ -1,13 +1,13 @@
 // @domina/core/methods/removeMeta.js
 
-import { isString }   from './../vendors.js';
-import getMetaElement from './getMetaElement.js';
+import { isString }       from './../vendors.js';
+import { getMetaElement } from './getMetaElement.js';
 
 const head = () => document.head;
 
 // removeMeta('description', 'og:image')
 // Ein Key mit abschliessendem ':' loescht den ganzen Namespace: removeMeta('og:')
-export const removeMeta = (...keys) => {
+export function removeMeta (...keys) {
   const removed = [];
 
   for (const key of keys.flat(Infinity)) {
@@ -26,6 +26,6 @@ export const removeMeta = (...keys) => {
   }
 
   return removed;
-};
+}
 
 export default removeMeta;

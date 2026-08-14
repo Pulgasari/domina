@@ -1,6 +1,6 @@
 // getElementsByDataAttr.js
 
-import getElements from './getElements.js';
+import { getElements } from './getElements.js';
 
-export const   getElementsByDataAttr = (key, ctx) => getElements(`[data-${key}]`, ctx);      
+export function getElementsByDataAttr (key, ctx) { return getElements(`[data-${key}]`, ctx); }
 export default getElementsByDataAttr;

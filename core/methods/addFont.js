@@ -10,7 +10,7 @@ const asSource = source => isString(source) && !source.includes('url(') ? `url($
  * addFont('Inter', new FontFace(…)) -> passes through existing FontFace
  * -> FontFace | null
  */
-export const addFont = (family, source, descriptors = {}) => {
+export function addFont (family, source, descriptors = {}) {
   const fonts = fontSet();
   if (!fonts) return null;
 
@@ -20,6 +20,6 @@ export const addFont = (family, source, descriptors = {}) => {
 
   fonts.add(face);
   return face;
-};
+}
 
 export default addFont;
