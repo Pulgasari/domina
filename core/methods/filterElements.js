@@ -1,10 +1,10 @@
-// @domina/core/collection/filter.js
+// filterElements.js
 
-import { getElement } from '../query.js';
-import { getValue } from '../values.js';
-import { isEmpty, isFn } from '../internal/is.js';
-import { parseDate, startOfDay, toNum } from '../internal/coerce.js';
-import { resolveScope, toSpecs, filterShape } from './shared.js';
+import { getElement } from 'getElement.js';
+import { getValue }   from 'getValue.js';
+import { filterShape, resolveScope, toSpecs } from './../shared.js';
+import { parseDate, startOfDay, toNum }       from './../utils.js';
+import { isEmpty, isFn }                      from './../vendors.js';
 
 const str = v => String(v ?? '').toLowerCase();
 const stringFilter = fn => (value, search) => str(value)[fn](str(search));
@@ -38,7 +38,7 @@ const filterModes = {
   'date-before' : dateFilter((a, b) => a  <  b),
 };
 
-export function filterElements({ container, item, filters, mismatchClass = 'hidden' }) {
+export function filterElements ({ container, item, filters, mismatchClass = 'hidden' }) {
   const scope = resolveScope('filterElements', container, item);
   if (!scope) return { total: 0, matched: 0, items: [] };
 
@@ -70,3 +70,5 @@ export function filterElements({ container, item, filters, mismatchClass = 'hidd
 
   return { total: items.length, matched: matchedItems.length, items: matchedItems };
 }
+
+export default filterElements;
