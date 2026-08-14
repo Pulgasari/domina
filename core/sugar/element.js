@@ -2,10 +2,10 @@
 
 // :::::: IMPORTS
 
-import *           from './../methods/index.js';
-import *           from './../query.js';
-import { _el }     from './../resolve.js';
+import { * }       from './../methods/index.js';
 import { isArray } from './../utils.js';
+
+const _el = resoleElement;
 
 // :::::: HELPERS
 
