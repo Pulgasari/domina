@@ -1,7 +1,7 @@
 // getParent.js
 
-import { resolveElement } from './resolveElement.js';
 import { buildSelector }  from './buildSelector.js';
+import { resolveElement } from './resolveElement.js';
 
 const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
 
