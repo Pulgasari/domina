@@ -20,6 +20,7 @@ export * from './getAttr.js';
 export * from './getChildren.js';
 export * from './getClass.js';
 export * from './getClassList.js';
+export * from './getClosest.js';
 export * from './getCustomProperty.js';
 export * from './getData.js';
 export * from './getElementOffset.js';
