@@ -2,6 +2,5 @@
 
 import moveToElement from './moveToElement.js';
 
-export const appendToElement = (spec, target) => moveToElement (spec, target, 'append');
-
+export const   appendToElement = (spec, target) => moveToElement (spec, target, 'append');  
 export default appendToElement;
