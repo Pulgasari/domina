@@ -1,10 +1,10 @@
 // @domina/core/sugar/form.js
 
-import { _el } from './../resolve.js';
 import { 
   getFormValues,
   setFormValues,
   onEvent,
+  resolveElement,
 } from './../methods/index.js';
 
 /**
@@ -16,7 +16,7 @@ import {
  *   .email = 'a@b.c'         -> schreibt den Wert
  */
 export const form = spec => {
-  const raw = _el(spec);
+  const raw = resolveElement(spec);
 
   const api = {
     raw,
