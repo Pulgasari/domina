@@ -2,9 +2,7 @@
 
 import { getElement } from './getElement.js';
 import { getValue }   from './getValue.js';
-import { filterShape, resolveScope, toSpecs } from './../shared.js';
-import { parseDate, startOfDay, toNum }       from './../utils.js';
-import { isEmpty, isFn }                      from './../vendors.js';
+import { filterShape, isEmpty, isFn, parseDate, resolveScope, startOfDay, toNum, toSpecs } from './../shared.js';
 
 const str = v => String(v ?? '').toLowerCase();
 const stringFilter = fn => (value, search) => str(value)[fn](str(search));

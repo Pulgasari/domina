@@ -2,10 +2,10 @@
 
 // :::::: IMPORTS
 
-import { * }       from './../methods/index.js';
-import { isArray } from './../vendors.js';
+import * as core   from './../methods/index.js';
+import { isArray } from './../shared.js';
 
-const _el = resolveElement;
+const _el = core.resolveElement;
 
 // :::::: HELPERS
 
@@ -14,16 +14,27 @@ const NODE = Symbol.for('domina.node');
 
 export const isWrapped = value => value?.[NODE] === true;
 
-// child-addressing: first arg is a selector relative to this.node.
-// resolves the child, THEN applies the core function to it. the core fns are
-// null-safe, so a missing child is a no-op rather than a throw.
+/*
+  Namensregel des Handles:
+
+    kurz  = selbstbezug   el.wrap('div')                wirkt auf this.node
+    lang  = child-bezug   el.wrapElement('.badge','div') erstes argument ist ein
+                                                        selektor relativ zu this.node
+
+  beide formen rufen dieselbe core-funktion auf, sie unterscheiden sich nur im
+  subjekt. neue methode mit selektor-argument -> hierher und lang benennen, sonst
+  nach API2 und kurz. der lange handle-key ist NICHT der gleichnamige core-export:
+  el.wrapElement adressiert ein kind, core.wrapElement ist die freie funktion.
+
+  die core-fns sind null-safe, ein fehlendes kind ist also ein no-op statt throw.
+*/
 const childActing = {
-  emptyElement   : (node, sel)                 => emptyElement  (getElement(sel, node)),
-  removeElement  : (node, sel)                 => removeElement (getElement(sel, node)),
-  replaceElement : (node, sel, ...nodes)       => replaceElement(getElement(sel, node), ...nodes),
-  updateElement  : (node, sel, props, ...kids) => updateElement (getElement(sel, node), props, ...kids),
-  wrapElement    : (node, sel, wrapper, props) => wrap          (getElement(sel, node), wrapper, props),
-  unwrapElement  : (node, sel)                 => unwrap        (getElement(sel, node)),
+  emptyElement   : (node, sel)                 => core.clearElement  (core.getElement(sel, node)),
+  removeElement  : (node, sel)                 => core.removeElement (core.getElement(sel, node)),
+  replaceElement : (node, sel, ...nodes)       => core.replaceElement(core.getElement(sel, node), ...nodes),
+  updateElement  : (node, sel, props, ...kids) => core.updateElement (core.getElement(sel, node), props, ...kids),
+  wrapElement    : (node, sel, wrapper, props) => core.wrapElement   (core.getElement(sel, node), wrapper, props),
+  unwrapElement  : (node, sel)                 => core.unwrapElement (core.getElement(sel, node)),
 };
 
 // four chaining modes:
@@ -34,35 +45,74 @@ const childActing = {
 const API2 = {
   self : {
     // self-acting shorthands: act on this.node
-    empty   : emptyElement,
-    remove  : removeElement,
-    replace : replaceElement,
-    update  : updateElement,
-    wrap,
-    unwrap,
+    empty   : core.clearElement,
+    remove  : core.removeElement,
+    replace : core.replaceElement,
+    update  : core.updateElement,
+    wrap    : core.wrapElement,
+    unwrap  : core.unwrapElement,
     // child-addressing counterparts: *Element(sel, ...)
     ...childActing,
   },
-  stop  : { delegate, onEvent, onceEvent, onOutside },
+  stop  : {
+    delegate  : core.delegateEvent,
+    onOutside : core.onOutsideEvent,
+    onEvent   : core.onEvent,
+    onceEvent : core.onceEvent,
+  },
   value : {
-    getAttr, getClass, getCssVar, getData, getHTML, getStyle, getText, getValue,
-    getChildren, getParents, getSiblings,
-    getIndex, getOffset, getPosition, getRect, getSize,
-    hasAttr, hasClass, hasData,
-    emitEvent, offEvent,
-    isInViewport,
-    matches: matchesElement,
+    getAttr     : core.getAttr,
+    getClass    : core.getClass,
+    getCssVar   : core.getCustomProperty,
+    getData     : core.getData,
+    getHTML     : core.getHTML,
+    getStyle    : core.getStyle,
+    getText     : core.getText,
+    getValue    : core.getValue,
+    getChildren : core.getChildren,
+    getParents  : core.getParents,
+    getSiblings : core.getSiblings,
+    getIndex    : core.getIndex,
+    getOffset   : core.getElementOffset,
+    getPosition : core.getElementPosition,
+    getRect     : core.getElementRect,
+    getSize     : core.getElementSize,
+    hasAttr     : core.hasAttr,
+    hasClass    : core.hasClass,
+    hasData     : core.hasData,
+    emitEvent   : core.emitEvent,
+    offEvent    : core.offEvent,
+    isInViewport: core.isElementInViewport,
+    matches     : core.matchesElement,
   },
   chain : {
-    appendTo, prependTo, insertBefore, insertAfter,
-    clone, moveTo,
-    addClass,
-    getClosest, getNext, getParent, getPrev,
-    jumpTo, scrollTo,
-    setAttr, setClass, setCssVar, setContent, setData,
-    setHTML, setStyle, setText, setValue,
-    removeAttr, removeClass, removeData,
-    toggleAttr, toggleClass,
+    appendTo     : core.appendToElement,
+    prependTo    : core.prependToElement,
+    insertBefore : core.insertBefore,
+    insertAfter  : core.insertAfter,
+    clone        : core.cloneElement,
+    moveTo       : core.moveTo,
+    addClass     : core.addClass,
+    getClosest   : core.getClosest,
+    getNext      : core.getNext,
+    getParent    : core.getParent,
+    getPrev      : core.getPrev,
+    jumpTo       : core.jumpTo,
+    scrollTo     : core.scrollTo,
+    setAttr      : core.setAttr,
+    setClass     : core.setClass,
+    setCssVar    : core.setCustomProperty,
+    setContent   : core.setContent,
+    setData      : core.setData,
+    setHTML      : core.setHTML,
+    setStyle     : core.setStyle,
+    setText      : core.setText,
+    setValue     : core.setValue,
+    removeAttr   : core.removeAttr,
+    removeClass  : core.removeClass,
+    removeData   : core.removeData,
+    toggleAttr   : core.toggleAttr,
+    toggleClass  : core.toggleClass,
   },
 };
 
@@ -93,8 +143,8 @@ for (const [name, [fn, kind]] of Object.entries(API)) {
 
 Object.defineProperties(proto, {
   ok      : { get () { return !!this.node; } },
-  find    : { value (spec) { return element (getElement (spec, this.node)); } },
-  findAll : { value (spec) { return elements(getElements(spec, this.node)); } },
+  find    : { value (spec) { return element (core.getElement (spec, this.node)); } },
+  findAll : { value (spec) { return elements(core.getElements(spec, this.node)); } },
 });
 
 /** nie null. .ok fragt nach, .node liefert das rohe Element */
@@ -107,7 +157,7 @@ export const element = (spec, ctx) => {
 
 /** Array von Wrappern, plus Fan-out für jede API-Methode */
 export const elements = (spec, ctx) => {
-  const items = (isArray(spec) ? spec : getElements(spec, ctx)).map(node => element(node));
+  const items = (isArray(spec) ? spec : core.getElements(spec, ctx)).map(node => element(node));
 
   for (const [name, [, kind]] of Object.entries(API)) {
     Object.defineProperty(items, name, {

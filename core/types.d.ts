@@ -274,13 +274,6 @@ export function frame<R, W>(readFn: () => R, writeFn: (value: R) => W): Promise<
 export function nextFrame(): Promise<void>;
 export function flushSync(): void;
 
-// ---- dispose
-export function disposer(): {
-  add(stop: Disposer): Disposer;
-  dispose(): void;
-  readonly size: number;
-};
-
 // ---- form
 export function getFormValues(
   form: Spec,

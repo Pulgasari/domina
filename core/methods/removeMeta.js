@@ -1,6 +1,6 @@
 // @domina/core/methods/removeMeta.js
 
-import { isString }       from './../vendors.js';
+import { isString } from './../shared.js';
 import { getMetaElement } from './getMetaElement.js';
 
 const head = () => document.head;

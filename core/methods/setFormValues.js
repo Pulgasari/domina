@@ -1,7 +1,7 @@
 // setFormValues.js
 
 import { resolveElement } from './resolveElement.js';
-import { isArray }        from './../vendors.js';
+import { isArray } from './../shared.js';
 import { setValue }       from './setValue.js';
 import { notifyChange }   from './notifyChange.js';
 

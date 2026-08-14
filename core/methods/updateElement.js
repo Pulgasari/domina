@@ -1,7 +1,6 @@
 // updateElement.js
 
-import { isFn, isString }    from './../vendors.js';
-import { flatNodes, toList } from './../utils.js';
+import { flatNodes, isFn, isString, toList } from './../shared.js';
 import { resolveElement }    from './resolveElement.js';
 import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from './../observer.js';
 

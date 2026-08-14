@@ -1,7 +1,7 @@
 // delegateEvent.js
 
 import { resolveElement } from './resolveElement.js';
-import { arrayfied, isFn, isString } from './../vendors.js';
+import { arrayfied, isFn, isString } from './../shared.js';
 
 const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };
 

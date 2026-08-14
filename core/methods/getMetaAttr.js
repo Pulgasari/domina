@@ -1,6 +1,6 @@
 // @domina/core/methods/getMetaAttr.js
 
-import { isString } from './../vendors.js';
+import { isString } from './../shared.js';
 
 const HTTP_EQUIV_KEYS = new Set([
   'content-type',

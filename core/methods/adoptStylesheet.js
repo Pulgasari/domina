@@ -1,6 +1,6 @@
 // adoptStylesheet.js
 
-import { isString }         from './../vendors.js';
+import { isString } from './../shared.js';
 import { createStylesheet } from './createStylesheet.js';
 import { resolveElement }   from './resolveElement.js';
 import { scopeStylesheet }  from './scopeStylesheet.js';

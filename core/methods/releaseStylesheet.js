@@ -1,6 +1,6 @@
 // releaseStylesheet.js
 
-import { isString }        from './../vendors.js';
+import { isString } from './../shared.js';
 import { rootOf, storeOf } from './adoptStylesheet.js';
 
 /** Removes a sheet again. Accepts the sheet itself or the key it was cached under. */

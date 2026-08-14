@@ -307,6 +307,19 @@ werden auf `focusin`/`focusout` gemappt, damit Delegation funktioniert.
 
 Jede `on*`-Funktion gibt einen Disposer zurück.
 
+## Aufbau von `core`
+
+`core/methods/` — zustandslose Einzelfunktionen, eine Datei pro Export, das Barrel
+`methods/index.js` wird generiert.
+
+`core/*.js` — Subsysteme mit eigenem Modulstate und eigener Lebensdauer
+(`observer.js`, `raf.js`) sowie die geteilte Infrastruktur (`shared.js`, intern).
+Diese Module gehören nicht in `methods/`, weil ihr Wert nicht in der einzelnen
+Funktion liegt, sondern im geteilten Zustand dahinter — der Observer-Pool und die
+Frame-Queue sind der eigentliche Gegenstand.
+
+`core/sugar/` — dünne Namespaces über denselben Funktionen.
+
 ## observer
 
 Ein `MutationObserver` pro Root, geteilt von allen Subscribern — nicht einer pro Aufruf.
@@ -348,15 +361,6 @@ mutate(fn)                          // -> Promise, Schreibphase
 frame(readFn, writeFn)              // beides im selben Frame — der nützliche Fall
 nextFrame()
 flushSync()                         // Notausgang
-```
-
-## dispose
-
-```javascript
-const scope = disposer();
-scope.add(onEvent('.btn', 'click', fn));
-scope.add(observe('.card', { onAdded }));
-scope.dispose();                    // alles auf einmal weg
 ```
 
 ## form
@@ -491,13 +495,18 @@ stylesheets(el).clear();
 ## Subpath-Exports
 
 ```javascript
-import { getAttr }  from '@pulgasari/domina/attr';
 import { observe }  from '@pulgasari/domina/observer';
+import { measure }  from '@pulgasari/domina/raf';
 import { element }  from '@pulgasari/domina/sugar/element';
 ```
 
-Jedes Modul hat einen eigenen Subpath: `query`, `element`, `create`, `attr`, `class`,
-`data`, `content`, `values`, `style`, `traverse`, `insert`, `geometry`, `head`, `meta`,
-`fonts`, `stylesheet`, `events`, `observer`, `raf`, `dispose`, `form`, `collection`,
-`sugar` (und `sugar/element`, `sugar/form`, `sugar/meta`, `sugar/fonts`,
-`sugar/stylesheet`).
+Einen eigenen Subpath haben nur die Module, die auch als eigenes Modul gedacht sind:
+`observer`, `raf`, `sugar` (und `sugar/element`, `sugar/form`, `sugar/meta`,
+`sugar/fonts`, `sugar/stylesheet`).
+
+Alle Einzelfunktionen kommen aus dem Hauptpfad — sie sind freistehend und werden
+vom Bundler herausgetrennt, ein thematischer Subpath bringt dabei nichts:
+
+```javascript
+import { getAttr, setAttr, onEvent } from '@pulgasari/domina';
+```

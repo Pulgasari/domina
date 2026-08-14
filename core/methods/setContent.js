@@ -1,7 +1,7 @@
 // setContent.js
 
 import { resolveElement } from './resolveElement.js';
-import { flatNodes }      from './../utils.js';
+import { flatNodes } from './../shared.js';
 
 // replaces entire element content with passed nodes
 export function setContent (spec, ...nodes) {

@@ -3,8 +3,7 @@
 import { createElement }  from './createElement.js';
 import { getElement }     from './getElement.js';
 import { getValue }       from './getValue.js';
-import { isFn, isString } from './../vendors.js';
-import { resolveScope }   from './../shared.js';
+import { isFn, isString, resolveScope } from './../shared.js';
 
 const MARK = 'data-domina-group';
 

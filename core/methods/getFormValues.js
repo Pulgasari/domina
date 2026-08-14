@@ -1,7 +1,7 @@
 // @domina/core/methods/getFormValues.js
 
 import { resolveElement } from './resolveElement.js';
-import { isString }       from './../vendors.js';
+import { isString } from './../shared.js';
 import { getValue }       from './getValue.js';
 
 const SKIP = ['submit', 'reset', 'button', 'image'];

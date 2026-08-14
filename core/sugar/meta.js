@@ -1,7 +1,7 @@
 // @domina/core/sugar/meta.js
 
-import  getMeta, hasMeta, removeMeta, setMeta } from './../methods/index.js';
-import { isString, isSymbol }                   from './../vendors.js';
+import { getMeta, hasMeta, removeMeta, setMeta } from './../methods/index.js';
+import { isString, isSymbol } from './../shared.js';
 
 const stripColon = prefix        => prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
 const withColon = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}`  : `${prefix}:${prop}`;    
