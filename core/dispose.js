@@ -1,6 +1,6 @@
 // @domina/core/dispose.js
 
-import { isFn } from './internal/is.js';
+import { isFn } from './vendors.js';
 
 // collects disposers so a component only has to keep one handle
 export const disposer = () => {
