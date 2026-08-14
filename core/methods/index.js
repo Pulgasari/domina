@@ -36,6 +36,7 @@ export * from './getScroll.js';
 export * from './getStyle.js';
 export * from './getStylesheets.js';
 export * from './getText.js';
+export * from './getTitle.js';
 export * from './getValue.js';
 export * from './hasAttr.js';
 export * from './hasClass.js';
