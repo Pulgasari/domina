@@ -17,6 +17,7 @@ export * from './eachFont.js';
 export * from './emitEvent.js';
 export * from './fontsReady.js';
 export * from './getAttr.js';
+export * from './getChildren.js';
 export * from './getClass.js';
 export * from './getClassList.js';
 export * from './getCustomProperty.js';
