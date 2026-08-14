@@ -17,8 +17,6 @@ export const resolveContext = sth => {
   return resolved?.nodeType ? resolved : document;
 };
 
-export const resolveNode = sth => sth instanceof Node ? sth : resolveElement(sth);
-
 
 // resolves input (Selector, EDO, Node, or Wrapper) to a single DOM Element.
 export const resolveElement = (sth, ctx) => {
@@ -32,9 +30,9 @@ export const resolveElement = (sth, ctx) => {
   catch { return null; } // Return null on invalid selector DOMExceptions
 };
 
+export const resolveNode = sth => sth instanceof Node ? sth : resolveElement(sth);
 // Resolves input to a valid EventTarget (Window, Worker, Element, etc.).
-export const resolveTarget = (sth, ctx) => 
-  isFn(sth?.addEventListener) ? sth : resolveElement(sth, ctx);
+export const resolveTarget = (sth, ctx) => isFn(sth?.addEventListener) ? sth : resolveElement(sth, ctx);
 
 
 export const // short internal aliases for high-performance intra-module calls
