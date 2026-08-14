@@ -34,6 +34,7 @@ export * from './getElementSize.js';
 export * from './getElements.js';
 export * from './getElementsByClass.js';
 export * from './getElementsByDataAttr.js';
+export * from './getElementsByDataKey.js';
 export * from './getElementsByName.js';
 export * from './getElementsByTag.js';
 export * from './getFirst.js';
