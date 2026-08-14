@@ -38,6 +38,7 @@ export * from './getMeta.js';
 export * from './getMetaAttr.js';
 export * from './getMetaElement.js';
 export * from './getNextAll.js';
+export * from './getPrev.js';
 export * from './getPrevAll.js';
 export * from './getScroll.js';
 export * from './getStyle.js';
