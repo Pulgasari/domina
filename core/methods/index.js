@@ -33,6 +33,7 @@ export * from './getElementRect.js';
 export * from './getElementSize.js';
 export * from './getElements.js';
 export * from './getElementsByName.js';
+export * from './getElementsByTag.js';
 export * from './getFirst.js';
 export * from './getFontStatus.js';
 export * from './getFonts.js';
