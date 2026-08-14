@@ -1,8 +1,8 @@
-// @domina/core/collection/shared.js
+// shared.js (by filterElements, sortElements etc.)
 
-import { getElements } from '../query.js';
-import { isArray, isFn, isString } from '../internal/is.js';
-import { _el } from '../internal/resolve.js';
+import { _el }                     from './resolve.js';
+import { isArray, isFn, isString } from './vendors.js';
+import { getElements } from './methods/getElements.js';
 
 /**
  * Container auflösen + Items einsammeln.
