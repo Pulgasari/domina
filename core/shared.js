@@ -1,8 +1,8 @@
 // shared.js (by filterElements, sortElements etc.)
 
+import { getElements }             from './methods/getElements.js';
 import { _el }                     from './resolve.js';
 import { isArray, isFn, isString } from './vendors.js';
-import { getElements } from './methods/getElements.js';
 
 /**
  * Container auflösen + Items einsammeln.
@@ -27,14 +27,14 @@ export const toSpecs = (input, shape) => [].concat(input ?? []).map(shape);
 // damit die Konventionen sichtbar nebeneinander stehen.
 
 export const sortShape = defaults => spec => {
-  if (isFn(spec))     return { selector: null,    order: spec };
-  if (isString(spec)) return { selector: spec,    order: defaults };
-  if (isArray(spec))  return { selector: spec[0], order: spec[1] || defaults };
-  return { order: defaults, ...spec };
+  if (isFn     (spec)) return { selector: null,    order: spec };
+  if (isString (spec)) return { selector: spec,    order: defaults };
+  if (isArray  (spec)) return { selector: spec[0], order: spec[1] || defaults };
+                       return { order: defaults, ...spec };
 };
 
 export const filterShape = spec => {
-  if (isFn(spec))    return { customFn: spec };
-  if (isArray(spec)) return { selector: spec[0], value: spec[1], mode: spec[2] || 'contains' };
-  return { mode: 'contains', ...spec };
+  if (isFn    (spec)) return { customFn: spec };
+  if (isArray (spec)) return { selector: spec[0], value: spec[1], mode: spec[2] || 'contains' };
+                      return { mode: 'contains', ...spec };
 };
