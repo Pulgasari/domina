@@ -64,6 +64,7 @@ export * from './getStylesheets.js';
 export * from './getText.js';
 export * from './getTitle.js';
 export * from './getValue.js';
+export * from './groupElements.js';
 export * from './hasAttr.js';
 export * from './hasClass.js';
 export * from './hasData.js';
