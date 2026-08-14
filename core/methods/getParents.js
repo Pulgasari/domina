@@ -1,0 +1,23 @@
+// getParents.js
+
+import { _el, _slct } from './../resolve.js';
+
+const passes = (element, filter) => !filter || element.matches(_slct(filter));
+
+const walk = (element, direction, filter, all) => {
+  const found = [];
+  let current = element?.[direction];
+
+  while (current) {
+    if (passes(current, filter)) {
+      found.push(current);
+      if (!all) break;
+    }
+    current = current[direction];
+  }
+  return found;
+};
+
+// Ascending up to the root, closest ancestor first
+export const   getParents = (spec, filter) => walk(_el(spec), 'parentElement', filter, true);   
+export default getParents;
