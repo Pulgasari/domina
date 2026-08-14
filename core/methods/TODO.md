@@ -3,6 +3,7 @@
 ## methods
 
 - [ ] cleanup + utilize: `adoptStylesheet`
+- [ ] cleanup + utilize: `getPrevAll`
 - [ ] cleanup + utilize: `onEvent`, `offEvent`, `delegateEvent`
 - [ ] create: generell schauen wegen singular/plural-varianten
 - [ ] create: `on`
