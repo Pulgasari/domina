@@ -18,7 +18,7 @@ shuffle = arr => {
 
 // Jede Funktion nimmt einen optionalen Filter-Selektor. Ungefiltert ist der
 // seltenere Fall – getParents(el, '.card') ist das, was man wirklich braucht.
-export const passes = (element, filter) => !filter || element.matches(_slct(filter));
+//export const passes = (element, filter) => !filter || element.matches(_slct(filter));
 
 export const walk = (element, direction, filter, all) => {
   const found = [];
