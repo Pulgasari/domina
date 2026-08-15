@@ -1,6 +1,6 @@
 # domina
 
-[https://pulgasari.github.io/domina/docs/](https://pulgasari.github.io/domina/docs/)
+[https://code.pulgasari.dev/domina/docs/](https://code.pulgasari.dev/domina/docs/)
 
 Die vollständige API-Referenz steht in **[core/readme.md](../core/readme.md)**.
 Diese Seite ist der Index: welcher Name liegt in welchem Modul.
