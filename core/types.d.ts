@@ -191,10 +191,20 @@ export function getFontStatus(): FontFaceSetLoadStatus;
 export function eachFont(callback: (face: FontFace) => void): void;
 
 // ---- stylesheet
+export interface StylesheetImport {
+  href: string;
+  layer: string | null;
+  media: string | null;
+  rule: string;
+  supports: string | null;
+}
+
 export interface SheetOptions {
   target?: Spec | Document | ShadowRoot;
   scope?: string | null;
   layer?: string | null;
+  base?: string;
+  imports?: 'keep' | 'comment' | 'strip' | 'link' | ((imports: StylesheetImport[]) => void);
   key?: string;
   replace?: boolean;
   media?: string;
@@ -210,6 +220,10 @@ export function releaseStylesheet(sheetOrKey: CSSStyleSheet | string, opts?: { t
 export function hasStylesheet(sheet: CSSStyleSheet, opts?: { target?: SheetOptions['target'] }): boolean;
 export function getStylesheets(opts?: { target?: SheetOptions['target'] }): CSSStyleSheet[];
 export function scopeStylesheet<T>(sheetOrRules: T, scope: string): T;
+export function extractStylesheetImports(
+  css: string,
+  opts?: { base?: string; mode?: 'comment' | 'keep' | 'strip' }
+): { code: string; imports: StylesheetImport[] };
 
 /** @deprecated setStyleElement */ export const updateStyleElement: typeof setStyleElement;
 

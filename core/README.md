@@ -270,6 +270,7 @@ releaseStylesheet(sheetOrKey, { target })
 hasStylesheet(sheet, { target })
 getStylesheets({ target })
 scopeStylesheet(sheetOrRules, scope)
+extractStylesheetImports(css, { base, mode })  // -> { code, imports }
 ```
 
 `source` ist CSS-Text, eine URL, eine `Response` oder ein fertiges `CSSStyleSheet`.
@@ -287,6 +288,42 @@ await adoptStylesheet('/themes/nord.css', {
 `key` dedupliziert; ein zweiter Aufruf mit demselben Key adoptiert nicht nochmal.
 `replace: true` tauscht den Inhalt eines schon adoptierten Sheets, was seine Position
 in der Kaskade stabil hält — genau das, was man beim Theme-Wechsel braucht.
+
+### @import
+
+Ein constructed stylesheet kann `@import` nicht tragen: `replace()` und `replaceSync()`
+werfen die Regeln laut Spec weg. `imports` bestimmt, was stattdessen passiert.
+
+```javascript
+await adoptStylesheet(compiledCss, { imports: 'link', base: sheetURL });
+```
+
+| Wert | |
+|---|---|
+| `'keep'` | Default. Text bleibt, die Regeln fallen weg wie bisher — mit einem einmaligen Hinweis auf der Konsole |
+| `'comment'` | Regeln werden im Text auskommentiert |
+| `'strip'` | Regeln werden entfernt |
+| `'link'` | Regeln werden auskommentiert und landen je als `<link rel="stylesheet">` im `<head>` |
+| Funktion | Regeln werden entfernt, die Liste geht an die Funktion |
+
+`base` legt fest, worauf eine relative Import-URL aufgelöst wird — per Default die
+Quelle selbst, wenn es eine URL oder `Response` war, sonst `document.baseURI`. Wichtig,
+sobald das CSS als Text hereinkommt: relativ ist dann relativ zur Stylesheet-Datei, nicht
+zur Seite.
+
+Beim Linken ist die Reihenfolge richtig herum: `<link>`s sind Autor-Styles und kommen
+in der Kaskade vor dem adoptierten Sheet, das sie überschreiben soll. Zwei Grenzen —
+`layer(…)` lässt sich auf einem `<link>` nicht ausdrücken (gibt eine Warnung), und
+dieselbe `href` mit unterschiedlichem `media` fällt im Dedupe von `setLink` zusammen.
+
+`extractStylesheetImports` ist derselbe Mechanismus einzeln, für alles was selbst ein
+`CSSStyleSheet` baut. Es kennt beide URL-Formen (`url(…)` und String), überspringt
+auskommentierte Regeln und zerlegt `layer(…)`, `supports(…)` und die Media-Query:
+
+```javascript
+const { code, imports } = extractStylesheetImports(css, { base, mode: 'strip' });
+// imports -> [{ href, layer, media, rule, supports }, …]
+```
 
 ## events
 

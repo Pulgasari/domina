@@ -1,9 +1,11 @@
 // adoptStylesheet.js
 
-import { isString } from './../shared.js';
-import { createStylesheet } from './createStylesheet.js';
-import { resolveElement }   from './resolveElement.js';
-import { scopeStylesheet }  from './scopeStylesheet.js';
+import { isFn, isString }           from './../shared.js';
+import { createStylesheet }         from './createStylesheet.js';
+import { extractStylesheetImports } from './extractStylesheetImports.js';
+import { resolveElement }           from './resolveElement.js';
+import { scopeStylesheet }          from './scopeStylesheet.js';
+import { setLink }                  from './setLink.js';
 
 // Constructable Stylesheets state registry
 export const registry = new WeakMap;
@@ -39,7 +41,52 @@ const fetchCss = async source => {
   return response.text();
 };
 
-export function adoptStylesheet (source, { target = document, scope = null, layer = null, key, replace = false, media } = {}) {
+// what a relative @import resolves against: the sheet it stands in, not the page
+const baseOf = (source, base) => {
+  if (base) return base;
+  if (typeof Response !== 'undefined' && source instanceof Response) return source.url;
+  if (isCssUrl(source) && typeof document !== 'undefined') return new URL(source, document.baseURI).href;
+  return typeof document === 'undefined' ? undefined : document.baseURI;
+};
+
+const dropNotice = (list) => console.info(
+  `[domina] adoptStylesheet: ${list.length} @import rule(s) dropped — a constructed` +
+  ' stylesheet cannot carry them. hang them into <head> instead:\n\n' +
+  "    adoptStylesheet(source, { imports: 'link' })\n\n" +
+  list.map(item => `  ${item.href}`).join('\n')
+);
+
+/*
+  @import has to leave the text before it reaches replaceSync, which drops the rules
+  per spec, and before layered() wraps everything in @layer — an @import inside a
+  layer block is invalid css either way.
+
+  the default is 'keep', so nothing changes for callers that never thought about it;
+  they just get told once that it happened.
+*/
+function handleImports (css, { base, imports, source }) {
+  const mode =
+      imports === 'keep'                   ? 'keep'
+    : imports === 'strip' || isFn(imports) ? 'strip'
+    :                                        'comment';
+
+  const { code, imports: found } = extractStylesheetImports(css, { base: baseOf(source, base), mode });
+  if (!found.length) return css;
+
+       if (imports === 'keep') dropNotice(found);
+  else if (isFn(imports))      imports(found);
+  else if (imports === 'link') {
+    for (const item of found) {
+      // a <link> has no way to express layer(), that part of the rule is lost
+      if (item.layer !== null) console.warn(`[domina] adoptStylesheet: dropping layer(${item.layer}) from ${item.href}, a <link> cannot carry it`);
+      setLink({ href: item.href, rel: 'stylesheet', ...(item.media && { media: item.media }) });
+    }
+  }
+
+  return code;
+}
+
+export function adoptStylesheet (source, { target = document, scope = null, layer = null, base, imports = 'keep', key, replace = false, media } = {}) {
   if (typeof CSSStyleSheet === 'undefined' || !('adoptedStyleSheets' in Document.prototype)) {
     return Promise.resolve(null);
   }
@@ -61,7 +108,7 @@ export function adoptStylesheet (source, { target = document, scope = null, laye
       return source;
     }
 
-    const css = await fetchCss(source);
+    const css = handleImports(await fetchCss(source), { base, imports, source });
 
     // Reuse the existing sheet object so its position in the cascade survives
     if (existing) {
