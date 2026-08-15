@@ -18,6 +18,7 @@ export * from './delegateEvent.js';
 export * from './eachElements.js';
 export * from './eachFont.js';
 export * from './emitEvent.js';
+export * from './extractStylesheetImports.js';
 export * from './filterElements.js';
 export * from './fontsReady.js';
 export * from './getAttr.js';
