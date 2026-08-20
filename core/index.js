@@ -11,6 +11,7 @@
 export * from './methods/index.js';
 export * from './observer.js';
 export * from './raf.js';
+export * from './sugar/index.js';
 
 /*
   guarded because this barrel is reachable from non-dom scopes. an unguarded
@@ -27,4 +28,3 @@ export const
 root = hasDocument ? document.documentElement : null,
 body = hasDocument ? document.body            : null;
 
-//export * from './sugar/index.js';
