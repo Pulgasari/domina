@@ -173,3 +173,31 @@ export const elements = (spec, ctx) => {
   }
   return items;
 };
+
+// :::::: GET (experimental) ::::::::::::::::::::::::::::::::::::::
+
+// camelCase -> kebab-case, so a js-friendly property key maps to a dom id:
+// sthElse -> sth-else. single words pass through unchanged.
+const toKebab = key => key.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
+
+/**
+ * `get` is `element` with a twist. called, it is exactly element(spec, ctx):
+ *
+ *   const header = get('#header');            // === element('#header')
+ *
+ * accessed as a property, the key becomes an id selector (camelCase folds to kebab),
+ * so a batch of elements can be pulled out by destructuring:
+ *
+ *   const { header, main, footer, sthElse } = get;
+ *   // element('#header'), element('#main'), element('#footer'), element('#sth-else')
+ *
+ * every property read resolves live against the current document, so `get` is a handle,
+ * not a snapshot. symbols pass through to the underlying function untouched.
+ */
+export const get = new Proxy(element, {
+  apply (target, thisArg, args) { return element(...args); },
+  get (target, key, receiver) {
+    if (typeof key === 'symbol') return Reflect.get(target, key, receiver);
+    return element('#' + toKebab(key));
+  },
+});

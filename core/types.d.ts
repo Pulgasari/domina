@@ -444,6 +444,13 @@ export function element(spec?: Spec | null, ctx?: Ctx): ElementHandle;
 export function elements(spec?: Spec | Element[] | null, ctx?: Ctx): ElementList;
 export function isWrapped(value: unknown): value is ElementHandle;
 
+/**
+ * experimental. called, it is exactly `element(spec, ctx)`. accessed as a property, the
+ * key becomes an id selector (camelCase folds to kebab), so ids can be destructured:
+ *   const { header, main, sthElse } = get; // element('#header'), …, element('#sth-else')
+ */
+export const get: typeof element & { readonly [id: string]: ElementHandle };
+
 export interface FormHandle {
   readonly raw: HTMLFormElement | null;
   values: Record<string, unknown>;
