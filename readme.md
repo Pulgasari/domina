@@ -8,6 +8,30 @@ selbst schreibt — nur einmal richtig, mit konsistenten Signaturen und ohne Boi
 
 ---
 
+## installation
+
+### deno
+
+```sh
+deno install jsr:@domina/core
+```
+
+### pnpm
+
+```sh
+pnpm add jsr:@domina/core
+```
+
+## usage
+
+### ESM
+
+```javascript
+import * as dom from 'https://esm.sh/jsr:@domina/core';
+```
+
+---
+
 ### Level 1
 
 ### Level 2
