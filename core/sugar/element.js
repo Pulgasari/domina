@@ -153,12 +153,7 @@ Object.defineProperties (proto, {
         }
       });
     },
-    set (attrs) {
-      if (!this.node || typeof attrs !== 'object' || attrs === null) return;
-      for (const [key, value] of Object.entries(attrs)) {
-        core.setAttr(this.node, toKebabCase(key), value);
-      }
-    }
+    set (attrs) { this.setAttr(attrs); },
   }
 });
 
