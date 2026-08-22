@@ -41,13 +41,9 @@ export const fonts = {
   load   : loadFont,
   remove : removeFont,
   each   : eachFont,
-
-  get list   () { return getFonts(); },
-  get status () { return getFontStatus(); },
-  get ready  () { return fontsReady(); },
-
-  // fonts.families -> ['Inter', 'JetBrains Mono']
-  get families () {
-    return [...new Set(getFonts().map(face => face.family.replace(/^['"]|['"]$/g, '')))];
-  },
+  
+  get families () { return [...new Set(getFonts().map(face => face.family.replace(/^['"]|['"]$/g, '')))]; },   
+  get list     () { return getFonts(); },
+  get ready    () { return fontsReady(); },
+  get status   () { return getFontStatus(); },
 };
