@@ -1,10 +1,12 @@
 # domina
 
-JavaScript-Toolkit für die Arbeit mit dem DOM.
+JavaScript toolkit for DOM mutation.
 
-`domina` ist kein Framework und kein Wrapper-Objekt, das man erst instanziieren muss.
-Es ist die Sammlung von Hilfsmethoden, die man sich in Vanilla-JS ohnehin jedes Mal
-selbst schreibt — nur einmal richtig, mit konsistenten Signaturen und ohne Boilerplate.
+---
+
+[installation](#installation)
+[usage](#usage)
+[docs](#docs)
 
 ---
 
