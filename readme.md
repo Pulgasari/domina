@@ -4,6 +4,7 @@ JavaScript toolkit for DOM mutation.
 
 ---
 
+**jump to:**
 [installation](#installation)
 [usage](#usage)
 [docs](#docs)
