@@ -9,25 +9,10 @@ const _el = core.resolveElement;
 
 // :::::: HELPERS
 
-// registered globally so resolve.js can detect a wrapper without importing this file
 const NODE = Symbol.for('domina.node');
 
 export const isWrapped = value => value?.[NODE] === true;
 
-/*
-  Namensregel des Handles:
-
-    kurz  = selbstbezug   el.wrap('div')                wirkt auf this.node
-    lang  = child-bezug   el.wrapElement('.badge','div') erstes argument ist ein
-                                                        selektor relativ zu this.node
-
-  beide formen rufen dieselbe core-funktion auf, sie unterscheiden sich nur im
-  subjekt. neue methode mit selektor-argument -> hierher und lang benennen, sonst
-  nach API2 und kurz. der lange handle-key ist NICHT der gleichnamige core-export:
-  el.wrapElement adressiert ein kind, core.wrapElement ist die freie funktion.
-
-  die core-fns sind null-safe, ein fehlendes kind ist also ein no-op statt throw.
-*/
 const childActing = {
   emptyElement   : (node, sel)                 => core.clearElement  (core.getElement(sel, node)),
   removeElement  : (node, sel)                 => core.removeElement (core.getElement(sel, node)),
@@ -122,7 +107,6 @@ const API2 = {
 // value: passed through
 // stop:  disposer
 
-// Map API2 structure into flat API lookup map: method -> [fn, kind]
 const API = {};
 for (const [kind, fns] of Object.entries(API2))
 for (const [name, fn]  of Object.entries(fns))
@@ -155,7 +139,6 @@ export const element = (spec, ctx) => {
   return self;
 };
 
-/** Array von Wrappern, plus Fan-out für jede API-Methode */
 export const elements = (spec, ctx) => {
   const items = (isArray(spec) ? spec : core.getElements(spec, ctx)).map(node => element(node));
 
@@ -178,15 +161,6 @@ export const elements = (spec, ctx) => {
 
 /**
  * `get` is `element` with a twist. called, it is exactly element(spec, ctx):
- *
- *   const header = get('#header');            // === element('#header')
- *
- * accessed as a property, the key becomes an id selector (camelCase folds to kebab),
- * so a batch of elements can be pulled out by destructuring:
- *
- *   const { header, main, footer, sthElse } = get;
- *   // element('#header'), element('#main'), element('#footer'), element('#sth-else')
- *
  * every property read resolves live against the current document, so `get` is a handle,
  * not a snapshot. symbols pass through to the underlying function untouched.
  */
