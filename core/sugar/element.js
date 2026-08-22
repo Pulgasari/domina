@@ -46,15 +46,23 @@ const API2 = {
     onceEvent : core.onceEvent,
   },
   value : {
+    // miss
+    //getClassList
+    //getChilds
+
+    // rename
+    getChildren : core.getChildren,
+    getCssVar   : core.getCustomProperty,
+    
     getAttr     : core.getAttr,
     getClass    : core.getClass,
-    getCssVar   : core.getCustomProperty,
+    
     getData     : core.getData,
     getHTML     : core.getHTML,
     getStyle    : core.getStyle,
     getText     : core.getText,
     getValue    : core.getValue,
-    getChildren : core.getChildren,
+    
     getParents  : core.getParents,
     getSiblings : core.getSiblings,
     getIndex    : core.getIndex,
