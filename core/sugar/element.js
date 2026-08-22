@@ -14,12 +14,12 @@ const NODE = Symbol.for('domina.node');
 export const isWrapped = value => value?.[NODE] === true;
 
 const childActing = {
-  emptyElement   : (node, sel)                 => core.clearElement  (core.getElement(sel, node)),
-  removeElement  : (node, sel)                 => core.removeElement (core.getElement(sel, node)),
+    emptyElement : (node, sel)                 => core.clearElement  (core.getElement(sel, node)),
+   removeElement : (node, sel)                 => core.removeElement (core.getElement(sel, node)),
   replaceElement : (node, sel, ...nodes)       => core.replaceElement(core.getElement(sel, node), ...nodes),
-  updateElement  : (node, sel, props, ...kids) => core.updateElement (core.getElement(sel, node), props, ...kids),
-  wrapElement    : (node, sel, wrapper, props) => core.wrapElement   (core.getElement(sel, node), wrapper, props),
-  unwrapElement  : (node, sel)                 => core.unwrapElement (core.getElement(sel, node)),
+   updateElement : (node, sel, props, ...kids) => core.updateElement (core.getElement(sel, node), props, ...kids),
+     wrapElement : (node, sel, wrapper, props) => core.wrapElement   (core.getElement(sel, node), wrapper, props),
+   unwrapElement : (node, sel)                 => core.unwrapElement (core.getElement(sel, node)),
 };
 
 // four chaining modes:
@@ -159,12 +159,13 @@ export const elements = (spec, ctx) => {
 
 // :::::: GET (experimental) ::::::::::::::::::::::::::::::::::::::
 
-/**
- * `get` is `element` with a twist. called, it is exactly element(spec, ctx):
- * every property read resolves live against the current document, so `get` is a handle,
- * not a snapshot. symbols pass through to the underlying function untouched.
- */
-export const get = new Proxy (element, {
-  apply : (target, thisArg, args) => element(...args),
-  get   : (target, key, receiver) => isSymbol(key) ? Reflect.get(target, key, receiver) : element('#' + toKebabCase(key))   
+export const get = new Proxy(element, {
+  apply: (target, thisArg, args) => element(...args),
+  get: (target, key, receiver) => {
+    if (isSymbol(key)) return Reflect.get(target, key, receiver);
+
+    return key.startsWith('$')
+      ?    element ('#' + toKebabCase(key.slice(1)))
+      : getElement ('#' + toKebabCase(key));
+  }
 });
