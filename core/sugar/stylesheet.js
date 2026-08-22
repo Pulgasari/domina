@@ -49,9 +49,9 @@ export const stylesheet = (source, options = {}) => {
 };
 
 /**
- * stylesheets()                 -> die adoptierten Sheets des Dokuments
- * stylesheets(shadowRoot)       -> die eines Shadow Roots
- * stylesheets(el).add(css)      -> adoptieren
+ * stylesheets()            -> die adoptierten Sheets des Dokuments
+ * stylesheets(shadowRoot)  -> die eines Shadow Roots
+ * stylesheets(el).add(css) -> adoptieren
  */
 export const stylesheets = (target = document) => {
   const options = { target };
@@ -63,11 +63,9 @@ export const stylesheets = (target = document) => {
     get length () { return getStylesheets(options).length; },
 
     add    : (source, extra = {}) => adoptStylesheet(source, { ...options, ...extra }),
-    remove : sheetOrKey          => releaseStylesheet(sheetOrKey, options),
-    has    : sheet               => hasStylesheet(sheet, options),
-    clear  : async () => {
-      for (const sheet of getStylesheets(options)) await releaseStylesheet(sheet, options);
-    },
+    remove : sheetOrKey           => releaseStylesheet(sheetOrKey, options),
+    has    : sheet                => hasStylesheet(sheet, options),
+    clear  : async () => { for (const sheet of getStylesheets(options)) await releaseStylesheet(sheet, options); },
 
     // <style id="…"> statt Constructable Sheet – für alles, was der Nutzer sehen soll
     inline : setStyleElement,
