@@ -133,8 +133,8 @@ for (const [name, [fn, kind]] of Object.entries(API)) {
   };
 }
 
-Object.defineProperties(proto, {
-  ok      : { get () { return !!this.node; } },
+Object.defineProperties (proto, {
+  ok      : { get   ()     { return !!this.node; } },
   find    : { value (spec) { return element (core.getElement (spec, this.node)); } },
   findAll : { value (spec) { return elements(core.getElements(spec, this.node)); } },
 });
