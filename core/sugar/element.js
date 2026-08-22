@@ -137,6 +137,29 @@ Object.defineProperties (proto, {
   ok      : { get   ()     { return !!this.node; } },
   find    : { value (spec) { return element (core.getElement (spec, this.node)); } },
   findAll : { value (spec) { return elements(core.getElements(spec, this.node)); } },
+    // Attribute proxy accessor (getter / single setter / multi-setter)
+  attr: {
+    get () {
+      return new Proxy(this, {
+        get(target, prop) {
+          if (isSymbol(prop)) return Reflect.get(target, prop);
+          if (!target.node) return undefined;
+          return core.getAttr(target.node, toKebabCase(prop));
+        },
+        set (target, prop, value) {
+          if (isSymbol(prop)) return Reflect.set(target, prop, value);
+          if (target.node) core.setAttr(target.node, toKebabCase(prop), value);
+          return true;
+        }
+      });
+    },
+    set (attrs) {
+      if (!this.node || typeof attrs !== 'object' || attrs === null) return;
+      for (const [key, value] of Object.entries(attrs)) {
+        core.setAttr(this.node, toKebabCase(key), value);
+      }
+    }
+  }
 });
 
 /** nie null. .ok fragt nach, .node liefert das rohe Element */
