@@ -6,6 +6,18 @@ import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVi
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
 
+// Helper function to check if a property on the prototype chain is writable or has a setter
+function isWritable (obj, key) {
+  let current = obj;
+  while (current) {
+    const desc = Object.getOwnPropertyDescriptor(current, key);
+    if (desc) return Boolean(desc.set || desc.writable);
+    current = Object.getPrototypeOf(current);
+  }
+  return true;
+}
+
+
 export function updateElement (spec, props = {}, ...children) {
   const element = resolveElement(spec);
   if (!element) return null;
@@ -40,8 +52,9 @@ export function updateElement (spec, props = {}, ...children) {
                  : element.addEventListener(key.slice(2).toLowerCase(), value);
     }
 
-    else if (!isSVG && key in element) element[key] = value;
+    else if (!isSVG && key in element && isWritable(element, key)) element[key] = value;
     else element.setAttribute(key, value);
+
   }
 
   const kids = flatNodes(children);
