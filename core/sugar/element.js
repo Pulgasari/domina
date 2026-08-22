@@ -2,8 +2,8 @@
 
 // :::::: IMPORTS
 
-import * as core   from './../methods/index.js';
-import { isArray } from './../shared.js';
+import * as core from './../methods/index.js';
+import { isArray, isSymbol, toKebabCase } from './../shared.js';
 
 const _el = core.resolveElement;
 
@@ -176,10 +176,6 @@ export const elements = (spec, ctx) => {
 
 // :::::: GET (experimental) ::::::::::::::::::::::::::::::::::::::
 
-// camelCase -> kebab-case, so a js-friendly property key maps to a dom id:
-// sthElse -> sth-else. single words pass through unchanged.
-const toKebab = key => key.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
-
 /**
  * `get` is `element` with a twist. called, it is exactly element(spec, ctx):
  *
@@ -194,10 +190,7 @@ const toKebab = key => key.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
  * every property read resolves live against the current document, so `get` is a handle,
  * not a snapshot. symbols pass through to the underlying function untouched.
  */
-export const get = new Proxy(element, {
-  apply (target, thisArg, args) { return element(...args); },
-  get (target, key, receiver) {
-    if (typeof key === 'symbol') return Reflect.get(target, key, receiver);
-    return element('#' + toKebab(key));
-  },
+export const get = new Proxy (element, {
+  apply : (target, thisArg, args) => element(...args),
+  get   : (target, key, receiver) => isSymbol(key) ? Reflect.get(target, key, receiver) : element('#' + toKebabCase(key))   
 });
