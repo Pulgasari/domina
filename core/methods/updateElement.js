@@ -10,6 +10,34 @@ const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved
 
 const isSVG = sth => sth instanceof SVGElement; // svg-elements read-only props -> always use setAttribute
 
+/**
+ * Creates a two-level cache keyed by object prototype and property string.
+ *
+ * @param {Function} resolver (obj, key) => value
+ * @returns {Function} (obj, key) => cachedValue
+ */
+export function createPrototypeCache (resolver) {
+  const cache = new WeakMap;
+
+  return (obj, key) => {
+    if (obj == null) return undefined;
+    const proto = Object.getPrototypeOf(obj);
+    if (!proto) return resolver(obj, key);
+
+    let keyMap = cache.get(proto);
+    if (!keyMap) {
+      keyMap = new Map;
+      cache.set(proto, keyMap);
+    }
+
+    if (keyMap.has(key)) return keyMap.get(key);
+
+    const result = resolver(obj, key);
+    keyMap.set(key, result);
+    return result;
+  };
+}
+
 // Helper function to check if a property on the prototype chain is writable or has a setter
 function isWritable (obj, key) {
   let current = obj;
