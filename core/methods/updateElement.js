@@ -10,43 +10,49 @@ const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved
 
 const isSVG = sth => sth instanceof SVGElement; // svg-elements read-only props -> always use setAttribute
 
+
+
 /**
- * Creates a two-level cache keyed by object prototype and property string.
+ * Finds a property descriptor along the prototype chain and caches the result.
  *
- * @param {Function} resolver (obj, key) => value
- * @returns {Function} (obj, key) => cachedValue
+ * @param {Object} obj
+ * @param {string} key
+ * @returns {PropertyDescriptor|undefined}
  */
-export function createPrototypeCache (resolver) {
-  const cache = new WeakMap;
+const descriptorCache = new WeakMap;
+export function getPropertyDescriptor (obj, key) {
+  if (obj == null) return undefined;
+  
+  const proto = Object.getPrototypeOf(obj);
+  if (!proto) return Object.getOwnPropertyDescriptor(obj, key);
 
-  return (obj, key) => {
-    if (obj == null) return undefined;
-    const proto = Object.getPrototypeOf(obj);
-    if (!proto) return resolver(obj, key);
+  let keyMap = descriptorCache.get(proto);
+  if (!keyMap) {
+    keyMap = new Map;
+    descriptorCache.set(proto, keyMap);
+  }
 
-    let keyMap = cache.get(proto);
-    if (!keyMap) {
-      keyMap = new Map;
-      cache.set(proto, keyMap);
-    }
+  if (keyMap.has(key)) return keyMap.get(key);
 
-    if (keyMap.has(key)) return keyMap.get(key);
-
-    const result = resolver(obj, key);
-    keyMap.set(key, result);
-    return result;
-  };
-}
-
-// Helper function to check if a property on the prototype chain is writable or has a setter
-function isWritable (obj, key) {
   let current = obj;
+  let descriptor;
+
   while (current) {
-    const desc = Object.getOwnPropertyDescriptor(current, key);
-    if (desc) return Boolean(desc.set || desc.writable);
+    descriptor = Object.getOwnPropertyDescriptor(current, key);
+    if (descriptor) break;
     current = Object.getPrototypeOf(current);
   }
-  return true;
+
+  keyMap.set(key, descriptor);
+  return descriptor;
+}
+
+/**
+ * Checks whether a property on an object or its prototype chain has a setter or is writable.
+ */
+export function isWritable (obj, key) {
+  const desc = getPropertyDescriptor(obj, key);
+  return !desc || Boolean(desc.set || desc.writable);
 }
 
 
