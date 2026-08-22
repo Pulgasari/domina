@@ -1,11 +1,11 @@
 // @domina/core/sugar/stylesheet.js
 
 import {
-    adoptStylesheet  : adopt, 
-      getStylesheets : get, 
-      hasStylesheet  : has,
-  releaseStylesheet  : release,
-    scopeStylesheet  : scope,
+    adoptStylesheet  as adopt, 
+      getStylesheets as get, 
+      hasStylesheet  as has,
+  releaseStylesheet  as release,
+    scopeStylesheet  as scope,
       setStyleElement
 } from './../methods/index.js';
 
