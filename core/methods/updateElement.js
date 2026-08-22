@@ -64,6 +64,8 @@ export function updateElement (spec, props = {}, ...children) {
 
       // observerEvents[key]?.(element, value)
       // ?? element.addEventListener(key.slice(2).toLowerCase(), value);
+
+      //onEvent(element, key, value);
     }
 
     else if (!isSVG(element) && key in element && isWritable(element, key)) element[key] = value;
