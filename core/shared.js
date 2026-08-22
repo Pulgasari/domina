@@ -1,20 +1,9 @@
 // @domina/core/shared.js
-//
-// Die geteilte Infrastruktur von core: Vendor-Re-Exports, Coercion, Listen-
-// Normalisierung, Traversal- und Collection-Helfer. Alles, was mehr als eine
-// Methode braucht, aber selbst keine Methode ist.
 
 import { buildSelector }  from './methods/buildSelector.js';
 import { getElements }    from './methods/getElements.js';
 import { resolveElement } from './methods/resolveElement.js';
-import { isArray, isFn, isNullish, isNumber, isObject, isString } from 'https://code.pulgasari.dev/js/is.js';
-
-/*
-  Zyklus mit Ansage: buildSelector holt sich isObject/isString/toKebabCase von
-  hier zurück. Unkritisch, weil buildSelector eine gehoistete function-Deklaration
-  ist und alle Bindings erst zur Aufrufzeit gelesen werden, nie während der
-  Modulauswertung.
-*/
+import { isArray, isFn, isNullish, isNumber, isObject, isString } from 'https://code.pulgasari.dev/js/is.js';     
 
 // :::::: VENDOR
 
@@ -37,6 +26,13 @@ shuffle = arr => {
 // :::::: COERCION
 
 const pad = n => String(n).padStart(2, '0');
+
+export const
+startOfDay  = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()),
+toDateInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+toPx        = v => isNumber(v) ? `${v}px` : String(v ?? ''),
+fromPx      = v => isNumber(v) ? v : (toNum(String(v ?? '').replace(/px$/i, '')) ?? 0);
+
 
 export const toNum = v => {
   if (v === '' || v == null) return null;
@@ -61,9 +57,6 @@ export const parseDate = v => {
   return Number.isNaN(+d) ? null : d;
 };
 
-export const startOfDay  = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-export const toDateInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
 // Attribut-Strings sind immer Strings. 'false' ist deshalb truthy, was fast nie
 // gemeint ist – nur die leere Zeichenkette (Attribut ohne Wert) zaehlt als true.
 export const toBool = v => {
@@ -72,11 +65,6 @@ export const toBool = v => {
   const s = String(v).trim().toLowerCase();
   return s === '' || s === 'true' || s === '1' || s === 'yes' || s === 'on';
 };
-
-// Zahl -> '12px', String bleibt unangetastet ('50%', 'auto', 'calc(...)')
-export const toPx = v => isNumber(v) ? `${v}px` : String(v ?? '');
-
-export const fromPx = v => isNumber(v) ? v : (toNum(String(v ?? '').replace(/px$/i, '')) ?? 0);
 
 // data-count="0" soll 0 sein, nicht "0". Reihenfolge: leer -> bool -> zahl -> json -> string
 export const autoCast = v => {
