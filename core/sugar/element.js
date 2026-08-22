@@ -173,7 +173,7 @@ export const get = new Proxy(element, {
     if (isSymbol(key)) return Reflect.get(target, key, receiver);
 
     return key.startsWith('$')
-      ?    element ('#' + toKebabCase(key.slice(1)))
-      : getElement ('#' + toKebabCase(key));
+      ?         element ('#' + toKebabCase(key.slice(1)))
+      : core.getElement ('#' + toKebabCase(key));
   }
 });
