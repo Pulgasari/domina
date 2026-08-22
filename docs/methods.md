@@ -1,5 +1,8 @@
 # methods
 
+[adoptStylesheet](#adoptStylesheet)
+[extractStylesheetImports](#extractStylesheetImports)
+
 ##
 
 ### `adoptStylesheet`
