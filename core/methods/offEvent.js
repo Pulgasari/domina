@@ -14,11 +14,10 @@ const targetsOf = targets =>
     : isIterable(target)              ? targetsOf(target)
     : [resolveElement(target)].filter(Boolean));
 
-/** Mirror to onEvent(). Options must match registration (e.g. capture!). */
 export function offEvent (targets, types, handler, options) {
   for (const node of targetsOf(targets))
-    for (const type of typesOf(types))
-      node.removeEventListener(BUBBLE_MAP[type] ?? type, handler, options);
+  for (const type of   typesOf(types))
+  node.removeEventListener(BUBBLE_MAP[type] ?? type, handler, options);
 }
 
 export default offEvent;
