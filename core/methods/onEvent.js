@@ -1,18 +1,13 @@
 // onEvent.js
 
-import { resolveElement } from './resolveElement.js';
 import { arrayfied, isFn, isIterable, isString } from './../shared.js';
-import { getElements } from './getElements.js';
-import { offEvent }    from './offEvent.js';
+import { getElements }    from './getElements.js';
+import { resolveElement } from './resolveElement.js';
+import { offEvent }       from './offEvent.js';
 
-// Non-bubbling events -> map to bubbling equivalent
-const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };
-
-// 'click keydown' or ['click','keydown'] -> ['click','keydown']
-const typesOf = types => (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
-
-// Selector (all matches), Node, window/document, or iterables of these
-const targetsOf = targets =>
+const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' }; // non-bubbling events -> map to bubbling equivalent     
+const    typesOf = types   => (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
+const  targetsOf = targets =>
   arrayfied(isIterable(targets) ? [...targets] : targets).flatMap(target =>
       !target                         ? []
     : isString(target)                ? getElements(target)
@@ -26,15 +21,16 @@ const targetsOf = targets =>
  * onEvent([el1, el2], ['pointerdown'], fn, { passive: true })
  */
 export function onEvent (targets, types, handler, options) {
-  const nodes = targetsOf(targets);
-  const list  = typesOf(types);
-  if (!nodes.length || !list.length || !isFn(handler)) return () => {};
+  if (!targets || !types || !isFn(handler)) return () => {};
 
-  for (const node of nodes)
-    for (const type of list)
-      node.addEventListener(BUBBLE_MAP[type] ?? type, handler, options);
+  targets = targetsOf (targets);
+    types =   typesOf   (types);
 
-  return () => offEvent(nodes, list, handler, options);
+  for (const node of targets)
+  for (const type of types)
+  node.addEventListener(BUBBLE_MAP[type] ?? type, handler, options);
+
+  return () => offEvent(targets, types, handler, options);
 }
 
 export default onEvent;
