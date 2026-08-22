@@ -137,24 +137,15 @@ Object.defineProperties (proto, {
   ok      : { get   ()     { return !!this.node; } },
   find    : { value (spec) { return element (core.getElement (spec, this.node)); } },
   findAll : { value (spec) { return elements(core.getElements(spec, this.node)); } },
-    // Attribute proxy accessor (getter / single setter / multi-setter)
   attr: {
     get () {
-      return new Proxy(this, {
-        get (target, prop) {
-          return isSymbol(prop) ? Reflect.get(target, prop)
-               : target.node    ? core.getAttr(target.node, prop)
-               : undefined;
-        },
-        set (target, prop, value) {
-          if (isSymbol(prop)) return Reflect.set(target, prop, value);
-          if (target.node) core.setAttr(target.node, prop, value);
-          return true;
-        }
+      return new Proxy (this, {
+        get: (target, prop)        => isSymbol(prop) ? Reflect.get(target, prop)        :  target.getAttr(prop),
+        set: (target, prop, value) => isSymbol(prop) ? Reflect.set(target, prop, value) : (target.setAttr(prop, value), true)     
       });
     },
-    set (attrs) { this.setAttr(attrs); },
-  }
+    set (attrs) { this.setAttr(attrs); }
+  },
 });
 
 /** nie null. .ok fragt nach, .node liefert das rohe Element */
