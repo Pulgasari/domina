@@ -13,14 +13,39 @@ const NODE = Symbol.for('domina.node');
 
 export const isWrapped = value => value?.[NODE] === true;
 
+/*
 const childActing = {
     emptyElement : (node, sel)                 => core.clearElement  (core.getElement(sel, node)),
    removeElement : (node, sel)                 => core.removeElement (core.getElement(sel, node)),
   replaceElement : (node, sel, ...nodes)       => core.replaceElement(core.getElement(sel, node), ...nodes),
    updateElement : (node, sel, props, ...kids) => core.updateElement (core.getElement(sel, node), props, ...kids),
-     wrapElement : (node, sel, wrapper, props) => core.wrapElement   (core.getElement(sel, node), wrapper, props),
+     wrapElement : (node, sel, wrapper, props) => core.wrapElement   (core.getElement(sel, node), wrapper, props),    
    unwrapElement : (node, sel)                 => core.unwrapElement (core.getElement(sel, node)),
 };
+*/
+
+const child = fn => (node, sel, ...args) => fn(core.getElement(sel, node), ...args);
+
+/*
+const childActing = {
+  emptyElement   : child(core.clearElement),
+  removeElement  : child(core.removeElement),
+  replaceElement : child(core.replaceElement),
+  updateElement  : child(core.updateElement),
+  wrapElement    : child(core.wrapElement),
+  unwrapElement  : child(core.unwrapElement),
+};
+*/
+
+const childActing = {};
+[
+  'emptyElement',
+  'removeElement',
+  'replaceElement', 
+  'updateElement',
+  'wrapElement',
+  'unwrapElement'
+].forEach( name => childActing[name] = child(core[name]) );
 
 // four chaining modes:
 //   chain : fn returns an element -> rewrap it (subject switches, only get*/find)
