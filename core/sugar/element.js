@@ -141,14 +141,14 @@ Object.defineProperties (proto, {
   attr: {
     get () {
       return new Proxy(this, {
-        get(target, prop) {
-          if (isSymbol(prop)) return Reflect.get(target, prop);
-          if (!target.node) return undefined;
-          return core.getAttr(target.node, toKebabCase(prop));
+        get (target, prop) {
+          return isSymbol(prop) ? Reflect.get(target, prop)
+               : target.node    ? core.getAttr(target.node, prop)
+               : undefined;
         },
         set (target, prop, value) {
           if (isSymbol(prop)) return Reflect.set(target, prop, value);
-          if (target.node) core.setAttr(target.node, toKebabCase(prop), value);
+          if (target.node) core.setAttr(target.node, prop, value);
           return true;
         }
       });
