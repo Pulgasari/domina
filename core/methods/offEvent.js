@@ -1,8 +1,8 @@
 // offEvent.js
 
-import { resolveElement } from './resolveElement.js';
 import { arrayfied, isFn, isIterable, isString } from './../shared.js';
-import { getElements } from './getElements.js';
+import { getElements }    from './getElements.js';
+import { resolveElement } from './resolveElement.js';
 
 const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };
 const typesOf = types => (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
