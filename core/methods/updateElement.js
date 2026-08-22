@@ -6,6 +6,10 @@ import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVi
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
 
+// :::::: HELPERS
+
+const isSVG = sth => sth instanceof SVGElement; // svg-elements read-only props -> always use setAttribute
+
 // Helper function to check if a property on the prototype chain is writable or has a setter
 function isWritable (obj, key) {
   let current = obj;
@@ -22,11 +26,12 @@ export function updateElement (spec, props = {}, ...children) {
   const element = resolveElement(spec);
   if (!element) return null;
 
-  // SVG-Elemente haben read-only Props (className, href) -> immer setAttribute
-  const isSVG = element instanceof SVGElement;
+  
   let mountFn, mountTo;
 
-  for (const [key, value] of Object.entries(props)) {
+  //for (const [key, value] of Object.entries(props)) {
+  for (const key in props) {
+    const value = props[key];
     if (value == null) continue;
 
     if      (key === 'appendTo')  { mountTo = value; mountFn = 'append';  }
@@ -34,8 +39,14 @@ export function updateElement (spec, props = {}, ...children) {
 
     else if (key === 'style') {
       if (isString(value)) element.setAttribute('style', value);
-      else for (const [property, val] of Object.entries(value))
+        
+      //else for (const [property, val] of Object.entries(value))
+      //property.includes('-') ? element.style.setProperty(property, val) : (element.style[property] = val);
+
+      else for (const property in value) {
+        const val = value[property];
         property.includes('-') ? element.style.setProperty(property, val) : (element.style[property] = val);
+      }
     }
 
     else if (key === 'dataset' || key === 'data') {
@@ -50,16 +61,19 @@ export function updateElement (spec, props = {}, ...children) {
       const observerFn = observerEvents[key];
       observerFn ? observerFn(element, value)
                  : element.addEventListener(key.slice(2).toLowerCase(), value);
+
+      // observerEvents[key]?.(element, value)
+      // ?? element.addEventListener(key.slice(2).toLowerCase(), value);
     }
 
-    else if (!isSVG && key in element && isWritable(element, key)) element[key] = value;
+    else if (!isSVG(element) && key in element && isWritable(element, key)) element[key] = value;
     else element.setAttribute(key, value);
 
   }
 
   const kids = flatNodes(children);
   if (kids.length) element.append(...kids);
-  if (mountTo) resolveElement(mountTo)?.[mountFn](element);
+  if (mountTo)     resolveElement(mountTo)?.[mountFn](element);
 
   return element;
 }
