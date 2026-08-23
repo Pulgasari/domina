@@ -9,11 +9,12 @@ export function isCssUrl (v) { return isString(v) && (/^(https?:|blob:|data:|\.{
 export function isSheet  (v) { return typeof CSSStyleSheet !== 'undefined' && v instanceof CSSStyleSheet; }      
 export function layered (css, layer) { return layer ? `@layer ${layer} {${css} }` : String(css); }
 
-/**
- * Where the sheet gets adopted. A shadow root or document is used as is,
- * an element resolves to its own shadow root when it has one, else to its
- * containing document or shadow root.
- */
+/*
+Where the sheet gets adopted. 
+A shadow root or document is used as is,
+an element resolves to its own shadow root when it has one,
+else to itscontaining document or shadow root.
+*/
 export function rootOf (target) {
   if (!target) return document;
   if (target.nodeType === 9 || target.nodeType === 11) return target;
