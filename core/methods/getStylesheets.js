@@ -1,6 +1,6 @@
 // getStylesheets.js
 
-import { rootOf } from './adoptStylesheet.js';
+import { rootOf } from './../shared/stylesheet.js';
 
 /** Every sheet currently adopted on the given root */
 export function getStylesheets ({ target = document } = {}) {
