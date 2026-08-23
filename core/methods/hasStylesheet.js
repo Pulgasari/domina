@@ -1,6 +1,6 @@
 // hasStylesheet.js
 
-import { rootOf } from './adoptStylesheet.js';
+import { rootOf } rom './../shared/stylesheet.js';
 
 /** True when the sheet is currently adopted on the given root */
 export function hasStylesheet (sheet, { target = document } = {}) {
