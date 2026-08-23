@@ -1,5 +1,7 @@
 // @domina/core/shared/stylesheet.js
 
+import { isString } from './../shared.js';
+
 // Constructable Stylesheets state registry
 export const registry = new WeakMap;
 export function isCssUrl (v) { return isString(v) && (/^(https?:|blob:|data:|\.{0,2}\/)/.test(v) || /\.css($|[?#])/.test(v)); }    
