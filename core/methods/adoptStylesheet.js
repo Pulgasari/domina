@@ -13,6 +13,11 @@ import {
   layered, registry,
 } from './shared/stylesheet.js';
 
+// :::::: HELPERS
+
+const isResponse  = sth => typeof Response !== 'undefined' && sth instanceof Response;
+const isSupported =        typeof CSSStyleSheet !== 'undefined' && ('adoptedStyleSheets' in Document.prototype);
+
 const fetchCss = async source => {
   if (typeof Response !== 'undefined' && source instanceof Response) return source.text();
   if (!isCssUrl(source)) return String(source);
@@ -25,25 +30,25 @@ const fetchCss = async source => {
 // what a relative @import resolves against: the sheet it stands in, not the page
 const baseOf = (source, base) => {
   if (base) return base;
-  if (typeof Response !== 'undefined' && source instanceof Response) return source.url;
-  if (isCssUrl(source) && typeof document !== 'undefined') return new URL(source, document.baseURI).href;
+  if (isResponse (source)) return source.url;
+  if (isCssUrl   (source) && typeof document !== 'undefined') return new URL(source, document.baseURI).href;
   return typeof document === 'undefined' ? undefined : document.baseURI;
 };
 
 const dropNotice = (list) => console.info(
-  `[domina] adoptStylesheet: ${list.length} @import rule(s) dropped — a constructed` +
-  ' stylesheet cannot carry them. hang them into <head> instead:\n\n' +
-  "    adoptStylesheet(source, { imports: 'link' })\n\n" +
-  list.map(item => `  ${item.href}`).join('\n')
+  `[domina] adoptStylesheet: ${list.length} @import rule(s) dropped — a constructed`
+  + ' stylesheet cannot carry them. hang them into <head> instead:\n\n'
+  + "    adoptStylesheet(source, { imports: 'link' })\n\n"
+  + list.map(item => `  ${item.href}`).join('\n')
 );
 
 /*
-  @import has to leave the text before it reaches replaceSync, which drops the rules
-  per spec, and before layered() wraps everything in @layer — an @import inside a
-  layer block is invalid css either way.
+@import has to leave the text before it reaches replaceSync, 
+which drops the rules per spec, and before layered() wraps everything in @layer 
+— an @import inside a layer block is invalid css either way.
 
-  the default is 'keep', so nothing changes for callers that never thought about it;
-  they just get told once that it happened.
+the default is 'keep', so nothing changes for callers that never thought about it;
+they just get told once that it happened.
 */
 function handleImports (css, { base, imports, source }) {
   const mode =
@@ -68,9 +73,7 @@ function handleImports (css, { base, imports, source }) {
 }
 
 export function adoptStylesheet (source, { target = document, scope = null, layer = null, base, imports = 'keep', key, replace = false, media } = {}) {
-  if (typeof CSSStyleSheet === 'undefined' || !('adoptedStyleSheets' in Document.prototype)) {
-    return Promise.resolve(null);
-  }
+  if (!isSupported) return Promise.resolve(null);
 
   const root  = rootOf(target);
   const store = storeOf(root);
