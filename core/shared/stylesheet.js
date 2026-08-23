@@ -1,6 +1,7 @@
 // @domina/core/shared/stylesheet.js
 
-import { isString } from './../shared.js';
+import { resolveElement } from './../methods/resolveElement.js';
+import { isString }       from './../shared.js';
 
 // Constructable Stylesheets state registry
 export const registry = new WeakMap;
