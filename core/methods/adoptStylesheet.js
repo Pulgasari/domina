@@ -11,7 +11,7 @@ import {
   rootOf, storeOf,
   isCssUrl, isSheet, 
   layered, registry,
-} from './shared/stylesheet.js';
+} from './../shared/stylesheet.js';
 
 // :::::: HELPERS
 
