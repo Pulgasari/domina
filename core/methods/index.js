@@ -61,6 +61,7 @@ export * from './getPrevAll.js';
 export * from './getScroll.js';
 export * from './getSiblings.js';
 export * from './getStyle.js';
+export * from './getStyleToken.js';
 export * from './getStylesheets.js';
 export * from './getText.js';
 export * from './getTitle.js';
