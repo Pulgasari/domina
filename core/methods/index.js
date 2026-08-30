@@ -49,6 +49,7 @@ export * from './getFormValues.js';
 export * from './getHTML.js';
 export * from './getHead.js';
 export * from './getIndex.js';
+export * from './getInlineStyle.js';
 export * from './getLast.js';
 export * from './getMeta.js';
 export * from './getMetaAttr.js';
