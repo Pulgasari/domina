@@ -26,6 +26,7 @@ export * from './getChildren.js';
 export * from './getClass.js';
 export * from './getClassList.js';
 export * from './getClosest.js';
+export * from './getComputedStyle.js';
 export * from './getCustomProperty.js';
 export * from './getData.js';
 export * from './getElement.js';
