@@ -123,6 +123,7 @@ export * from './setMeta.js';
 export * from './setScroll.js';
 export * from './setStyle.js';
 export * from './setStyleElement.js';
+export * from './setStyleToken.js';
 export * from './setText.js';
 export * from './setTitle.js';
 export * from './setValue.js';
