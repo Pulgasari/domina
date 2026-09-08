@@ -1,6 +1,6 @@
 // getStyleToken.js
 
-import { getComputedStyle } from './getComputedStyle.js';
+import getComputedStyle from './getComputedStyle.js';
      
 const ensurePrefix = (value, prefix) => value.startsWith(prefix) ? value : (prefix + name);     
 
