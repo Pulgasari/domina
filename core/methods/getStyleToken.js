@@ -7,7 +7,7 @@ const ensurePrefix = (value, prefix) => value.startsWith(prefix) ? value : (pref
 export function getStyleToken (property, spec, inline = false) {
   spec ||= document.documentElement;
 
-  const prop  = ensurePrefix(property);
+  const prop  = ensurePrefix(property, '--');
   const style = getComputedStyle(spec);
   const token = style?.getPropertyValue(prop).trim() || null;
 
