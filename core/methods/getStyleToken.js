@@ -9,8 +9,13 @@ export function getStyleToken (property, spec, inline = false) {
 
   const prop  = ensurePrefix(property);
   const style = getComputedStyle(spec);
-  
-  return style?.getPropertyValue(prop).trim() || null;
+  const token = style?.getPropertyValue(prop).trim() || null;
+
+  console.log('property:', property);
+  console.log('prop:', prop);
+  console.log('token:', token);
+
+  return token;
 }
 
 export default getStyleToken;
