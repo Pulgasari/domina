@@ -4,7 +4,7 @@ import { getMeta }    from '@domina/methods/getMeta';
 import { hasMeta }    from '@domina/methods/hasMeta';
 import { removeMeta } from '@domina/methods/removeMeta';
 import { setMeta }    from '@domina/methods/setMeta';
-import { isString, isSymbol } from 'https://code.pulgasari.dev/js/is.js';
+import { isString, isSymbol } from './_shared.js';
 
 const stripColon = prefix        => prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;
 const withColon = (prefix, prop) => prefix.endsWith(':') ? `${prefix}${prop}`  : `${prefix}:${prop}`;    

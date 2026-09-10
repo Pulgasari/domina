@@ -3,13 +3,15 @@
 import buildSelector  from './buildSelector.js';
 import getElements    from './getElements.js';
 import resolveElement from './resolveElement.js';
-import { isArray, isFn, isNullish, isNumber, isObject, isString } from 'https://code.pulgasari.dev/js/is.js';     
+import { isArray, isFn, isNullish, isObject, isString } from 'https://code.pulgasari.dev/js/is.js';
 
-// :::::: VENDOR
+// :::::: VENDOR (only the symbols the methods consume)
 
-export * from 'https://code.pulgasari.dev/js/is.js';
-export * from 'https://code.pulgasari.dev/js/logger.js';
-export * from 'https://code.pulgasari.dev/js/str.js';
+export {
+  isArray, isCheckable, isElementish, isEmpty, isFn, isIterable,
+  isMultiSelect, isNumber, isObject, isString, isWindow,
+} from 'https://code.pulgasari.dev/js/is.js';
+export { toCamelCase, toKebabCase } from 'https://code.pulgasari.dev/js/str.js';
 
 // :::::: GENERISCH
 
@@ -29,9 +31,7 @@ const pad = n => String(n).padStart(2, '0');
 
 export const
 startOfDay  = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()),
-toDateInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
-toPx        = v => isNumber(v) ? `${v}px` : String(v ?? ''),
-fromPx      = v => isNumber(v) ? v : (toNum(String(v ?? '').replace(/px$/i, '')) ?? 0);
+toDateInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
 
 export const toNum = v => {
@@ -55,15 +55,6 @@ export const parseDate = v => {
 
   const d = new Date(s);
   return Number.isNaN(+d) ? null : d;
-};
-
-// Attribut-Strings sind immer Strings. 'false' ist deshalb truthy, was fast nie
-// gemeint ist – nur die leere Zeichenkette (Attribut ohne Wert) zaehlt als true.
-export const toBool = v => {
-  if (typeof v === 'boolean') return v;
-  if (v == null) return false;
-  const s = String(v).trim().toLowerCase();
-  return s === '' || s === 'true' || s === '1' || s === 'yes' || s === 'on';
 };
 
 // data-count="0" soll 0 sein, nicht "0". Reihenfolge: leer -> bool -> zahl -> json -> string

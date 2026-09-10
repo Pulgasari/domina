@@ -1,11 +1,7 @@
 // @domina/observer
 
 import { buildSelector, getElements, resolveContext } from '@domina/methods';
-import { isArray, isElementish, isFn, isNullish, isObject } from 'https://code.pulgasari.dev/js/is.js';
-
-// local copy of the shared one-liner; avoids depending on the methods
-// package internal _shared module across the package boundary.
-const arrayfied = v => isNullish(v) ? [] : isArray(v) ? v : [v];
+import { arrayfied, isElementish, isFn, isObject } from './_shared.js';
 
 const _doc  = resolveContext;
 const _slct = buildSelector;

@@ -7,9 +7,8 @@
 
 // :::::: IMPORTS
 
-import { API, NODE, isWrapped } from './_api.js';
-import { isArray, isSymbol }    from 'https://code.pulgasari.dev/js/is.js';
-import { toKebabCase }          from 'https://code.pulgasari.dev/js/str.js';
+import { API, NODE, isWrapped }        from './_api.js';
+import { isArray, isSymbol, toKebabCase } from './_shared.js';
 
 // infrastructure
 import { resolveElement } from '@domina/methods/resolveElement';
