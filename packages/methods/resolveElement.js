@@ -1,6 +1,6 @@
 // resolveElement.js
 
-import { isElementish } from './../shared.js';
+import { isElementish } from './_shared.js';
 import { buildSelector }  from './buildSelector.js';
 import { resolveContext } from './resolveContext.js';
 

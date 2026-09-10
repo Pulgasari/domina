@@ -1,7 +1,7 @@
 // @domina/core/methods/hasClass.js
 
 import { resolveElement } from './resolveElement.js';
-import { toList } from './../shared.js';
+import { toList } from './_shared.js';
 
 export function hasClass (spec, names) {
   const element = resolveElement(spec); if (!element) return false;

@@ -1,6 +1,6 @@
 // offEvent.js
 
-import { arrayfied, isFn, isIterable, isString } from './../shared.js';
+import { arrayfied, isFn, isIterable, isString } from './_shared.js';
 import { getElements }    from './getElements.js';
 import { resolveElement } from './resolveElement.js';
 

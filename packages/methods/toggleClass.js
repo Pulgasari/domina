@@ -1,7 +1,7 @@
 // toggleClass.js
 
 import { resolveElement } from './resolveElement.js';
-import { isObject, toList } from './../shared.js';
+import { isObject, toList } from './_shared.js';
 
 /**
  * toggleClass(spec, 'active')              -> umschalten

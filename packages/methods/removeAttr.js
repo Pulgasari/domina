@@ -1,7 +1,7 @@
 // @domina/core/methods/removeAttr.js
 
 import { resolveElement } from './resolveElement.js';
-import { toKebabCase } from './../shared.js';
+import { toKebabCase } from './_shared.js';
 
 export function removeAttr (spec, ...names) {
   const el = resolveElement(spec);

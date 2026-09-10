@@ -1,6 +1,6 @@
 // createStylesheet.js
 
-import { layered }         from './../shared/stylesheet.js';
+import { layered }         from './_shared/stylesheet.js';
 import { scopeStylesheet } from './scopeStylesheet.js';
 
 /** CSS text -> constructable stylesheet, optionally scoped and layered */

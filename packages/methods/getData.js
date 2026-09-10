@@ -1,7 +1,7 @@
 // @domina/core/methods/getData.js
 
 import { resolveElement } from './resolveElement.js';
-import { autoCast, toCamelCase } from './../shared.js';
+import { autoCast, toCamelCase } from './_shared.js';
 
 // dataset gibt immer Strings zurück – autoCast macht daraus wieder das,
 // was im HTML gemeint war. Kein Schattencache, gelesen wird stets das DOM.

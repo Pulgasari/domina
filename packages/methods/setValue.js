@@ -1,7 +1,7 @@
 // setValue.js
 
 import { resolveElement } from './resolveElement.js';
-import { arrayfied, isCheckable, isMultiSelect, toDateInput } from './../shared.js';
+import { arrayfied, isCheckable, isMultiSelect, toDateInput } from './_shared.js';
 import { notifyChange } from './notifyChange.js';
 
 export function setValue (node, value, { notify = false } = {}) {

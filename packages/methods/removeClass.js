@@ -1,7 +1,7 @@
 // @domina/core/methods/removeClass.js
 
 import { resolveElement } from './resolveElement.js';
-import { toList } from './../shared.js';
+import { toList } from './_shared.js';
 
 export function removeClass (spec, ...names) {
   const element = resolveElement(spec);

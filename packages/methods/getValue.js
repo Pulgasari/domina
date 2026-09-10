@@ -1,7 +1,7 @@
 // getValue.js
 
 import { resolveElement } from './resolveElement.js';
-import { isArray, isCheckable, isMultiSelect, parseDate, toNum } from './../shared.js';
+import { isArray, isCheckable, isMultiSelect, parseDate, toNum } from './_shared.js';
 
 const casts = {
   bool   : v => Boolean(isArray(v) ? v.length : v),

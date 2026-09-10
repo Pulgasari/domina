@@ -1,7 +1,8 @@
 {
   "workspace": [
     "./core",
-    "./chain"
+    "./chain",
+    "./packages/methods"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",

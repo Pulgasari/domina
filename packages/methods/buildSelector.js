@@ -1,6 +1,6 @@
 // buildSelector.js
 
-import { isObject, isString, toKebabCase } from './../shared.js';
+import { isObject, isString, toKebabCase } from './_shared.js';
 
 const SKIP_KEYS = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
