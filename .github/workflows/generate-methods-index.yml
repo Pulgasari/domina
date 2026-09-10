@@ -1,0 +1,34 @@
+# .github/workflows/generate-methods-index.yml
+
+name: Auto-generate Methods Index
+
+on:
+  push:
+    paths:
+      - 'packages/methods/**'
+    branches:
+      - main # or your default branch
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # required for pushing back to the repo
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate index.js + deno.json exports
+        run: node .github/scripts/generate-methods-index.js
+
+      - name: Commit & push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(methods): auto-generate index.js + deno.json exports'
+          file_pattern: 'packages/methods/index.js packages/methods/deno.json'
