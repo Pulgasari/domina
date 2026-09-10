@@ -4,7 +4,9 @@
     "./chain",
     "./packages/methods",
     "./packages/observer",
-    "./packages/element"
+    "./packages/element",
+    "./packages/form",
+    "./packages/meta"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",
