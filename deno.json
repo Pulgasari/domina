@@ -6,7 +6,9 @@
     "./packages/observer",
     "./packages/element",
     "./packages/form",
-    "./packages/meta"
+    "./packages/meta",
+    "./packages/fonts",
+    "./packages/stylesheet"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",
