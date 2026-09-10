@@ -3,7 +3,8 @@
     "./core",
     "./chain",
     "./packages/methods",
-    "./packages/observer"
+    "./packages/observer",
+    "./packages/element"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",
