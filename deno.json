@@ -8,7 +8,8 @@
     "./packages/form",
     "./packages/meta",
     "./packages/fonts",
-    "./packages/stylesheet"
+    "./packages/stylesheet",
+    "./packages/raf"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",
