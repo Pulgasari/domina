@@ -44,3 +44,5 @@ export function buildSelector (sth) {
 
   return selector || '*';
 }
+
+export default buildSelector;
