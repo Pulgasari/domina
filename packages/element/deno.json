@@ -6,6 +6,10 @@
     ".": "./index.js",
     "./lazy": "./lazy.js"
   },
+  "imports": {
+    "@pulgasari/is": "jsr:@pulgasari/is@^1.0.0",
+    "@pulgasari/str": "jsr:@pulgasari/str@^1.0.0"
+  },
   "publish": {
     "exclude": ["**/*.test.js"]
   }

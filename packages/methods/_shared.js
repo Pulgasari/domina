@@ -3,15 +3,15 @@
 import buildSelector  from './buildSelector.js';
 import getElements    from './getElements.js';
 import resolveElement from './resolveElement.js';
-import { isArray, isFn, isNullish, isObject, isString } from 'https://code.pulgasari.dev/js/is.js';
+import { isArray, isFn, isNullish, isObject, isString } from '@pulgasari/is';
 
 // :::::: VENDOR (only the symbols the methods consume)
 
 export {
   isArray, isCheckable, isElementish, isEmpty, isFn, isIterable,
   isMultiSelect, isNumber, isObject, isString, isWindow,
-} from 'https://code.pulgasari.dev/js/is.js';
-export { toCamelCase, toKebabCase } from 'https://code.pulgasari.dev/js/str.js';
+} from '@pulgasari/is';
+export { toCamelCase, toKebabCase } from '@pulgasari/str';
 
 // :::::: GENERISCH
 
