@@ -1,7 +1,7 @@
 // @domina/core/methods/getAttr.js
 
 import { resolveElement } from './resolveElement.js';
-import { toKebabCase } from './../shared.js';
+import { toKebabCase } from './_shared.js';
 
 /**
  * getAttr(spec)         -> { name: value } of every attribute

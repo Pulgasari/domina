@@ -2,7 +2,7 @@
 
 import { getElement } from './getElement.js';
 import { getValue }   from './getValue.js';
-import { isFn, parseDate, resolveScope, shuffle, sortShape, toNum, toSpecs } from './../shared.js';
+import { isFn, parseDate, resolveScope, shuffle, sortShape, toNum, toSpecs } from './_shared.js';
 
 const DEFAULT_ORDER = 'auto-asc';
 

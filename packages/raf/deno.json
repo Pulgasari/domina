@@ -1,0 +1,11 @@
+{
+  "name": "@domina/raf",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./index.js"
+  },
+  "publish": {
+    "exclude": ["**/*.test.js"]
+  }
+}

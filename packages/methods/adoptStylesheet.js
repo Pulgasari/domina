@@ -1,6 +1,6 @@
 // adoptStylesheet.js
 
-import { isFn, isString }           from './../shared.js';
+import { isFn, isString }           from './_shared.js';
 import { createStylesheet }         from './createStylesheet.js';
 import { extractStylesheetImports } from './extractStylesheetImports.js';
 import { resolveElement }           from './resolveElement.js';
@@ -11,7 +11,7 @@ import {
   rootOf, storeOf,
   isCssUrl, isSheet, 
   layered, registry,
-} from './../shared/stylesheet.js';
+} from './_shared/stylesheet.js';
 
 // :::::: HELPERS
 

@@ -1,6 +1,6 @@
 // setCustomProperty.js
 
-import { isString } from './../shared.js';
+import { isString } from './_shared.js';
 import { setStyle } from './setStyle.js';
 
 export function setCustomProperty (spec, nameOrMap, value) {

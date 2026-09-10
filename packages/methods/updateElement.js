@@ -1,8 +1,10 @@
 // updateElement.js
 
-import { flatNodes, isFn, isString, toList } from './../shared.js';
+import { flatNodes, isFn, isString, toList } from './_shared.js';
 import { resolveElement }    from './resolveElement.js';
-import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from './../observer.js';
+// todo: observer becomes its own package @domina/observer.
+// unresolved external for now, exact boundary + import-map mapping decided at the core-move.
+import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from '@domina/observer';
 
 const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
 

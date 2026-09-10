@@ -1,7 +1,15 @@
 {
   "workspace": [
     "./core",
-    "./chain"
+    "./chain",
+    "./packages/methods",
+    "./packages/observer",
+    "./packages/element",
+    "./packages/form",
+    "./packages/meta",
+    "./packages/fonts",
+    "./packages/stylesheet",
+    "./packages/raf"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",

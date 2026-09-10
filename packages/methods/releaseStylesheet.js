@@ -1,7 +1,7 @@
 // releaseStylesheet.js
 
-import { isString }        from './../shared.js';
-import { rootOf, storeOf } from './../shared/stylesheet.js';
+import { isString }        from './_shared.js';
+import { rootOf, storeOf } from './_shared/stylesheet.js';
 
 
 /** Removes a sheet again. Accepts the sheet itself or the key it was cached under. */

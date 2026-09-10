@@ -1,6 +1,6 @@
 // addFont.js
 
-import { isString } from './../shared.js';
+import { isString } from './_shared.js';
 
 const fontSet  = ()     => (typeof document !== 'undefined' ? document.fonts : null);
 const asSource = source => isString(source) && !source.includes('url(') ? `url(${source})` : source;

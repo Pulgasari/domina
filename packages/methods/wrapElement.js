@@ -1,7 +1,7 @@
 // wrapElement.js
 
 import { resolveElement } from './resolveElement.js';
-import { isString } from './../shared.js';
+import { isString } from './_shared.js';
 import { createElement }  from './createElement.js';
 
 // wrap(el, 'div') or wrap(el, existingNode) or wrap(el, 'div', { class: 'box' })

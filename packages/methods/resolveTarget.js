@@ -1,6 +1,6 @@
 // resolveTarget.js
 
-import { isFn } from './../shared.js';
+import { isFn } from './_shared.js';
 import { resolveElement } from './resolveElement.js';
 
 /**

@@ -1,7 +1,7 @@
 // removeData.js
 
 import { resolveElement } from './resolveElement.js';
-import { toCamelCase } from './../shared.js';
+import { toCamelCase } from './_shared.js';
 
 export function removeData (spec, ...names) {
   const element = resolveElement(spec);

@@ -1,6 +1,6 @@
 // createStyleElement.js
 
-import { isString } from './../shared.js';
+import { isString } from './_shared.js';
 import { createElement } from './createElement.js';
 
 export function createStyleElement (source) {
