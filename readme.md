@@ -1,3 +1,5 @@
+![Logo](/logo.svg)
+
 # domina
 
 JavaScript toolkit for DOM mutation.
