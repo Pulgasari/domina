@@ -2,8 +2,9 @@
 
 ## migration (@domina/methods)
 
-- [ ] resolve external: `updateElement` imports `@domina/observer` (formerly `core/observer.js`).
-      observer becomes its own package; add the import-map mapping and dependency at the core-move.
+- [ ] circular dep: `updateElement` imports `@domina/observer`, which imports `@domina/methods`.
+      resolves in the deno workspace; declare the dependency for the jsr publish. the cycle is
+      runtime-safe (both sides use the imported bindings inside function bodies, not at module init).
 - [ ] jsr publish blocker: `_shared.js` re-exports via `https://code.pulgasari.dev/...`.
       jsr disallows http imports; move to `jsr:`/`npm:` specifiers or an import map before `deno publish`.
 
