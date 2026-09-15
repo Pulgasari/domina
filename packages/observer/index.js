@@ -1,6 +1,9 @@
 // @domina/observer
 
-import { buildSelector, getElements, resolveContext } from '@domina/methods';
+import buildSelector  from '@domina/methods/buildSelector.js'
+import getElements    from '@domina/methods/getElements.js'
+import resolveContext from '@domina/methods/resolveContext.js'
+
 import { arrayfied, isElementish, isFn, isObject } from './_shared.js';
 
 const _doc  = resolveContext;
@@ -11,9 +14,9 @@ const _slct = buildSelector;
 //========================================================================
 
 const
-MO = callback            => new     MutationObserver(callback),
-IO = (callback, options) => new IntersectionObserver(callback, options),
-RO = callback            => new       ResizeObserver(callback),
+MO = callback            => new     MutationObserver (callback),
+IO = (callback, options) => new IntersectionObserver (callback, options),
+RO = callback            => new       ResizeObserver (callback),
 
 // lazy on purpose. this module is reachable from non-dom scopes through the
 // barrel, and touching `document` at module scope there is a ReferenceError that
