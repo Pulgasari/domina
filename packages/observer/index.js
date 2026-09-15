@@ -4,7 +4,9 @@ import buildSelector  from '@domina/methods/buildSelector.js'
 import getElements    from '@domina/methods/getElements.js'
 import resolveContext from '@domina/methods/resolveContext.js'
 
-import { arrayfied, isElementish, isFn, isObject } from './_shared.js';
+import { isArray, isElementish, isFn, isNullish, isObject } from '@pulgasari/is';   
+
+export const arrayfied = v => isNullish(v) ? [] : isArray(v) ? v : [v];
 
 const _doc  = resolveContext;
 const _slct = buildSelector;
