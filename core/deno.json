@@ -22,7 +22,6 @@
       "observer.js",
       "raf.js",
       "types.d.ts",
-      "methods",
       "sugar",
       "README.md",
       "LICENSE"

@@ -1,19 +1,7 @@
 // onEvent.js
 
-import { arrayfied, isFn, isIterable, isString } from './_shared.js';
-import { getElements }    from './getElements.js';
-import { resolveElement } from './resolveElement.js';
-import { offEvent }       from './offEvent.js';
-
-const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' }; // non-bubbling events -> map to bubbling equivalent     
-const    typesOf = types   => (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
-const  targetsOf = targets =>
-  arrayfied(isIterable(targets) ? [...targets] : targets).flatMap(target =>
-      !target                         ? []
-    : isString(target)                ? getElements(target)
-    : isFn(target.addEventListener)   ? [target]
-    : isIterable(target)              ? targetsOf(target)
-    : [resolveElement(target)].filter(Boolean));
+import { BUBBLE_MAP, eventTargets, eventTypes, isFn } from './_shared.js';
+import { offEvent } from './offEvent.js';
 
 /**
  * onEvent(targets, types, handler, options?) -> off()
@@ -23,8 +11,8 @@ const  targetsOf = targets =>
 export function onEvent (targets, types, handler, options) {
   if (!targets || !types || !isFn(handler)) return () => {};
 
-  targets = targetsOf (targets);
-    types =   typesOf   (types);
+  targets = eventTargets(targets);
+  types   = eventTypes(types);
 
   for (const node of targets)
   for (const type of types)

@@ -7,7 +7,7 @@ import {
   releaseStylesheet  as release,
     scopeStylesheet  as scope,
       setStyleElement
-} from './../methods/index.js';
+} from '@domina/methods';
 
 /**
  * stylesheet('/themes/nord.css', { scope: '[data-theme="nord"]' })

@@ -5,7 +5,7 @@ import {
   setFormValues,
   onEvent,
   resolveElement,
-} from './../methods/index.js';
+} from '@domina/methods';
 
 /**
  * form('#login')

@@ -36,7 +36,9 @@ const filterModes = {
   'date-before' : dateFilter((a, b) => a  <  b),
 };
 
-export function filterElements ({ container, item, filters, mismatchClass = 'hidden' }) {
+// mismatches get `mismatchClass`, or the hidden attribute with `hide: true`,
+// which needs no stylesheet to take effect
+export function filterElements ({ container, item, filters, mismatchClass = 'hidden', hide = false }) {
   const scope = resolveScope('filterElements', container, item);
   if (!scope) return { total: 0, matched: 0, items: [] };
 
@@ -62,7 +64,8 @@ export function filterElements ({ container, item, filters, mismatchClass = 'hid
       if (!result) { matches = false; break; }   // AND
     }
 
-    el.classList.toggle(mismatchClass, !matches);
+    if (hide) el.hidden = !matches;
+    else el.classList.toggle(mismatchClass, !matches);
     if (matches) matchedItems.push(el);
   }
 
