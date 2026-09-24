@@ -1,8 +1,8 @@
 // observer.js
 
-import { buildSelector }  from './methods/buildSelector.js';
-import { getElements }    from './methods/getElements.js';
-import { resolveContext } from './methods/resolveContext.js';
+import { buildSelector }  from '@domina/methods/buildSelector.js';
+import { getElements }    from '@domina/methods/getElements.js';
+import { resolveContext } from '@domina/methods/resolveContext.js';
 import { arrayfied, isElementish, isFn, isObject } from './shared.js';
 
 const _doc  = resolveContext;

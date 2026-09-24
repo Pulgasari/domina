@@ -3,7 +3,7 @@
 import buildSelector  from './buildSelector.js';
 import getElements    from './getElements.js';
 import resolveElement from './resolveElement.js';
-import { isArray, isFn, isNullish, isObject, isString } from '@pulgasari/is';
+import { isArray, isFn, isIterable, isNullish, isObject, isString } from '@pulgasari/is';
 
 // :::::: VENDOR (only the symbols the methods consume)
 
@@ -23,6 +23,23 @@ shuffle = arr => {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+};
+
+// :::::: EVENTS
+
+// non-bubbling events -> their bubbling equivalent
+export const BUBBLE_MAP = { focus: 'focusin', blur: 'focusout' };
+
+export const eventTypes = types => (isString(types) ? types.split(/[\s,]+/) : arrayfied(types)).filter(Boolean);
+
+// an event target is taken as it is BEFORE anything is iterated: a <form> or a
+// <select> is iterable (over its controls / options) but is itself the target
+export const eventTargets = targets => {
+  if (!targets) return [];
+  if (isString(targets))              return getElements(targets);
+  if (isFn(targets.addEventListener)) return [targets];
+  if (isIterable(targets))            return [...targets].flatMap(eventTargets);
+  return [resolveElement(targets)].filter(Boolean);
 };
 
 // :::::: COERCION

@@ -2,7 +2,7 @@
 
 // :::::: IMPORTS
 
-import * as core from './../methods/index.js';
+import * as core from '@domina/methods';
 import { isArray, isSymbol, toKebabCase } from './../shared.js';
 
 const _el = core.resolveElement;

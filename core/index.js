@@ -1,7 +1,7 @@
 // @ts-self-types="./types.d.ts"
 // @domina/core
 
-export * from './methods/index.js';
+export * from '@domina/methods';
 export * from './observer.js';
 export * from './raf.js';
 export * from './sugar/index.js'; 

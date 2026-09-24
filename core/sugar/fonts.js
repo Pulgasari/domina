@@ -9,7 +9,7 @@ import {
   hasFont,
   loadFont,
   removeFont
-} from './../methods/index.js';    
+} from '@domina/methods';    
 
 /**
  * font('Inter')

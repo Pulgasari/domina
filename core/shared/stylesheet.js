@@ -1,6 +1,6 @@
 // @domina/core/shared/stylesheet.js
 
-import { resolveElement } from './../methods/resolveElement.js';
+import { resolveElement } from '@domina/methods/resolveElement.js';
 import { isString }       from './../shared.js';
 
 // Constructable Stylesheets state registry
