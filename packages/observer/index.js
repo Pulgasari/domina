@@ -34,8 +34,10 @@ ensureBody = callback => {
   observer.observe($root(), STRUCTURAL);
 },
 
+// nodes is a NodeList (addedNodes, removedNodes), iterated as it is: arrayfied()
+// would wrap the list itself and no node would ever be looked at
 traverseNodes = (nodes, selector, callback) => {
-  for (const node of arrayfied(nodes)) {
+  for (const node of nodes ?? []) {
     if (node.nodeType !== 1) continue;
     if (node.matches(selector)) callback(node);
     node.querySelectorAll(selector).forEach(callback);
