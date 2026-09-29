@@ -21,6 +21,7 @@ export * from './emitEvent.js';
 export * from './extractStylesheetImports.js';
 export * from './filterElements.js';
 export * from './fontsReady.js';
+export * from './forceReflow.js';
 export * from './getAttr.js';
 export * from './getChildren.js';
 export * from './getClass.js';

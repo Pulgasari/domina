@@ -27,6 +27,7 @@
     "./extractStylesheetImports": "./extractStylesheetImports.js",
     "./filterElements": "./filterElements.js",
     "./fontsReady": "./fontsReady.js",
+    "./forceReflow": "./forceReflow.js",
     "./getAttr": "./getAttr.js",
     "./getChildren": "./getChildren.js",
     "./getClass": "./getClass.js",
