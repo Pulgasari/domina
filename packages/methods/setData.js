@@ -13,13 +13,21 @@ const encode = value =>
  */
 export function setData (spec, nameOrMap, value) {
   const element = resolveElement(spec); if (!element) return null;
-  const map     = isString(nameOrMap) ? { [nameOrMap]: value } : nameOrMap;
+  const map     = isString(nameOrMap) ? { [nameOrMap]: value } : nameOrMap ?? {};
 
-  for (const [name, val] of Object.entries(map ?? {})) {
+  for (const [name, val] of Object.entries(map)) {
     const key = toCamelCase(name);
     if (val == null) delete element.dataset[key];
     else element.dataset[key] = encode(val);
   }
+  
+  /*for (const name in map) {
+    const key = toCamelCase(name);
+    const val = map[key];
+    if (val == null) delete element.dataset[key];
+    else element.dataset[key] = encode(val);
+  } */
+  
   return element;
 }
 
