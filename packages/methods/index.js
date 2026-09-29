@@ -106,6 +106,7 @@ export * from './replaceClass.js';
 export * from './replaceElement.js';
 export * from './resolveContext.js';
 export * from './resolveElement.js';
+export * from './resolveElements.js';
 export * from './resolveNode.js';
 export * from './resolveTarget.js';
 export * from './scopeStylesheet.js';

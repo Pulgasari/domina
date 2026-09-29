@@ -112,6 +112,7 @@
     "./replaceElement": "./replaceElement.js",
     "./resolveContext": "./resolveContext.js",
     "./resolveElement": "./resolveElement.js",
+    "./resolveElements": "./resolveElements.js",
     "./resolveNode": "./resolveNode.js",
     "./resolveTarget": "./resolveTarget.js",
     "./scopeStylesheet": "./scopeStylesheet.js",
