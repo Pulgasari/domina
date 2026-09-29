@@ -141,6 +141,7 @@
     "./updateLink": "./updateLink.js",
     "./updateMeta": "./updateMeta.js",
     "./upsertHead": "./upsertHead.js",
+    "./waitForAnimations": "./waitForAnimations.js",
     "./waitForEvent": "./waitForEvent.js",
     "./wrapElement": "./wrapElement.js"
   },
