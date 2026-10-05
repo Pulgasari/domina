@@ -105,6 +105,10 @@ export function updateElement (spec, props = {}, ...children) {
     }
 
     else if (!isSVG(element) && key in element && isWritable(element, key)) element[key] = value;
+
+    // a boolean attribute the way html has it: true is present and empty, false
+    // absent. aria-* keeps its "true" / "false", those are values there
+    else if (typeof value === 'boolean' && !key.startsWith('aria-')) element.toggleAttribute(key, value);
     else element.setAttribute(key, value);
 
   }
