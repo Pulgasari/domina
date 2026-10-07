@@ -63,7 +63,7 @@ export function updateElement (spec, props = {}, ...children) {
   if (!element) return null;
 
   
-  let mountFn, mountTo;
+  let mountFn, mountTo, ref;
 
   //for (const [key, value] of Object.entries(props)) {
   for (const key in props) {
@@ -71,6 +71,7 @@ export function updateElement (spec, props = {}, ...children) {
     if (value == null) continue;
 
     if      (key === 'appendTo')  { mountTo = value; mountFn = 'append';  }
+    else if (key === 'ref')       { ref = value; }
     else if (key === 'prependTo') { mountTo = value; mountFn = 'prepend'; }
 
     else if (key === 'style') {
@@ -116,6 +117,11 @@ export function updateElement (spec, props = {}, ...children) {
   const kids = flatNodes(children);
   if (kids.length) element.append(...kids);
   if (mountTo)     resolveElement(mountTo)?.[mountFn](element);
+
+  // ref: a function gets the element, an object gets it as .current. last, so
+  // the element has its props, its children and its place
+  if (isFn(ref)) ref(element);
+  else if (ref && typeof ref === 'object') ref.current = element;
 
   return element;
 }
