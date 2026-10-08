@@ -3,19 +3,17 @@
 
 // :::::: SHARED
 
-const 
-//toEntries   = Object.entries,
-fromEntries = Object.fromEntries,
-isArray     = Array.isArray,
-isFalsy     = sth => value == null || value === false,
-isFn        = sth => typeof sth !== 'function',
-isObject    = sth => sth !== null && typeof sth === 'object' && !Array.isArray(sth),
-isString    = sth => typeof sth === 'string',
-//$root     = document.documentElement,
-toEntries   = sth => Object.entries(sth ?? {});
+// nullish or false: the key is off, an attribute or a property is removed, a selector
+// part left out. 0 and '' are values
+const isOff    = value => value == null || value === false;
+const isFn     = value => typeof value === 'function';
+const isString = value => typeof value === 'string';
+const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 
-const toKebabCase = name => name.replace(   /[A-Z]/g,     char  => '-' + char.toLowerCase());
-const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase());
+const toEntries   = map   => Object.entries(map ?? {});
+const toList      = value => [value ?? []].flat();
+const toKebabCase = name  => name.replace(   /[A-Z]/g,     char  => '-' + char.toLowerCase());
+const toCamelCase = name  => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase());
 
 // :::::: SELECT
 // a selector string as it is, or an object that describes the element:
@@ -25,6 +23,9 @@ const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) =>       char.to
 const escape = value => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(String(value)) : String(value).replace(/"/g, '\\"');
 const OWN    = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
+// [name] for true, [name="value"] otherwise
+const attributeSelector = (name, value) => value === true ? `[${name}]` : `[${name}="${escape(value)}"]`;
+
 function selectorOf (spec) {
   if  (isString(spec)) return spec;
   if (!isObject(spec)) return '*';
@@ -32,17 +33,15 @@ function selectorOf (spec) {
   let selector = String(spec.tag ?? spec.tagName ?? '').toLowerCase();
   if (spec.id) selector += '#' + escape(spec.id);
 
-  const classes = [spec.class ?? spec.className ?? []].flat().join(' ').trim();
+  const classes = toList(spec.class ?? spec.className).join(' ').trim();
   if (classes) selector += '.' + classes.split(/\s+/).map(escape).join('.');
 
-  for (const [key, value] of Object.entries(spec.dataset ?? spec.data ?? {})) {
-    if (value === false || value == null) continue;
-    selector += value === true ? `[data-${toKebabCase(key)}]` : `[data-${toKebabCase(key)}="${escape(value)}"]`;
+  for (const [key, value] of toEntries(spec.dataset ?? spec.data)) {
+    if (!isOff(value)) selector += attributeSelector(`data-${toKebabCase(key)}`, value);
   }
 
-  for (const [key, value] of Object.entries(spec)) {
-    if (OWN.has(key) || value === false || value == null) continue;
-    selector += value === true ? `[${toKebabCase(key)}]` : `[${toKebabCase(key)}="${escape(value)}"]`;
+  for (const [key, value] of toEntries(spec)) {
+    if (!OWN.has(key) && !isOff(value)) selector += attributeSelector(toKebabCase(key), value);
   }
 
   return selector || '*';
@@ -65,10 +64,10 @@ function getElements (spec) {
 // bubbling twins, so a container hears its descendants. a listener comes back as off()
 
 const BUBBLING = { blur: 'focusout', focus: 'focusin' };
-const typesOf  = types => (isString(types) ? types.split(/[\s,]+/) : [types].flat()).filter(Boolean).map(type => BUBBLING[type] ?? type);
+const typesOf  = types => (isString(types) ? types.split(/[\s,]+/) : toList(types)).filter(Boolean).map(type => BUBBLING[type] ?? type);
 
 function onEvent (types, handler, options) {
-  if (typeof handler !== 'function') return () => {};
+  if (!isFn(handler)) return () => {};
   const list = typesOf(types);
                  for (const type of list) this.   addEventListener(type, handler, options);
   return () => { for (const type of list) this.removeEventListener(type, handler, options); };
@@ -76,7 +75,7 @@ function onEvent (types, handler, options) {
 
 // { click: fn, 'keydown keyup': fn } with shared options, one off() for all of them
 function onEvents (map, options) {
-  const offs = Object.entries(map ?? {}).map(([types, handler]) => this.onEvent(types, handler, options));
+  const offs = toEntries(map).map(([types, handler]) => this.onEvent(types, handler, options));
   return () => { for (const off of offs) off(); };
 }
 
@@ -101,29 +100,37 @@ function waitForEvent (types, { signal, timeout } = {}) {
 
 // :::::: ATTRIBUTES
 // camelCase keys become kebab-case. false and nullish remove, true sets the attribute
-// empty, anything else as a string. aria-* keeps 'true' and 'false', they are values there
+// empty, anything else as a string. aria-* keys go to setAriaAttribute
 
 function setAttributes (map) {
-  for (const [key, value] of Object.entries(map ?? {})) {
+  for (const [key, value] of toEntries(map)) {
     const name = toKebabCase(key);
-    if (name.startsWith('aria-')) return setAriaAttribute(name, value);
-    
-         if (isFalsy(value)) this.removeAttribute (name);
-    else if (value === true) this.setAttribute    (name, '');
-    else                     this.setAttribute    (name, String(value));
+         if (name.startsWith('aria-')) this.setAriaAttribute(name, value);
+    else if (isOff(value))             this.removeAttribute (name);
+    else if (value === true)           this.setAttribute    (name, '');
+    else                               this.setAttribute    (name, String(value));
   }
   return this;
 }
 
-// setAriaAttribute
-// setAriaAttributes
+// :::::: ARIA
+// the prefix is optional: 'expanded', 'ariaExpanded' and 'aria-expanded' are the same.
+// true and false are values here ('true', 'false'), only nullish removes. a list (id
+// references, tokens) is joined with spaces
+
+function ariaName (key) {
+  const name = toKebabCase(key);
+  return name.startsWith('aria-') ? name : `aria-${name}`;
+}
+
+function setAriaAttribute (name, value) {
+  if (value == null) this.removeAttribute(ariaName(name));
+  else               this.setAttribute   (ariaName(name), Array.isArray(value) ? value.join(' ') : String(value));
+  return this;
+}
+
 function setAriaAttributes (map) {
-  for (const [key, value] of Object.entries(map ?? {})) {
-    const name = toKebabCase(key);
-         if (value == null || (value === false && !name.startsWith('aria-'))) this.removeAttribute (name);
-    else if                   (value === true  && !name.startsWith('aria-'))  this.setAttribute    (name, '');
-    else                                                                      this.setAttribute    (name, String(value));
-  }
+  for (const [name, value] of toEntries(map)) this.setAriaAttribute(name, value);
   return this;
 }
 
@@ -141,10 +148,10 @@ const cssName  = key => key.startsWith('--') ? key : toKebabCase(key);
 const cssValue = (name, value) => typeof value === 'number' && !name.startsWith('--') && !UNITLESS.has(name) ? `${value}px` : String(value);
 
 function writeStyle (style, map) {
-  for (const [key, value] of Object.entries(map)) {
+  for (const [key, value] of toEntries(map)) {
     const name = cssName(key);
-    if (isFalsy(value)) style.removeProperty(name);
-    else                style.   setProperty(name, cssValue(name, value));
+    if (isOff(value)) style.removeProperty(name);
+    else              style.   setProperty(name, cssValue(name, value));
   }
 }
 
@@ -152,13 +159,13 @@ function writeStyle (style, map) {
 const tokenName = name => name.startsWith('--') ? name : `--${name}`;
 
 function setToken (name, value) {
-  if (isFalsy(value)) this.removeProperty(tokenName(name));
-  else                this.   setProperty(tokenName(name), String(value));
+  if (isOff(value)) this.removeProperty(tokenName(name));
+  else              this.   setProperty(tokenName(name), String(value));
   return this;
 }
 
 function setTokens (map) {
-  for (const [name, value] of Object.entries(map ?? {})) this.setToken(name, value);
+  for (const [name, value] of toEntries(map)) this.setToken(name, value);
   return this;
 }
 
@@ -174,24 +181,26 @@ function getTokens (names) {
 
 // :::::: PROPERTIES
 // property by property, with two that take an object: style (a string is the style
-// attribute) and dataset (objects as json, nullish removes). class takes a list as well
+// attribute) and dataset (objects as json, nullish removes). class takes a list as well.
+// undefined leaves a property alone
 
-const encode = value => isString(value) ? value : isObject(value) || Array.isArray(value) ? JSON.stringify(value) : String(value);
+const encode = value => isString(value) ? value : value !== null && typeof value === 'object' ? JSON.stringify(value) : String(value);
+
+function writeDataset (dataset, map) {
+  for (const [key, value] of toEntries(map)) {
+    const name = toCamelCase(key);
+    if (value == null) delete dataset[name];
+    else                      dataset[name] = encode(value);
+  }
+}
 
 function setProperties (map) {
-  for (const [key, value] of Object.entries(map ?? {})) {
-    if (value === undefined) continue;
-
-    if (key === 'style' && value !== null && !isString(value)) writeStyle(this.style, value);
-    else if (key === 'dataset' || key === 'data') {
-      for (const [name, data] of Object.entries(value ?? {})) {
-        const prop = toCamelCase(name);
-        if (data == null) delete this.dataset[prop];
-        else this.dataset[prop] = encode(data);
-      }
-    }
-    else if (key === 'class' || key === 'className') this.className = [value ?? []].flat().filter(Boolean).join(' ');
-    else this[key] = value;
+  for (const [key, value] of toEntries(map)) {
+         if (value === undefined)                      continue;
+    else if (key === 'style'   && isObject(value))     writeStyle  (this.style,   value);
+    else if (key === 'dataset' || key === 'data')      writeDataset(this.dataset, value);
+    else if (key === 'class'   || key === 'className') this.className = toList(value).filter(Boolean).join(' ');
+    else                                               this[key]      = value;
   }
   return this;
 }
@@ -207,17 +216,12 @@ function walk (start, step, filter) {
   return out;
 }
 
-function getSiblings (filter) {
-  const parent = this.parentElement;
-  if (!parent) return [];
-  const out = [];
-  for (const child of parent.children) if (child !== this && passes(child, filter)) out.push(child);
-  return out;
-}
+function getParents  (filter) { return walk(this, 'parentElement',          filter); }
+function getNextAll  (filter) { return walk(this, 'nextElementSibling',     filter); }
+function getPrevAll  (filter) { return walk(this, 'previousElementSibling', filter); }
 
-function getParents (filter) { return walk (this, 'parentElement',          filter); }
-function getNextAll (filter) { return walk (this, 'nextElementSibling',     filter); }
-function getPrevAll (filter) { return walk (this, 'previousElementSibling', filter); }
+// the siblings in document order
+function getSiblings (filter) { return [...this.getPrevAll(filter).reverse(), ...this.getNextAll(filter)]; }
 
 // the position among the element siblings, -1 without a parent
 function getIndex () {
@@ -251,9 +255,19 @@ function waitForAnimations ({ name, subtree = false } = {}) {
 
 const BUTTONS = new Set(['button', 'image', 'reset', 'submit']);
 
-function controlsOf (form, disabled) {
-  return [...form.elements].filter(control => control.name && !BUTTONS.has(control.type) && (disabled || !control.disabled));
+// the controls by name, in document order
+function groupsOf (form, disabled) {
+  const groups = new Map;
+  for (const control of form.elements) {
+    if (!control.name || BUTTONS.has(control.type) || (control.disabled && !disabled)) continue;
+    if (!groups.has(control.name)) groups.set(control.name, []);
+    groups.get(control.name).push(control);
+  }
+  return groups;
 }
+
+// strings to compare against control values
+const toStrings = value => toList(value).map(String);
 
 // a single control: checkbox as a boolean, number and range as a number (empty is
 // null), a multiple select as a list, a file input as a File (a list when multiple)
@@ -269,11 +283,8 @@ function valueOf (control, trim) {
 // several controls of a name are a list, the checked values of checkboxes. a radio
 // group is the value of the checked one, null when none is
 function getValues ({ disabled = false, trim = true } = {}) {
-  const groups = new Map;
-  for (const control of controlsOf(this, disabled)) (groups.get(control.name) ?? groups.set(control.name, []).get(control.name)).push(control);
-
   const values = {};
-  for (const [name, group] of groups) {
+  for (const [name, group] of groupsOf(this, disabled)) {
     const [first] = group;
          if (first.type === 'radio')                        values[name] = group.find   (control => control.checked)?.value ?? null;
     else if (first.type === 'checkbox' && group.length > 1) values[name] = group.filter (control => control.checked).map(control => control.value);
@@ -287,7 +298,7 @@ function setValue (control, value) {
        if (control.type === 'checkbox') control.checked = Boolean(value);
   else if (control.type === 'file')     return;
   else if (control.localName === 'select' && control.multiple) {
-    const list = [value ?? []].flat().map(String);
+    const list = toStrings(value);
     for (const option of control.options) option.selected = list.includes(option.value);
   }
   else control.value = value ?? '';
@@ -297,17 +308,14 @@ function setValue (control, value) {
 // undefined) stays as it is, or is cleared with { missing: 'clear' }. { notify } fires
 // input and change
 function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
-  const groups = new Map;
-  for (const control of controlsOf(this, true)) (groups.get(control.name) ?? groups.set(control.name, []).get(control.name)).push(control);
-
-  for (const [name, group] of groups) {
+  for (const [name, group] of groupsOf(this, true)) {
     if (values[name] === undefined && missing !== 'clear') continue;   // unset leaves the control alone
     const value = values[name] ?? null, [first] = group;
 
-         if (first.type === 'radio')                         group.forEach(control => { control.checked = value != null && control.value === String(value); });
-    else if (first.type === 'checkbox' && group.length > 1) { const list = [value ?? []].flat().map(String); group.forEach(control => { control.checked = list.includes(control.value); }); }
+         if (first.type === 'radio')                        for (const control of group) control.checked = value != null && control.value === String(value);
+    else if (first.type === 'checkbox' && group.length > 1) for (const control of group) control.checked = toStrings(value).includes(control.value);
     else if (group.length > 1 && Array.isArray(value))      group.forEach((control, i) => setValue(control, value[i]));
-    else                                                    group.forEach( control     => setValue(control, value));
+    else                                                    for (const control of group) setValue(control, value);
 
     if (notify) for (const control of group) {
       control.dispatchEvent(new Event('input',  { bubbles: true }));
@@ -318,19 +326,20 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
 }
 
 // :::::: INSTALL
+// non-enumerable like the native methods. an existing method is overwritten, with a warning
 
-const extend = (obj, methods) => {
-  const proto = obj.prototype
-  for (const [name, value] of Object.entries(methods)) {
-    if (name in proto) console.warn(`[@domina/prototype] ${proto.constructor.name}.prototype.${name} exists, overwritten.`);
+function extend (Class, methods) {
+  const proto = Class.prototype;
+  for (const [name, value] of toEntries(methods)) {
+    if (name in proto) console.warn(`[@domina/prototype] ${Class.name}.prototype.${name} exists, overwritten.`);
     Object.defineProperty(proto, name, { configurable: true, value, writable: true });
   }
-};
+}
 
 extend(CSSStyleDeclaration, { getToken, getTokens, setToken, setTokens });
 extend(Document,            { getElement, getElements });
 extend(DocumentFragment,    { getElement, getElements });
-extend(Element,             { getElement, getElements, getIndex, getNextAll, getParents, getPrevAll, getSiblings, isInViewport, setAttributes, setProperties, waitForAnimations });
+extend(Element,             { getElement, getElements, getIndex, getNextAll, getParents, getPrevAll, getSiblings, isInViewport, setAriaAttribute, setAriaAttributes, setAttributes, setProperties, waitForAnimations });
 extend(EventTarget,         { emitEvent, onEvent, onEvents, waitForEvent });
 extend(HTMLFormElement,     { getValues, setValues });
 

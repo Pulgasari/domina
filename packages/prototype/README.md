@@ -10,7 +10,7 @@ import '@domina/prototype';
 |---|---|
 | `Element`, `Document`, `DocumentFragment` (shadow roots too) | `getElement`, `getElements` |
 | `EventTarget` (window, document, elements, signals …) | `onEvent`, `onEvents`, `emitEvent` |
-| `Element` | `setProperties`, `setAttributes` |
+| `Element` | `setProperties`, `setAttributes`, `setAriaAttribute`, `setAriaAttributes` |
 | `CSSStyleDeclaration` | `setToken`, `setTokens`, `getToken`, `getTokens` |
 | `EventTarget` | `waitForEvent` |
 | `Element` | `getSiblings`, `getParents`, `getNextAll`, `getPrevAll`, `getIndex`, `isInViewport`, `waitForAnimations` |
@@ -53,7 +53,18 @@ el.setAttributes({ ariaLabel: 'close', disabled: false, hidden: true, title: nul
 ```
 
 camelCase keys become kebab-case. `false` and nullish remove, `true` sets the attribute
-empty, anything else as a string. `aria-*` keeps `'true'` and `'false'`, they are values there.
+empty, anything else as a string. `aria-*` keys go to `setAriaAttribute`.
+
+## setAriaAttribute, setAriaAttributes
+
+```js
+el.setAriaAttribute('expanded', open);                    // aria-expanded="true" / "false"
+el.setAriaAttributes({ controls: 'menu', labelledby: ['title', 'hint'], current: null });
+```
+
+the prefix is optional: `expanded`, `ariaExpanded` and `aria-expanded` are the same.
+`true` and `false` are values here (`'true'`, `'false'`), only nullish removes. a list
+(id references, tokens) is joined with spaces.
 
 ## setProperties
 
