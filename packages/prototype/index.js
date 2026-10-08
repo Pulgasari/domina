@@ -4,16 +4,15 @@
 // :::::: SHARED
 
 const 
-toEtries    = Object.entries,
+//toEntries   = Object.entries,
 fromEntries = Object.fromEntries,
 isArray     = Array.isArray,
-$root       = document.documentElement;
-
-const
-toEntries = (sth) => Object.entries(sth ?? {});
-
-const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-const isString = value => typeof value === 'string';
+isFalsy     = sth => value == null || value === false,
+isFn        = sth => typeof sth !== 'function',
+isObject    = sth => sth !== null && typeof sth === 'object' && !Array.isArray(sth),
+isString    = sth => typeof sth === 'string',
+//$root     = document.documentElement,
+toEntries   = sth => Object.entries(sth ?? {});
 
 const toKebabCase = name => name.replace(   /[A-Z]/g,     char  => '-' + char.toLowerCase());
 const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase());
@@ -27,7 +26,7 @@ const escape = value => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(St
 const OWN    = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
 function selectorOf (spec) {
-  if (isString(spec)) return spec;
+  if  (isString(spec)) return spec;
   if (!isObject(spec)) return '*';
 
   let selector = String(spec.tag ?? spec.tagName ?? '').toLowerCase();
@@ -92,9 +91,9 @@ function waitForEvent (types, { signal, timeout } = {}) {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) return reject(signal.reason);
     let timer = 0;
-    const done   = () => { off(); clearTimeout(timer); signal?.removeEventListener('abort', abort); };
-    const abort  = () => { done(); reject(signal.reason); };
-    const off    = this.onEvent(types, event => { done(); resolve(event); });
+    const done  = () => { off(); clearTimeout(timer); signal?.removeEventListener('abort', abort); };
+    const abort = () => { done(); reject(signal.reason); };
+    const off   = this.onEvent(types, event => { done(); resolve(event); });
     if (timeout) timer = setTimeout(() => { done(); reject(new Error(`waitForEvent: ${types} timed out after ${timeout}ms`)); }, timeout);
     signal?.addEventListener('abort', abort, { once: true });
   });
@@ -105,6 +104,20 @@ function waitForEvent (types, { signal, timeout } = {}) {
 // empty, anything else as a string. aria-* keeps 'true' and 'false', they are values there
 
 function setAttributes (map) {
+  for (const [key, value] of Object.entries(map ?? {})) {
+    const name = toKebabCase(key);
+    if (name.startsWith('aria-')) return setAriaAttribute(name, value);
+    
+         if (isFalsy(value)) this.removeAttribute (name);
+    else if (value === true) this.setAttribute    (name, '');
+    else                     this.setAttribute    (name, String(value));
+  }
+  return this;
+}
+
+// setAriaAttribute
+// setAriaAttributes
+function setAriaAttributes (map) {
   for (const [key, value] of Object.entries(map ?? {})) {
     const name = toKebabCase(key);
          if (value == null || (value === false && !name.startsWith('aria-'))) this.removeAttribute (name);
@@ -130,8 +143,8 @@ const cssValue = (name, value) => typeof value === 'number' && !name.startsWith(
 function writeStyle (style, map) {
   for (const [key, value] of Object.entries(map)) {
     const name = cssName(key);
-    if (value == null || value === false) style.removeProperty(name);
-    else                                  style.setProperty(name, cssValue(name, value));
+    if (isFalsy(value)) style.removeProperty(name);
+    else                style.   setProperty(name, cssValue(name, value));
   }
 }
 
@@ -139,8 +152,8 @@ function writeStyle (style, map) {
 const tokenName = name => name.startsWith('--') ? name : `--${name}`;
 
 function setToken (name, value) {
-  if (value == null || value === false) this.removeProperty(tokenName(name));
-  else                                  this.   setProperty(tokenName(name), String(value));
+  if (isFalsy(value)) this.removeProperty(tokenName(name));
+  else                this.   setProperty(tokenName(name), String(value));
   return this;
 }
 
@@ -250,7 +263,7 @@ function valueOf (control, trim) {
   if (control.type === 'number' || control.type === 'range') return control.value === '' ? null : Number(control.value);
   if (control.localName === 'select' && control.multiple)    return [...control.selectedOptions].map(option => option.value);
   const value = control.value;
-  return trim && typeof value === 'string' ? value.trim() : value;
+  return trim && isString(value) ? value.trim() : value;
 }
 
 // several controls of a name are a list, the checked values of checkboxes. a radio
