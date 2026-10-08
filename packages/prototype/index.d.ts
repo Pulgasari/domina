@@ -35,6 +35,8 @@ declare global {
     onEvents (map: Record<string, (event: any) => void>, options?: boolean | AddEventListenerOptions): Off;
     /** a CustomEvent, bubbling and cancelable by default. false when a listener prevented it. */
     emitEvent<D = unknown> (type: string, detail?: D, options?: { bubbles?: boolean; cancelable?: boolean; composed?: boolean }): boolean;
+    /** the next of the types as a promise, then all listeners are gone. a timeout rejects, so does an aborted signal. */
+    waitForEvent<E extends Event = Event> (types: EventTypes, options?: { signal?: AbortSignal; timeout?: number }): Promise<E>;
   }
 
   interface Element extends Queryable {
@@ -46,6 +48,29 @@ declare global {
       dataset?: Record<string, unknown>;
       class?: string | Array<string | null | undefined | false>;
     }): this;
+
+    /** the element siblings, a spec filters them. */
+    getSiblings<E extends Element = Element> (filter?: ElementSpec): E[];
+    /** the ancestors, the nearest first. */
+    getParents<E extends Element = Element> (filter?: ElementSpec): E[];
+    /** the following element siblings, the nearest first. */
+    getNextAll<E extends Element = Element> (filter?: ElementSpec): E[];
+    /** the preceding element siblings, the nearest first. */
+    getPrevAll<E extends Element = Element> (filter?: ElementSpec): E[];
+    /** the position among the element siblings, -1 without a parent. */
+    getIndex (): number;
+
+    /** in the viewport: ratio 0 is a pixel, 1 the whole element. */
+    isInViewport (options?: { ratio?: number }): boolean;
+    /** the running animations done, cancelled ones count. resolves with the element. */
+    waitForAnimations (options?: { name?: string; subtree?: boolean }): Promise<this>;
+  }
+
+  interface HTMLFormElement {
+    /** the named controls as one object: checkboxes as booleans or lists, numbers as numbers, radios as the checked value. */
+    getValues (options?: { disabled?: boolean; trim?: boolean }): Record<string, unknown>;
+    /** values into the controls of their name. undefined leaves a control alone, { missing: 'clear' } clears the absent ones. */
+    setValues (values: Record<string, unknown>, options?: { missing?: 'skip' | 'clear'; notify?: boolean }): this;
   }
 
   interface Document extends Queryable {}

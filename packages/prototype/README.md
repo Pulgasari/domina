@@ -12,6 +12,9 @@ import '@domina/prototype';
 | `EventTarget` (window, document, elements, signals …) | `onEvent`, `onEvents`, `emitEvent` |
 | `Element` | `setProperties`, `setAttributes` |
 | `CSSStyleDeclaration` | `setToken`, `setTokens`, `getToken`, `getTokens` |
+| `EventTarget` | `waitForEvent` |
+| `Element` | `getSiblings`, `getParents`, `getNextAll`, `getPrevAll`, `getIndex`, `isInViewport`, `waitForAnimations` |
+| `HTMLFormElement` | `getValues`, `setValues` |
 
 the methods are non-enumerable like the natives. a name a prototype has already is
 overwritten with a warning: the app decides what its dom means. a library should not
@@ -84,3 +87,49 @@ getComputedStyle(el).getToken('accent');                  // the one in effect, 
 a token is a custom property, the name with or without its dashes. nullish and `false`
 remove. `getToken` on `el.style` reads the inline value, on `getComputedStyle(el)` the
 value in effect.
+
+## relatives
+
+```js
+row.getSiblings('.selected')                             // arrays, a spec filters
+el.getParents({ tag: 'section' })                        // the nearest first, up to <html>
+el.getNextAll(), el.getPrevAll('.row')                   // the nearest first
+el.getIndex()                                            // among its element siblings, -1 without a parent
+```
+
+## waiting
+
+```js
+const event = await video.waitForEvent('canplay error', { timeout: 5000, signal });
+await panel.waitForAnimations({ name: 'slide-out' });    // then remove it
+```
+
+`waitForEvent` resolves with the first of the types and removes all its listeners; a
+timeout rejects with an error, an aborted signal with its reason. `waitForAnimations`
+counts a cancelled animation as done and resolves with the element.
+
+## isInViewport
+
+```js
+el.isInViewport()                                        // a pixel is enough
+el.isInViewport({ ratio: 1 })                            // all of it
+```
+
+## forms
+
+```js
+form.getValues()
+// { title: 'hello', count: 3, agree: true, tags: ['a', 'c'], size: 'm', langs: ['de'] }
+
+form.setValues({ title: 'new', tags: ['b'] });
+form.setValues({ title: 'only' }, { missing: 'clear', notify: true });
+```
+
+named controls only, buttons left out, disabled ones unless `{ disabled: true }`. a
+checkbox alone is a boolean, several of a name the list of the checked values. a radio
+group is the checked value or `null`. number and range are numbers, empty is `null`. a
+multiple select is a list, a file input a `File` (a list when multiple). strings are
+trimmed unless `{ trim: false }`.
+
+`setValues` leaves a name the object lacks or has as `undefined` alone, `{ missing: 'clear' }`
+clears those. `{ notify: true }` fires `input` and `change` on the controls it set.

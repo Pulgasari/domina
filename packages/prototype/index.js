@@ -13,6 +13,9 @@
 //   el.setProperties({ hidden: false, style: { gap: 8 }, dataset: { id: 5 } })
 //   el.setAttributes({ ariaLabel: 'close', disabled: false })
 //   el.style.setTokens({ accent: 'tomato', size: 2 })   CSSStyleDeclaration
+//   row.getSiblings('.selected'), el.getParents('section'), el.getIndex()
+//   await video.waitForEvent('canplay', { timeout: 5000 })
+//   form.getValues(), form.setValues({ name, tags })      HTMLFormElement
 //
 // the methods are non-enumerable like the natives. a name a prototype has already is
 // overwritten with a warning: the app decides what its dom means, a later standard
@@ -92,6 +95,20 @@ function onEvents (map, options) {
 // a CustomEvent with detail, false when a listener called preventDefault()
 function emitEvent (type, detail = null, { bubbles = true, cancelable = true, composed = false } = {}) {
   return this.dispatchEvent(new CustomEvent(type, { bubbles, cancelable, composed, detail }));
+}
+
+// the next of the types as a promise, then every listener is gone again. a timeout
+// rejects with an error, an aborted signal with its reason
+function waitForEvent (types, { signal, timeout } = {}) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason);
+    let timer = 0;
+    const done   = () => { off(); clearTimeout(timer); signal?.removeEventListener('abort', abort); };
+    const abort  = () => { done(); reject(signal.reason); };
+    const off    = this.onEvent(types, event => { done(); resolve(event); });
+    if (timeout) timer = setTimeout(() => { done(); reject(new Error(`waitForEvent: ${types} timed out after ${timeout}ms`)); }, timeout);
+    signal?.addEventListener('abort', abort, { once: true });
+  });
 }
 
 // :::::: ATTRIBUTES
@@ -177,6 +194,127 @@ function setProperties (map) {
   return this;
 }
 
+// :::::: TRAVERSAL
+// the element's relatives as arrays, the nearest first, a spec filters them
+
+const passes = (element, filter) => filter == null || element.matches(selectorOf(filter));
+
+function walk (start, step, filter) {
+  const out = [];
+  for (let node = start?.[step]; node; node = node[step]) if (passes(node, filter)) out.push(node);
+  return out;
+}
+
+function getSiblings (filter) {
+  const parent = this.parentElement;
+  if (!parent) return [];
+  const out = [];
+  for (const child of parent.children) if (child !== this && passes(child, filter)) out.push(child);
+  return out;
+}
+
+function getParents (filter) { return walk(this, 'parentElement',          filter); }
+function getNextAll (filter) { return walk(this, 'nextElementSibling',     filter); }
+function getPrevAll (filter) { return walk(this, 'previousElementSibling', filter); }
+
+// the position among the element siblings, -1 without a parent
+function getIndex () {
+  const parent = this.parentElement;
+  return parent ? Array.prototype.indexOf.call(parent.children, this) : -1;
+}
+
+// :::::: VIEW
+
+// in the viewport: ratio 0 is a pixel, 1 the whole element
+function isInViewport ({ ratio = 0 } = {}) {
+  const rect   = this.getBoundingClientRect();
+  const height = window.innerHeight || document.documentElement.clientHeight;
+  const width  = window.innerWidth  || document.documentElement.clientWidth;
+  const seenY  = Math.min(rect.bottom, height) - Math.max(rect.top,  0);
+  const seenX  = Math.min(rect.right,  width)  - Math.max(rect.left, 0);
+  if (seenY <= 0 || seenX <= 0) return false;
+  return (seenY * seenX) / (rect.height * rect.width || 1) >= ratio;
+}
+
+// the running animations done, a cancelled one counts as done. { name } only that css
+// animation, { subtree } the descendants' as well. resolves with the element
+function waitForAnimations ({ name, subtree = false } = {}) {
+  const animations = this.getAnimations({ subtree }).filter(animation => !name || animation.animationName === name);
+  return Promise.all(animations.map(animation => animation.finished.catch(() => null))).then(() => this);
+}
+
+// :::::: FORMS
+// the named controls of a form as one object and back. buttons and nameless controls
+// are left out, disabled ones too unless asked for
+
+const BUTTONS = new Set(['button', 'image', 'reset', 'submit']);
+
+function controlsOf (form, disabled) {
+  return [...form.elements].filter(control => control.name && !BUTTONS.has(control.type) && (disabled || !control.disabled));
+}
+
+// a single control: checkbox as a boolean, number and range as a number (empty is
+// null), a multiple select as a list, a file input as a File (a list when multiple)
+function valueOf (control, trim) {
+  if (control.type === 'checkbox')               return control.checked;
+  if (control.type === 'file')                   return control.multiple ? [...control.files] : control.files[0] ?? null;
+  if (control.type === 'number' || control.type === 'range') return control.value === '' ? null : Number(control.value);
+  if (control.localName === 'select' && control.multiple)   return [...control.selectedOptions].map(option => option.value);
+  const value = control.value;
+  return trim && typeof value === 'string' ? value.trim() : value;
+}
+
+// several controls of a name are a list, the checked values of checkboxes. a radio
+// group is the value of the checked one, null when none is
+function getValues ({ disabled = false, trim = true } = {}) {
+  const groups = new Map;
+  for (const control of controlsOf(this, disabled)) (groups.get(control.name) ?? groups.set(control.name, []).get(control.name)).push(control);
+
+  const values = {};
+  for (const [name, group] of groups) {
+    const [first] = group;
+    if (first.type === 'radio')                            values[name] = group.find(control => control.checked)?.value ?? null;
+    else if (first.type === 'checkbox' && group.length > 1) values[name] = group.filter(control => control.checked).map(control => control.value);
+    else if (group.length > 1)                             values[name] = group.map(control => valueOf(control, trim));
+    else                                                   values[name] = valueOf(first, trim);
+  }
+  return values;
+}
+
+function setValue (control, value) {
+  if (control.type === 'checkbox')                         control.checked = Boolean(value);
+  else if (control.type === 'file')                        return;
+  else if (control.localName === 'select' && control.multiple) {
+    const list = [value ?? []].flat().map(String);
+    for (const option of control.options) option.selected = list.includes(option.value);
+  }
+  else control.value = value ?? '';
+}
+
+// { name: value } into the controls of that name. a name the object lacks (or has as
+// undefined) stays as it is, or is cleared with { missing: 'clear' }. { notify } fires
+// input and change
+function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
+  const groups = new Map;
+  for (const control of controlsOf(this, true)) (groups.get(control.name) ?? groups.set(control.name, []).get(control.name)).push(control);
+
+  for (const [name, group] of groups) {
+    if (values[name] === undefined && missing !== 'clear') continue;   // unset leaves the control alone
+    const value = values[name] ?? null, [first] = group;
+
+    if (first.type === 'radio')                             group.forEach(control => { control.checked = value != null && control.value === String(value); });
+    else if (first.type === 'checkbox' && group.length > 1) { const list = [value ?? []].flat().map(String); group.forEach(control => { control.checked = list.includes(control.value); }); }
+    else if (group.length > 1 && Array.isArray(value))      group.forEach((control, i) => setValue(control, value[i]));
+    else                                                    group.forEach(control => setValue(control, value));
+
+    if (notify) for (const control of group) {
+      control.dispatchEvent(new Event('input',  { bubbles: true }));
+      control.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+  return this;
+}
+
 // :::::: INSTALL
 
 const define = (proto, methods) => {
@@ -188,8 +326,14 @@ const define = (proto, methods) => {
 
 const query = { getElement, getElements };
 
-define(EventTarget.prototype,         { emitEvent, onEvent, onEvents });
-define(Element.prototype,             { ...query, setAttributes, setProperties });
+define(EventTarget.prototype,         { emitEvent, onEvent, onEvents, waitForEvent });
+define(Element.prototype,             {
+  ...query,
+  getIndex, getNextAll, getParents, getPrevAll, getSiblings,
+  isInViewport, waitForAnimations,
+  setAttributes, setProperties,
+});
+define(HTMLFormElement.prototype,     { getValues, setValues });
 define(Document.prototype,            query);
 define(DocumentFragment.prototype,    query);
 define(CSSStyleDeclaration.prototype, { getToken, getTokens, setToken, setTokens });
