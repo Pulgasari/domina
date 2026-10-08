@@ -17,6 +17,9 @@ export type EventTypes = string | string[];
 
 export type Off = () => void;
 
+/** an aria value: true and false are kept as strings, a list is joined with spaces, nullish removes. */
+export type AriaValue = string | number | boolean | Array<string | number> | null | undefined;
+
 /** the selector a spec stands for. */
 export function selectorOf (spec: ElementSpec): string;
 
@@ -40,8 +43,12 @@ declare global {
   }
 
   interface Element extends Queryable {
-    /** camelCase keys as kebab-case. false and nullish remove, true sets it empty, aria-* keeps 'true' / 'false'. */
+    /** camelCase keys as kebab-case. false and nullish remove, true sets it empty. aria-* keys go to setAriaAttribute. */
     setAttributes (map: Record<string, unknown>): this;
+    /** 'expanded', 'ariaExpanded' or 'aria-expanded'. true and false as 'true' / 'false', a list joined with spaces, nullish removes. */
+    setAriaAttribute (name: string, value: AriaValue): this;
+    /** setAriaAttribute key by key. */
+    setAriaAttributes (map: Record<string, AriaValue>): this;
     /** property by property. style and dataset take an object, class a list. */
     setProperties (map: Record<string, unknown> & {
       style?: string | Record<string, string | number | false | null | undefined>;
