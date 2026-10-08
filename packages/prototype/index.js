@@ -1,26 +1,6 @@
 // @ts-self-types="./index.d.ts"
 // @domina/prototype
 
-// the dom verbs of domina right on the dom prototypes, for an app that owns its globals:
-//
-//   import '@domina/prototype';
-//
-//   root.getElement('.row')                        Element, Document, DocumentFragment
-//   root.getElements({ tag: 'li', dataset: { done: true } })
-//   button.onEvent('click', save)                  EventTarget: window, document, elements …
-//   window.onEvents({ resize, scroll }, { passive: true })
-//   input.emitEvent('change', { value })
-//   el.setProperties({ hidden: false, style: { gap: 8 }, dataset: { id: 5 } })
-//   el.setAttributes({ ariaLabel: 'close', disabled: false })
-//   el.style.setTokens({ accent: 'tomato', size: 2 })   CSSStyleDeclaration
-//   row.getSiblings('.selected'), el.getParents('section'), el.getIndex()
-//   await video.waitForEvent('canplay', { timeout: 5000 })
-//   form.getValues(), form.setValues({ name, tags })      HTMLFormElement
-//
-// the methods are non-enumerable like the natives. a name a prototype has already is
-// overwritten with a warning: the app decides what its dom means, a later standard
-// method of the same name is taken care of when it comes.
-
 // :::::: SHARED
 
 const 
