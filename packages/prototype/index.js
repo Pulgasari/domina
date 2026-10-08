@@ -23,11 +23,20 @@
 
 // :::::: SHARED
 
+const 
+toEtries    = Object.entries,
+fromEntries = Object.fromEntries,
+isArray     = Array.isArray,
+$root       = document.documentElement;
+
+const
+toEntries = (sth) => Object.entries(sth ?? {});
+
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const isString = value => typeof value === 'string';
 
-const toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());
-const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+const toKebabCase = name => name.replace(   /[A-Z]/g,     char  => '-' + char.toLowerCase());
+const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase());
 
 // :::::: SELECT
 // a selector string as it is, or an object that describes the element:
@@ -82,7 +91,7 @@ const typesOf  = types => (isString(types) ? types.split(/[\s,]+/) : [types].fla
 function onEvent (types, handler, options) {
   if (typeof handler !== 'function') return () => {};
   const list = typesOf(types);
-  for (const type of list) this.addEventListener(type, handler, options);
+                 for (const type of list) this.   addEventListener(type, handler, options);
   return () => { for (const type of list) this.removeEventListener(type, handler, options); };
 }
 
@@ -118,9 +127,9 @@ function waitForEvent (types, { signal, timeout } = {}) {
 function setAttributes (map) {
   for (const [key, value] of Object.entries(map ?? {})) {
     const name = toKebabCase(key);
-    if (value == null || (value === false && !name.startsWith('aria-'))) this.removeAttribute(name);
-    else if (value === true && !name.startsWith('aria-'))                this.setAttribute(name, '');
-    else                                                                 this.setAttribute(name, String(value));
+         if (value == null || (value === false && !name.startsWith('aria-'))) this.removeAttribute (name);
+    else if                   (value === true  && !name.startsWith('aria-'))  this.setAttribute    (name, '');
+    else                                                                      this.setAttribute    (name, String(value));
   }
   return this;
 }
@@ -151,7 +160,7 @@ const tokenName = name => name.startsWith('--') ? name : `--${name}`;
 
 function setToken (name, value) {
   if (value == null || value === false) this.removeProperty(tokenName(name));
-  else                                  this.setProperty(tokenName(name), String(value));
+  else                                  this.   setProperty(tokenName(name), String(value));
   return this;
 }
 
@@ -185,7 +194,7 @@ function setProperties (map) {
       for (const [name, data] of Object.entries(value ?? {})) {
         const prop = toCamelCase(name);
         if (data == null) delete this.dataset[prop];
-        else              this.dataset[prop] = encode(data);
+        else this.dataset[prop] = encode(data);
       }
     }
     else if (key === 'class' || key === 'className') this.className = [value ?? []].flat().filter(Boolean).join(' ');
@@ -213,9 +222,9 @@ function getSiblings (filter) {
   return out;
 }
 
-function getParents (filter) { return walk(this, 'parentElement',          filter); }
-function getNextAll (filter) { return walk(this, 'nextElementSibling',     filter); }
-function getPrevAll (filter) { return walk(this, 'previousElementSibling', filter); }
+function getParents (filter) { return walk (this, 'parentElement',          filter); }
+function getNextAll (filter) { return walk (this, 'nextElementSibling',     filter); }
+function getPrevAll (filter) { return walk (this, 'previousElementSibling', filter); }
 
 // the position among the element siblings, -1 without a parent
 function getIndex () {
@@ -256,10 +265,10 @@ function controlsOf (form, disabled) {
 // a single control: checkbox as a boolean, number and range as a number (empty is
 // null), a multiple select as a list, a file input as a File (a list when multiple)
 function valueOf (control, trim) {
-  if (control.type === 'checkbox')               return control.checked;
-  if (control.type === 'file')                   return control.multiple ? [...control.files] : control.files[0] ?? null;
+  if (control.type === 'checkbox')                           return control.checked;
+  if (control.type === 'file')                               return control.multiple ? [...control.files] : control.files[0] ?? null;
   if (control.type === 'number' || control.type === 'range') return control.value === '' ? null : Number(control.value);
-  if (control.localName === 'select' && control.multiple)   return [...control.selectedOptions].map(option => option.value);
+  if (control.localName === 'select' && control.multiple)    return [...control.selectedOptions].map(option => option.value);
   const value = control.value;
   return trim && typeof value === 'string' ? value.trim() : value;
 }
@@ -273,17 +282,17 @@ function getValues ({ disabled = false, trim = true } = {}) {
   const values = {};
   for (const [name, group] of groups) {
     const [first] = group;
-    if (first.type === 'radio')                            values[name] = group.find(control => control.checked)?.value ?? null;
-    else if (first.type === 'checkbox' && group.length > 1) values[name] = group.filter(control => control.checked).map(control => control.value);
-    else if (group.length > 1)                             values[name] = group.map(control => valueOf(control, trim));
-    else                                                   values[name] = valueOf(first, trim);
+         if (first.type === 'radio')                        values[name] = group.find   (control => control.checked)?.value ?? null;
+    else if (first.type === 'checkbox' && group.length > 1) values[name] = group.filter (control => control.checked).map(control => control.value);
+    else if (group.length > 1)                              values[name] = group.map    (control => valueOf(control, trim));
+    else                                                    values[name] = valueOf(first, trim);
   }
   return values;
 }
 
 function setValue (control, value) {
-  if (control.type === 'checkbox')                         control.checked = Boolean(value);
-  else if (control.type === 'file')                        return;
+       if (control.type === 'checkbox') control.checked = Boolean(value);
+  else if (control.type === 'file')     return;
   else if (control.localName === 'select' && control.multiple) {
     const list = [value ?? []].flat().map(String);
     for (const option of control.options) option.selected = list.includes(option.value);
@@ -302,10 +311,10 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
     if (values[name] === undefined && missing !== 'clear') continue;   // unset leaves the control alone
     const value = values[name] ?? null, [first] = group;
 
-    if (first.type === 'radio')                             group.forEach(control => { control.checked = value != null && control.value === String(value); });
+         if (first.type === 'radio')                         group.forEach(control => { control.checked = value != null && control.value === String(value); });
     else if (first.type === 'checkbox' && group.length > 1) { const list = [value ?? []].flat().map(String); group.forEach(control => { control.checked = list.includes(control.value); }); }
     else if (group.length > 1 && Array.isArray(value))      group.forEach((control, i) => setValue(control, value[i]));
-    else                                                    group.forEach(control => setValue(control, value));
+    else                                                    group.forEach( control     => setValue(control, value));
 
     if (notify) for (const control of group) {
       control.dispatchEvent(new Event('input',  { bubbles: true }));
@@ -317,25 +326,19 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
 
 // :::::: INSTALL
 
-const define = (proto, methods) => {
+const extend = (obj, methods) => {
+  const proto = obj.prototype
   for (const [name, value] of Object.entries(methods)) {
     if (name in proto) console.warn(`[@domina/prototype] ${proto.constructor.name}.prototype.${name} exists, overwritten.`);
     Object.defineProperty(proto, name, { configurable: true, value, writable: true });
   }
 };
 
-const query = { getElement, getElements };
-
-define(EventTarget.prototype,         { emitEvent, onEvent, onEvents, waitForEvent });
-define(Element.prototype,             {
-  ...query,
-  getIndex, getNextAll, getParents, getPrevAll, getSiblings,
-  isInViewport, waitForAnimations,
-  setAttributes, setProperties,
-});
-define(HTMLFormElement.prototype,     { getValues, setValues });
-define(Document.prototype,            query);
-define(DocumentFragment.prototype,    query);
-define(CSSStyleDeclaration.prototype, { getToken, getTokens, setToken, setTokens });
+extend(CSSStyleDeclaration, { getToken, getTokens, setToken, setTokens });
+extend(Document,            { getElement, getElements });
+extend(DocumentFragment,    { getElement, getElements });
+extend(Element,             { getElement, getElements, getIndex, getNextAll, getParents, getPrevAll, getSiblings, isInViewport, setAttributes, setProperties, waitForAnimations });
+extend(EventTarget,         { emitEvent, onEvent, onEvents, waitForEvent });
+extend(HTMLFormElement,     { getValues, setValues });
 
 export { selectorOf };
