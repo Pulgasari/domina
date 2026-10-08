@@ -57,8 +57,8 @@ export const toNum = v => {
   return Number.isNaN(n) ? null : n;
 };
 
-// Reine Zahlen gelten NICHT als Datum, sonst wird aus "2020" ein Jahr
-// und aus "5" der 5. Januar 2001.
+// a bare number is NOT a date, else "2020" becomes a year and "5" the 5th of
+// january 2001
 export const parseDate = v => {
   if (v instanceof Date) return Number.isNaN(+v) ? null : v;
   const s = String(v ?? '').trim();
@@ -74,7 +74,7 @@ export const parseDate = v => {
   return Number.isNaN(+d) ? null : d;
 };
 
-// data-count="0" soll 0 sein, nicht "0". Reihenfolge: leer -> bool -> zahl -> json -> string
+// data-count="0" is 0, not "0". order: empty -> bool -> number -> json -> string
 export const autoCast = v => {
   if (!isString(v)) return v;
 
@@ -84,7 +84,7 @@ export const autoCast = v => {
   if (s === 'false') return false;
   if (s === 'null')  return null;
 
-  // fuehrende Nullen und '+' bleiben Strings ('007' ist eine Kennung, keine 7)
+  // leading zeros and '+' stay strings ('007' is an id, not a 7)
   if (/^-?(0|[1-9]\d*)(\.\d+)?([eE][-+]?\d+)?$/.test(s)) return Number(s);
 
   const first = s[0];
@@ -101,7 +101,7 @@ export const
 flatNodes = nodes => nodes.flat(Infinity).filter(n => n != null && n !== false),
 
 /**
- * Token-Listen überall gleich. Akzeptiert
+ * token lists the same everywhere. takes
  *   'a b, c'                 -> ['a', 'b', 'c']
  *   ['a', ['b', 'c']]        -> ['a', 'b', 'c']
  *   { a: true, b: 0, c: 1 }  -> ['a', 'c']
@@ -116,16 +116,23 @@ toList = value => {
 
 // :::::: TRAVERSAL
 
-// Jede Funktion nimmt einen optionalen Filter-Selektor. Ungefiltert ist der
-// seltenere Fall – getParents(el, '.card') ist das, was man wirklich braucht.
-export const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
+// every traversal takes an optional filter, a selector or an element spec. the
+// selector is built once per call, not once per element visited
+export const matcher = filter => {
+  if (!filter) return () => true;
+  const selector = buildSelector(filter);
+  return element => element.matches(selector);
+};
+
+export const passes = (element, filter) => matcher(filter)(element);
 
 export const walk = (element, direction, filter, all) => {
+  const test  = matcher(filter);
   const found = [];
   let current = element?.[direction];
 
   while (current) {
-    if (passes(current, filter)) {
+    if (test(current)) {
       found.push(current);
       if (!all) break;
     }
@@ -137,8 +144,8 @@ export const walk = (element, direction, filter, all) => {
 // :::::: COLLECTION  (von filterElements, sortElements, groupElements)
 
 /**
- * Container auflösen + Items einsammeln.
- * -> { $container, items } | null   (null = Container nicht gefunden)
+ * resolves the container and collects its items.
+ * -> { $container, items } | null   (null = no container)
  */
 export const resolveScope = (name, container, item) => {
   const $container = resolveElement(container);
@@ -150,13 +157,13 @@ export const resolveScope = (name, container, item) => {
 };
 
 /**
- * Spec-Liste normalisieren. Akzeptiert einen einzelnen Spec oder ein Array davon.
- * Jede Form (String | Fn | Array | Objekt) wird über `shape` in ein Objekt gebracht.
+ * normalizes a spec list, a single spec or an array of them. every form (string |
+ * fn | array | object) is brought into an object by `shape`.
  */
 export const toSpecs = (input, shape) => [].concat(input ?? []).map(shape);
 
-// Die Shapes selbst — pro Modul einer, aber hier beisammen,
-// damit die Konventionen sichtbar nebeneinander stehen.
+// the shapes themselves, one per module, kept together so the conventions
+// stand side by side
 
 export const sortShape = defaults => spec => {
   if (isFn     (spec)) return { selector: null,    order: spec };

@@ -1,16 +1,13 @@
 // getSiblings.js
 
-import { buildSelector }  from './buildSelector.js';
 import { resolveElement } from './resolveElement.js';
-
-const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
+import { matcher }        from './_shared.js';
 
 export function getSiblings (spec, filter) {
   const element = resolveElement(spec);
   if (!element?.parentElement) return [];
-  return [...element.parentElement.children].filter(
-    child => child !== element && passes(child, filter)
-  );
+  const test = matcher(filter);
+  return [...element.parentElement.children].filter(child => child !== element && test(child));
 }
 
 export default getSiblings;

@@ -1,40 +1,56 @@
 // filterElements.js
 
-import { getElement } from './getElement.js';
-import { getValue }   from './getValue.js';
+import { buildSelector } from './buildSelector.js';
+import { getValue }      from './getValue.js';
 import { filterShape, isEmpty, isFn, parseDate, resolveScope, startOfDay, toNum, toSpecs } from './_shared.js';
 
-const str = v => String(v ?? '').toLowerCase();
-const stringFilter = fn => (value, search) => str(value)[fn](str(search));
+// a mode takes the search value once and hands back the test for an item value, so
+// lowercasing and parsing the search happen once per filter, not once per item
 
-const numFilter = compare => (value, search) => {
-  const a = toNum(value), b = toNum(search);
-  return a !== null && b !== null && compare(a, b);
+const str = value => String(value ?? '').toLowerCase();
+
+const stringMode = method => search => { const needle = str(search); return value => str(value)[method](needle); };
+
+const numMode = compare => search => {
+  const b = toNum(search);
+  return b === null ? () => false : value => { const a = toNum(value); return a !== null && compare(a, b); };
 };
 
-// Tages-Granularität: "01.05.2024" soll auch matchen, wenn der Wert eine Uhrzeit hat
-const dateFilter = compare => (value, search) => {
-  const a = parseDate(value), b = parseDate(search);
-  return !!a && !!b && compare(+startOfDay(a), +startOfDay(b));
+// day granularity: "01.05.2024" matches a value with a time of that day too
+const dayOf = value => { const date = parseDate(value); return date ? +startOfDay(date) : null; };
+
+const dateMode = compare => search => {
+  const b = dayOf(search);
+  return b === null ? () => false : value => { const a = dayOf(value); return a !== null && compare(a, b); };
 };
 
 const filterModes = {
-  contains   : stringFilter('includes'),
-  includes   : stringFilter('includes'),
-  startsWith : stringFilter('startsWith'),
-  endsWith   : stringFilter('endsWith'),
-  exact      : (value, search) => str(value) === str(search),
+  contains   : stringMode('includes'),
+  includes   : stringMode('includes'),
+  startsWith : stringMode('startsWith'),
+  endsWith   : stringMode('endsWith'),
+  exact      : search => { const needle = str(search); return value => str(value) === needle; },
 
-  'num-eq' : numFilter((a, b) => a === b),
-  'num-gt' : numFilter((a, b) => a  >  b),
-  'num-lt' : numFilter((a, b) => a  <  b),
-  'num-ge' : numFilter((a, b) => a >=  b),
-  'num-le' : numFilter((a, b) => a <=  b),
+  'num-eq' : numMode((a, b) => a === b),
+  'num-gt' : numMode((a, b) => a  >  b),
+  'num-lt' : numMode((a, b) => a  <  b),
+  'num-ge' : numMode((a, b) => a >=  b),
+  'num-le' : numMode((a, b) => a <=  b),
 
-  'date-eq'     : dateFilter((a, b) => a === b),
-  'date-after'  : dateFilter((a, b) => a  >  b),
-  'date-before' : dateFilter((a, b) => a  <  b),
+  'date-eq'     : dateMode((a, b) => a === b),
+  'date-after'  : dateMode((a, b) => a  >  b),
+  'date-before' : dateMode((a, b) => a  <  b),
 };
+
+// a spec as { css, test } once, an empty search drops out
+function prepare ({ selector, value, mode, customFn }) {
+  if (!isFn(customFn) && isEmpty(value)) return null;
+  const css  = selector ? buildSelector(selector) : null;
+  const test = isFn(customFn)
+    ? (itemValue, el) => customFn(itemValue, value, el)
+    : (filterModes[mode] ?? filterModes.contains)(value);
+  return { css, test };
+}
 
 // mismatches get `mismatchClass`, or the hidden attribute with `hide: true`,
 // which needs no stylesheet to take effect
@@ -43,25 +59,16 @@ export function filterElements ({ container, item, filters, mismatchClass = 'hid
   if (!scope) return { total: 0, matched: 0, items: [] };
 
   const { items } = scope;
-  const specs = toSpecs(filters, filterShape);
+  const specs = toSpecs(filters, filterShape).map(prepare).filter(Boolean);
   const matchedItems = [];
 
   for (const el of items) {
     let matches = true;
 
-    for (const { selector, value, mode, customFn } of specs) {
-      if (!isFn(customFn) && isEmpty(value)) continue;
-
-      const target = selector ? getElement(selector, el) : el;
-      if (selector && !target) { matches = false; break; }
-
-      const itemValue = getValue(target) ?? '';
-
-      const result = isFn(customFn)
-        ? customFn(itemValue, value, el)
-        : (filterModes[mode] ?? filterModes.contains)(itemValue, value);
-
-      if (!result) { matches = false; break; }   // AND
+    for (const { css, test } of specs) {
+      const target = css ? el.querySelector(css) : el;
+      if (css && !target) { matches = false; break; }
+      if (!test(getValue(target) ?? '', el)) { matches = false; break; }   // AND
     }
 
     if (hide) el.hidden = !matches;
