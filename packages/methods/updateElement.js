@@ -2,11 +2,21 @@
 
 import { flatNodes, isFn, isString, toList } from './_shared.js';
 import { resolveElement }    from './resolveElement.js';
-// todo: observer becomes its own package @domina/observer.
-// unresolved external for now, exact boundary + import-map mapping decided at the core-move.
-import { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible } from '@domina/observer';
 
-const observerEvents = { onAdded, onAttr, onConnected, onDisconnected, onRemoved, onResize, onVisible };
+// :::::: OBSERVER
+// the observer props load @domina/observer on first use instead of with every
+// createElement. from then on they run synchronously. the first use on a page waits a
+// tick for the module: onConnected, onVisible and onResize still see an element that
+// is connected by then, onAdded, onRemoved and onAttr miss what happens in that tick
+const OBSERVER_KEYS = new Set(['onAdded', 'onAttr', 'onConnected', 'onDisconnected', 'onRemoved', 'onResize', 'onVisible']);
+
+let observer = null, loading = null;
+
+function observe (key, element, handler) {
+  if (observer) return void observer[key](element, handler);
+  (loading ??= import('@domina/observer').then(module => observer = module))
+    .then(module => module[key](element, handler));
+}
 
 // :::::: HELPERS
 
@@ -95,9 +105,8 @@ export function updateElement (spec, props = {}, ...children) {
     }
 
     else if (key.startsWith('on') && isFn(value)) {
-      const observerFn = observerEvents[key];
-      observerFn ? observerFn(element, value)
-                 : element.addEventListener(key.slice(2).toLowerCase(), value);
+      OBSERVER_KEYS.has(key) ? observe(key, element, value)
+                             : element.addEventListener(key.slice(2).toLowerCase(), value);
 
       // observerEvents[key]?.(element, value)
       // ?? element.addEventListener(key.slice(2).toLowerCase(), value);
