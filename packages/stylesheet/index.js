@@ -1,10 +1,10 @@
 // @domina/stylesheet
 
-import { adoptStylesheet   as adopt }   from '@domina/methods/adoptStylesheet';
-import { getStylesheets    as get }     from '@domina/methods/getStylesheets';
-import { hasStylesheet     as has }     from '@domina/methods/hasStylesheet';
-import { releaseStylesheet as release } from '@domina/methods/releaseStylesheet';
-import { scopeStylesheet   as scope }   from '@domina/methods/scopeStylesheet';
+import { adoptStyleSheet   as adopt }   from '@domina/methods/adoptStyleSheet';
+import { getStyleSheets    as get }     from '@domina/methods/getStyleSheets';
+import { hasStyleSheet     as has }     from '@domina/methods/hasStyleSheet';
+import { releaseStyleSheet as release } from '@domina/methods/releaseStyleSheet';
+import { scopeStyleSheet   as scope }   from '@domina/methods/scopeStyleSheet';
 import { setStyleElement }              from '@domina/methods/setStyleElement';
 
 /**

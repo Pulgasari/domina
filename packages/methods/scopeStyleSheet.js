@@ -1,11 +1,11 @@
-// scopeStylesheet.js
+// scopeStyleSheet.js
 
 /**
  * Prefixes every selector of a sheet or rule list so several sheets can coexist
  * on one page. Descends into @media, @supports and @layer. :root is replaced by
  * the scope rather than nested inside it.
  */
-export function scopeStylesheet (sheetOrRules, scope) {
+export function scopeStyleSheet (sheetOrRules, scope) {
   const rules = sheetOrRules?.cssRules ?? sheetOrRules;
   if (!rules || !scope) return sheetOrRules;
 
@@ -19,10 +19,10 @@ export function scopeStylesheet (sheetOrRules, scope) {
         })
         .join(', ');
     } else if (rule.cssRules) {
-      scopeStylesheet(rule.cssRules, scope);
+      scopeStyleSheet(rule.cssRules, scope);
     }
   }
   return sheetOrRules;
 }
 
-export default scopeStylesheet;
+export default scopeStyleSheet;

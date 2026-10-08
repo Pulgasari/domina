@@ -11,7 +11,7 @@
 
 ## methods
 
-- [ ] cleanup + utilize: `adoptStylesheet`
+- [ ] cleanup + utilize: `adoptStyleSheet`
 - [ ] cleanup + utilize: `getNextAll`, `getParents`, `getPrevAll`
 - [ ] cleanup + utilize: `onEvent`, `offEvent`, `delegateEvent`
 - [ ] create: generell schauen wegen singular/plural-varianten
@@ -27,5 +27,5 @@
 - [ ] rename: `delegateEvent` ???
 - [ ] rename: `emitEvent` ???
 - [ ] rename: `notifyChange` -> `emitValueChange` ???
-- [ ] rename: `scopeStylesheet` and the others to `scopeStyleSheet` ???
+- [x] rename: `scopeStylesheet` and the others to `scopeStyleSheet`
 - [ ] rename: `waitForEvent` ???

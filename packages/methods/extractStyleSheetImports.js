@@ -1,4 +1,4 @@
-// extractStylesheetImports.js
+// extractStyleSheetImports.js
 
 const COMMENT = /\/\*[\s\S]*?\*\//g;
 
@@ -48,20 +48,20 @@ const resolveHref = (href, base) => {
 };
 
 /**
- * extractStylesheetImports(css)                    -> { code, imports }
- * extractStylesheetImports(css, { mode: 'strip' }) -> code without the rules
+ * extractStyleSheetImports(css)                    -> { code, imports }
+ * extractStyleSheetImports(css, { mode: 'strip' }) -> code without the rules
  * -> { code: string, imports: { href, layer, media, rule, supports }[] }
  *
  * a constructed stylesheet cannot carry @import — replace() and replaceSync() drop
  * the rules per spec — so anything building one has to take them out beforehand and
- * load them some other way. see adoptStylesheet's `imports` option.
+ * load them some other way. see adoptStyleSheet's `imports` option.
  *
  * @param {string} css
  * @param {{ base?: string, mode?: 'comment'|'keep'|'strip' }} [options]
  *        base — what a relative import url resolves against, default document.baseURI
  *        mode — what `code` does with the rules it found
  */
-export function extractStylesheetImports (css, { base, mode = 'comment' } = {}) {
+export function extractStyleSheetImports (css, { base, mode = 'comment' } = {}) {
   const text = String(css ?? '');
   if (!text.includes('@import')) return { code: text, imports: [] };
 
@@ -94,4 +94,4 @@ export function extractStylesheetImports (css, { base, mode = 'comment' } = {}) 
   return { code, imports };
 }
 
-export default extractStylesheetImports;
+export default extractStyleSheetImports;

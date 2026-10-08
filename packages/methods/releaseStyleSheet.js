@@ -1,11 +1,11 @@
-// releaseStylesheet.js
+// releaseStyleSheet.js
 
 import { isString }        from './_shared.js';
-import { rootOf, storeOf } from './_shared/stylesheet.js';
+import { rootOf, storeOf } from './_shared/styleSheet.js';
 
 
 /** Removes a sheet again. Accepts the sheet itself or the key it was cached under. */
-export async function releaseStylesheet (sheetOrKey, { target = document } = {}) {
+export async function releaseStyleSheet (sheetOrKey, { target = document } = {}) {
   const root  = rootOf(target);
   const store = storeOf(root);
 
@@ -22,4 +22,4 @@ export async function releaseStylesheet (sheetOrKey, { target = document } = {})
   return true;
 }
 
-export default releaseStylesheet;
+export default releaseStyleSheet;

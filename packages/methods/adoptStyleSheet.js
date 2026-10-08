@@ -1,17 +1,17 @@
-// adoptStylesheet.js
+// adoptStyleSheet.js
 
 import { isFn, isString }           from './_shared.js';
-import { createStylesheet }         from './createStylesheet.js';
-import { extractStylesheetImports } from './extractStylesheetImports.js';
+import { createStyleSheet }         from './createStyleSheet.js';
+import { extractStyleSheetImports } from './extractStyleSheetImports.js';
 import { resolveElement }           from './resolveElement.js';
-import { scopeStylesheet }          from './scopeStylesheet.js';
+import { scopeStyleSheet }          from './scopeStyleSheet.js';
 import { setLink }                  from './setLink.js';
 
 import {
   rootOf, storeOf,
   isCssUrl, isSheet, 
   layered, registry,
-} from './_shared/stylesheet.js';
+} from './_shared/styleSheet.js';
 
 // :::::: HELPERS
 
@@ -36,9 +36,9 @@ const baseOf = (source, base) => {
 };
 
 const dropNotice = (list) => console.info(
-  `[domina] adoptStylesheet: ${list.length} @import rule(s) dropped — a constructed`
+  `[domina] adoptStyleSheet: ${list.length} @import rule(s) dropped — a constructed`
   + ' stylesheet cannot carry them. hang them into <head> instead:\n\n'
-  + "    adoptStylesheet(source, { imports: 'link' })\n\n"
+  + "    adoptStyleSheet(source, { imports: 'link' })\n\n"
   + list.map(item => `  ${item.href}`).join('\n')
 );
 
@@ -56,7 +56,7 @@ function handleImports (css, { base, imports, source }) {
     : imports === 'strip' || isFn(imports) ? 'strip'
     :                                        'comment';
 
-  const { code, imports: found } = extractStylesheetImports(css, { base: baseOf(source, base), mode });
+  const { code, imports: found } = extractStyleSheetImports(css, { base: baseOf(source, base), mode });
   if (!found.length) return css;
 
        if (imports === 'keep') dropNotice(found);
@@ -64,7 +64,7 @@ function handleImports (css, { base, imports, source }) {
   else if (imports === 'link') {
     for (const item of found) {
       // a <link> has no way to express layer(), that part of the rule is lost
-      if (item.layer !== null) console.warn(`[domina] adoptStylesheet: dropping layer(${item.layer}) from ${item.href}, a <link> cannot carry it`);
+      if (item.layer !== null) console.warn(`[domina] adoptStyleSheet: dropping layer(${item.layer}) from ${item.href}, a <link> cannot carry it`);
       setLink({ href: item.href, rel: 'stylesheet', ...(item.media && { media: item.media }) });
     }
   }
@@ -72,7 +72,7 @@ function handleImports (css, { base, imports, source }) {
   return code;
 }
 
-export function adoptStylesheet (source, { target = document, scope = null, layer = null, base, imports = 'keep', key, replace = false, media } = {}) {
+export function adoptStyleSheet (source, { target = document, scope = null, layer = null, base, imports = 'keep', key, replace = false, media } = {}) {
   if (!isSupported) return Promise.resolve(null);
 
   const root  = rootOf(target);
@@ -85,7 +85,7 @@ export function adoptStylesheet (source, { target = document, scope = null, laye
     const existing = id && replace ? await store.get(id) : null;
 
     if (isSheet(source)) {
-      if (scope) scopeStylesheet(source, scope);
+      if (scope) scopeStyleSheet(source, scope);
       if (!root.adoptedStyleSheets.includes(source)) {
         root.adoptedStyleSheets = [...root.adoptedStyleSheets, source];
       }
@@ -97,16 +97,16 @@ export function adoptStylesheet (source, { target = document, scope = null, laye
     // Reuse the existing sheet object so its position in the cascade survives
     if (existing) {
       existing.replaceSync(layered(css, layer));
-      if (scope) scopeStylesheet(existing, scope);
+      if (scope) scopeStyleSheet(existing, scope);
       return existing;
     }
 
-    const sheet = createStylesheet(css, { scope, layer, media });
+    const sheet = createStyleSheet(css, { scope, layer, media });
     root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     return sheet;
   })().catch(error => {
     if (id) store.delete(id); // A failed load must not poison the cache
-    console.warn('[domina] adoptStylesheet failed:', error);
+    console.warn('[domina] adoptStyleSheet failed:', error);
     return null;
   });
 
@@ -114,4 +114,4 @@ export function adoptStylesheet (source, { target = document, scope = null, laye
   return promise;
 }
 
-export default adoptStylesheet;
+export default adoptStyleSheet;

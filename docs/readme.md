@@ -35,7 +35,7 @@ _tgt   ->  resolveTarget     alles mit addEventListener passiert unverändert
 | `head` | `getHead` `getTitle` `setTitle` `setLink` `setHead` `upsertHead` |
 | `meta` | `getMeta` `hasMeta` `setMeta` `removeMeta` `getMetaAttr` `getMetaElement` |
 | `fonts` | `addFont` `hasFont` `loadFont` `getFonts` `removeFont` `fontsReady` `getFontStatus` `eachFont` |
-| `stylesheet` | `setStyleElement` `createStylesheet` `adoptStylesheet` `releaseStylesheet` `hasStylesheet` `getStylesheets` `scopeStylesheet` |
+| `stylesheet` | `setStyleElement` `createStyleSheet` `adoptStyleSheet` `releaseStyleSheet` `hasStyleSheet` `getStyleSheets` `scopeStyleSheet` |
 | `events` | `onEvent` `onceEvent` `offEvent` `emitEvent` `onCustom` `waitForEvent` `delegate` `onOutside` |
 | `observer` | `observe` `onConnected` `onDisconnected` `onAdded` `onRemoved` `onAttr` `onResize` `onVisible` |
 | `raf` | `measure` `mutate` `frame` `nextFrame` `flushSync` |

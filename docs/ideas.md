@@ -56,7 +56,7 @@ getAttribute
 getClass
 getDataset
 getProperties
-getStylesheet
+getStyleSheet
 hasAttribute
 hasClass
 removeAttribute

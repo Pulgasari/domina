@@ -211,16 +211,16 @@ export interface SheetOptions {
 }
 
 export function setStyleElement(css: string | null, opts?: { id?: string; media?: string }): HTMLStyleElement | null;
-export function createStylesheet(
+export function createStyleSheet(
   css: string,
   opts?: { scope?: string | null; layer?: string | null; media?: string; disabled?: boolean }
 ): CSSStyleSheet;
-export function adoptStylesheet(source: string | Response | CSSStyleSheet, opts?: SheetOptions): Promise<CSSStyleSheet | null>;
-export function releaseStylesheet(sheetOrKey: CSSStyleSheet | string, opts?: { target?: SheetOptions['target'] }): Promise<boolean>;
-export function hasStylesheet(sheet: CSSStyleSheet, opts?: { target?: SheetOptions['target'] }): boolean;
-export function getStylesheets(opts?: { target?: SheetOptions['target'] }): CSSStyleSheet[];
-export function scopeStylesheet<T>(sheetOrRules: T, scope: string): T;
-export function extractStylesheetImports(
+export function adoptStyleSheet(source: string | Response | CSSStyleSheet, opts?: SheetOptions): Promise<CSSStyleSheet | null>;
+export function releaseStyleSheet(sheetOrKey: CSSStyleSheet | string, opts?: { target?: SheetOptions['target'] }): Promise<boolean>;
+export function hasStyleSheet(sheet: CSSStyleSheet, opts?: { target?: SheetOptions['target'] }): boolean;
+export function getStyleSheets(opts?: { target?: SheetOptions['target'] }): CSSStyleSheet[];
+export function scopeStyleSheet<T>(sheetOrRules: T, scope: string): T;
+export function extractStyleSheetImports(
   css: string,
   opts?: { base?: string; mode?: 'comment' | 'keep' | 'strip' }
 ): { code: string; imports: StylesheetImport[] };
