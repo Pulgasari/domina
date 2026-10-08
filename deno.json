@@ -4,6 +4,7 @@
     "./chain",
     "./packages/methods",
     "./packages/observer",
+    "./packages/prototype",
     "./packages/element",
     "./packages/form",
     "./packages/meta",

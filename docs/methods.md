@@ -1,18 +1,18 @@
 # methods
 
-[adoptStylesheet](#adoptStylesheet)
-[extractStylesheetImports](#extractStylesheetImports)
+[adoptStyleSheet](#adoptStyleSheet)
+[extractStyleSheetImports](#extractStyleSheetImports)
 
 ##
 
-### `adoptStylesheet`
+### `adoptStyleSheet`
 
-adoptStylesheet(source, options?) -> Promise<CSSStyleSheet|null>
+adoptStyleSheet(source, options?) -> Promise<CSSStyleSheet|null>
 source: css text, a url, a Response or an existing CSSStyleSheet.
 adopted sheets cascade after author styles, so they override a page level <link> without !important.
 
 ```javascript
-await adoptStylesheet('/themes/nord.css', {
+await adoptStyleSheet('/themes/nord.css', {
   scope : 'aufbau-code[data-hljs-theme="nord"]',
   key   : 'hljs:nord',
 });
@@ -34,15 +34,15 @@ imports what to do with @import rules, which a constructed sheet cannot carry.
 base    what a relative @import url resolves against. defaults to the source
         when that was a url or a Response, else document.baseURI
 
-### `extractStylesheetImports`
+### `extractStyleSheetImports`
 
-extractStylesheetImports(css, options?) -> { code, imports }
-the @import handling of adoptStylesheet on its own, for anything that builds a
+extractStyleSheetImports(css, options?) -> { code, imports }
+the @import handling of adoptStyleSheet on its own, for anything that builds a
 CSSStyleSheet itself. knows both url forms, skips commented out rules and splits
 layer(), supports() and the media query apart.
 
 ```javascript
-const { code, imports } = extractStylesheetImports(css, { base, mode: 'strip' });
+const { code, imports } = extractStyleSheetImports(css, { base, mode: 'strip' });
 // imports -> [{ href, layer, media, rule, supports }, …]
 ```
 

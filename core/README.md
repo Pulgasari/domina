@@ -264,13 +264,13 @@ eachFont(callback)
 setStyleElement(css, { id, media })      // <style>, mit id idempotent
 setStyleElement(null, { id })            // entfernt
 
-createStylesheet(css, { scope, layer, media, disabled })
-adoptStylesheet(source, options)         // -> Promise<CSSStyleSheet|null>
-releaseStylesheet(sheetOrKey, { target })
-hasStylesheet(sheet, { target })
-getStylesheets({ target })
-scopeStylesheet(sheetOrRules, scope)
-extractStylesheetImports(css, { base, mode })  // -> { code, imports }
+createStyleSheet(css, { scope, layer, media, disabled })
+adoptStyleSheet(source, options)         // -> Promise<CSSStyleSheet|null>
+releaseStyleSheet(sheetOrKey, { target })
+hasStyleSheet(sheet, { target })
+getStyleSheets({ target })
+scopeStyleSheet(sheetOrRules, scope)
+extractStyleSheetImports(css, { base, mode })  // -> { code, imports }
 ```
 
 `source` ist CSS-Text, eine URL, eine `Response` oder ein fertiges `CSSStyleSheet`.
@@ -279,7 +279,7 @@ Adoptierte Sheets kommen in der Kaskade nach den Autor-Styles, überschreiben ei
 verliert gegen jede ungelayerte Regel — das Richtige für Komponenten-Basisstyles.
 
 ```javascript
-await adoptStylesheet('/themes/nord.css', {
+await adoptStyleSheet('/themes/nord.css', {
   scope : '[data-theme="nord"]',
   key   : 'theme:nord',
 });
@@ -295,7 +295,7 @@ Ein constructed stylesheet kann `@import` nicht tragen: `replace()` und `replace
 werfen die Regeln laut Spec weg. `imports` bestimmt, was stattdessen passiert.
 
 ```javascript
-await adoptStylesheet(compiledCss, { imports: 'link', base: sheetURL });
+await adoptStyleSheet(compiledCss, { imports: 'link', base: sheetURL });
 ```
 
 | Wert | |
@@ -316,12 +316,12 @@ in der Kaskade vor dem adoptierten Sheet, das sie überschreiben soll. Zwei Gren
 `layer(…)` lässt sich auf einem `<link>` nicht ausdrücken (gibt eine Warnung), und
 dieselbe `href` mit unterschiedlichem `media` fällt im Dedupe von `setLink` zusammen.
 
-`extractStylesheetImports` ist derselbe Mechanismus einzeln, für alles was selbst ein
+`extractStyleSheetImports` ist derselbe Mechanismus einzeln, für alles was selbst ein
 `CSSStyleSheet` baut. Es kennt beide URL-Formen (`url(…)` und String), überspringt
 auskommentierte Regeln und zerlegt `layer(…)`, `supports(…)` und die Media-Query:
 
 ```javascript
-const { code, imports } = extractStylesheetImports(css, { base, mode: 'strip' });
+const { code, imports } = extractStyleSheetImports(css, { base, mode: 'strip' });
 // imports -> [{ href, layer, media, rule, supports }, …]
 ```
 

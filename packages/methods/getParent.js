@@ -1,9 +1,7 @@
 // getParent.js
 
-import { buildSelector }  from './buildSelector.js';
 import { resolveElement } from './resolveElement.js';
-
-const passes = (element, filter) => !filter || element.matches(buildSelector(filter));
+import { passes }         from './_shared.js';
 
 export function getParent (spec, filter) {
   const parent = resolveElement(spec)?.parentElement ?? null;
