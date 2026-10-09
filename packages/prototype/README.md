@@ -2,6 +2,12 @@
 
 the dom verbs of domina right on the dom prototypes, for an app that owns its globals.
 
+the methods are non-enumerable like the natives. 
+
+a name a prototype has already is overwritten with a warning: the app decides what its dom means. a library should not import this, it changes the dom of the whole realm.
+
+---
+
 ## usage
 
 ```js
@@ -11,10 +17,6 @@ import '@domina/prototype';
 ---
 
 # content
-
-the methods are non-enumerable like the natives. 
-
-a name a prototype has already is overwritten with a warning: the app decides what its dom means. a library should not import this, it changes the dom of the whole realm.
 
 ### CSSStyleDeclaration
 [`getToken`](#getToken)
@@ -64,15 +66,24 @@ a spec is a selector or an object: `tag`, `id`, `class` (a string or a list), `d
 any other key as an attribute in kebab-case. `true` asks for the attribute, `false` and
 nullish leave the key out. an invalid selector gives `null` / `[]`, it does not throw.
 
-## onEvent, onEvents, emitEvent
+## EventTarget
+
+### emitEvent
 
 ```js
-const off = button.onEvent('click', save);                // off() removes it again
-input.onEvent('input change', update, { passive: true });
-const offAll = window.onEvents({ resize, 'online offline': sync });
+el.emitEvent('select', { id });     // bubbles, cancelable
+if (!el.emitEvent('close')) return; // a listener called preventDefault()
+```
 
-el.emitEvent('select', { id });                           // bubbles, cancelable
-if (!el.emitEvent('close')) return;                       // a listener called preventDefault()
+### onEvent, onEvents
+
+```js
+const off = button.onEvent('click', save); // off() removes it again
+input.onEvent('input change', update, { passive: true });
+```
+
+```js
+const offAll = window.onEvents({ resize, 'online offline': sync });
 ```
 
 `focus` and `blur` listen to `focusin` and `focusout`, so a container hears its descendants.
