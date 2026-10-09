@@ -1,3 +1,5 @@
+![Logo](/logo.svg)
+
 # @domina/prototype
 
 the dom verbs of domina right on the dom prototypes, for an app that owns its globals.
