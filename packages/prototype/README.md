@@ -2,6 +2,8 @@
 
 the dom verbs of domina right on the dom prototypes, for an app that owns its globals.
 
+## usage
+
 ```js
 import '@domina/prototype';
 ```
@@ -19,6 +21,45 @@ import '@domina/prototype';
 the methods are non-enumerable like the natives. a name a prototype has already is
 overwritten with a warning: the app decides what its dom means. a library should not
 import this, it changes the dom of the whole realm.
+
+---
+
+## content
+
+### CSSStyleDeclaration
+[`getToken`](#getToken)
+[`getTokens`](#getTokens)
+[`setToken`](#setToken)
+[`setTokens`](#setTokens)
+
+### Element | Document | DocumentFragment
+[`getElement`](#getElement)
+[`getElements`](#getElements)
+[`getIndex`](#getIndex)
+[`getNextAll`](#getNextAll)
+[`getParents`](#getParents)
+[`getPrevAll`](#getPrevAll)
+[`getSiblings`](#getSiblings)
+[`isInViewport`](#isInViewport)
+[`setAriaAttribute`](#setAriaAttribute)
+[`setAriaAttributes`](#setAriaAttributes)
+[`setAttributes`](#setAttributes)
+[`setProperties`](#setProperties)
+[`waitForAnimations`](#waitForAnimations)
+
+### HTMLFormElement
+[`getValues`](#getValues)
+[`setValues`](#setValues)
+
+### EventTarget
+[`emitEvent`](#emitEvent)
+[`onEvent`](#onEvent)
+[`onEvents`](#onEvents)
+[`waitForEvent`](#waitForEvent)
+
+---
+
+# methods
 
 ## getElement, getElements
 
