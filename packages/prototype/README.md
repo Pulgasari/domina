@@ -53,18 +53,73 @@ import '@domina/prototype';
 
 # methods
 
-## getElement, getElements
+## CSSStyleDeclaration
+
+### getToken
 
 ```js
-root.getElement('.row')                                   // the first match or null
-root.getElements('li')                                    // a real array
-root.getElements({ tag: 'li', class: 'row', dataset: { done: true } })
-document.getElement({ ariaCurrent: 'page' })              // [aria-current="page"]
+el.style.getToken('accent'); // the inline value or null
+getComputedStyle(el).getToken('accent'); // the one in effect, inherited too
+```
+
+### setToken
+
+```js
+el.style.setToken('accent', 'tomato'); // --accent: tomato
+```
+
+### setTokens
+
+```js
+el.style.setTokens({ accent: 'tomato', size: 2 });
+```
+
+## Element | Document | DocumentFragment (+ shadow roots)
+
+### getElement
+
+```js
+root.getElement('.row'); // the first match or null
+document.getElement({ ariaCurrent: 'page' }); // [aria-current="page"]
+```
+
+### getElements
+
+```js
+root.getElements('li'); // a real array
+root.getElements({ tag: 'li', class: 'row', dataset: { done: true } });
 ```
 
 a spec is a selector or an object: `tag`, `id`, `class` (a string or a list), `dataset`,
 any other key as an attribute in kebab-case. `true` asks for the attribute, `false` and
 nullish leave the key out. an invalid selector gives `null` / `[]`, it does not throw.
+
+### isInViewport
+
+```js
+el.isInViewport(); // a pixel is enough
+el.isInViewport({ ratio: 1 }); // all of it
+```
+
+## setAriaAttribute
+
+```js
+el.setAriaAttribute('expanded', open); // aria-expanded="true" / "false"
+```
+
+## setAriaAttributes
+
+```js
+el.setAriaAttributes({
+  controls   : 'menu',
+  labelledby : ['title', 'hint'],
+  current    : null
+});
+```
+
+the prefix is optional: `expanded`, `ariaExpanded` and `aria-expanded` are the same.
+
+`true` and `false` are values here (`'true'`, `'false'`), only nullish removes. a list (id references, tokens) is joined with spaces.
 
 ## EventTarget
 
@@ -88,6 +143,17 @@ const offAll = window.onEvents({ resize, 'online offline': sync });
 
 `focus` and `blur` listen to `focusin` and `focusout`, so a container hears its descendants.
 
+### waitForEvent
+
+```js
+const event = await video.waitForEvent('canplay error', { timeout: 5000, signal });
+await panel.waitForAnimations({ name: 'slide-out' });    // then remove it
+```
+
+`waitForEvent` resolves with the first of the types and removes all its listeners; a
+timeout rejects with an error, an aborted signal with its reason. `waitForAnimations`
+counts a cancelled animation as done and resolves with the element.
+
 ## setAttributes
 
 ```js
@@ -97,25 +163,6 @@ el.setAttributes({ ariaLabel: 'close', disabled: false, hidden: true, title: nul
 camelCase keys become kebab-case. `false` and nullish remove, `true` sets the attribute
 empty, anything else as a string. `aria-*` keys go to `setAriaAttribute`.
 
-## setAriaAttribute
-
-```js
-el.setAriaAttribute('expanded', open); // aria-expanded="true" / "false"
-```
-
-## setAriaAttributes
-
-```js
-el.setAriaAttributes({
-  controls   : 'menu',
-  labelledby : ['title', 'hint'],
-  current    : null
-});
-```
-
-the prefix is optional: `expanded`, `ariaExpanded` and `aria-expanded` are the same.
-`true` and `false` are values here (`'true'`, `'false'`), only nullish removes. a list
-(id references, tokens) is joined with spaces.
 
 ## setProperties
 
@@ -139,12 +186,7 @@ every key is set as a property, `undefined` is skipped. three take more:
 
 ## tokens
 
-```js
-el.style.setToken('accent', 'tomato');                    // --accent: tomato
-el.style.setTokens({ accent: 'tomato', size: 2 });
-el.style.getToken('accent');                              // the inline value or null
-getComputedStyle(el).getToken('accent');                  // the one in effect, inherited too
-```
+
 
 a token is a custom property, the name with or without its dashes. nullish and `false`
 remove. `getToken` on `el.style` reads the inline value, on `getComputedStyle(el)` the
@@ -159,23 +201,7 @@ el.getNextAll(), el.getPrevAll('.row')                   // the nearest first
 el.getIndex()                                            // among its element siblings, -1 without a parent
 ```
 
-## waiting
 
-```js
-const event = await video.waitForEvent('canplay error', { timeout: 5000, signal });
-await panel.waitForAnimations({ name: 'slide-out' });    // then remove it
-```
-
-`waitForEvent` resolves with the first of the types and removes all its listeners; a
-timeout rejects with an error, an aborted signal with its reason. `waitForAnimations`
-counts a cancelled animation as done and resolves with the element.
-
-## isInViewport
-
-```js
-el.isInViewport()                                        // a pixel is enough
-el.isInViewport({ ratio: 1 })                            // all of it
-```
 
 ## forms
 
