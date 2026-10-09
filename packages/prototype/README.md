@@ -55,11 +55,20 @@ el.setAttributes({ ariaLabel: 'close', disabled: false, hidden: true, title: nul
 camelCase keys become kebab-case. `false` and nullish remove, `true` sets the attribute
 empty, anything else as a string. `aria-*` keys go to `setAriaAttribute`.
 
-## setAriaAttribute, setAriaAttributes
+## setAriaAttribute
 
 ```js
-el.setAriaAttribute('expanded', open);                    // aria-expanded="true" / "false"
-el.setAriaAttributes({ controls: 'menu', labelledby: ['title', 'hint'], current: null });
+el.setAriaAttribute('expanded', open); // aria-expanded="true" / "false"
+```
+
+## setAriaAttributes
+
+```js
+el.setAriaAttributes({
+  controls   : 'menu',
+  labelledby : ['title', 'hint'],
+  current    : null
+});
 ```
 
 the prefix is optional: `expanded`, `ariaExpanded` and `aria-expanded` are the same.
