@@ -8,23 +8,13 @@ the dom verbs of domina right on the dom prototypes, for an app that owns its gl
 import '@domina/prototype';
 ```
 
-| on | methods |
-|---|---|
-| `Element`, `Document`, `DocumentFragment` (shadow roots too) | `getElement`, `getElements` |
-| `EventTarget` (window, document, elements, signals …) | `onEvent`, `onEvents`, `emitEvent` |
-| `Element` | `setProperties`, `setAttributes`, `setAriaAttribute`, `setAriaAttributes` |
-| `CSSStyleDeclaration` | `setToken`, `setTokens`, `getToken`, `getTokens` |
-| `EventTarget` | `waitForEvent` |
-| `Element` | `getSiblings`, `getParents`, `getNextAll`, `getPrevAll`, `getIndex`, `isInViewport`, `waitForAnimations` |
-| `HTMLFormElement` | `getValues`, `setValues` |
-
-the methods are non-enumerable like the natives. a name a prototype has already is
-overwritten with a warning: the app decides what its dom means. a library should not
-import this, it changes the dom of the whole realm.
-
 ---
 
-## content
+# content
+
+the methods are non-enumerable like the natives. 
+
+a name a prototype has already is overwritten with a warning: the app decides what its dom means. a library should not import this, it changes the dom of the whole realm.
 
 ### CSSStyleDeclaration
 [`getToken`](#getToken)
@@ -32,7 +22,7 @@ import this, it changes the dom of the whole realm.
 [`setToken`](#setToken)
 [`setTokens`](#setTokens)
 
-### Element | Document | DocumentFragment
+### Element | Document | DocumentFragment (+ shadow roots)
 [`getElement`](#getElement)
 [`getElements`](#getElements)
 [`getIndex`](#getIndex)
