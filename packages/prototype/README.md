@@ -55,6 +55,8 @@ import '@domina/prototype';
 
 ## CSSStyleDeclaration
 
+a token is a custom property, the name with or without its dashes. nullish and `false` remove. `getToken` on `el.style` reads the inline value, on `getComputedStyle(el)` the value in effect.
+
 ### getToken
 
 ```js
@@ -121,6 +123,35 @@ the prefix is optional: `expanded`, `ariaExpanded` and `aria-expanded` are the s
 
 `true` and `false` are values here (`'true'`, `'false'`), only nullish removes. a list (id references, tokens) is joined with spaces.
 
+### setAttributes
+
+```js
+el.setAttributes({ ariaLabel: 'close', disabled: false, hidden: true, title: null });
+```
+
+camelCase keys become kebab-case. `false` and nullish remove, `true` sets the attribute
+empty, anything else as a string. `aria-*` keys go to `setAriaAttribute`.
+
+
+### setProperties
+
+```js
+el.setProperties({
+  hidden  : false,
+  title   : 'settings',
+  class   : ['panel', open && 'open'],
+  style   : { gap: 8, lineHeight: 1.5, '--accent': 'tomato', marginTop: null },
+  dataset : { id: 5, tags: ['a', 'b'] },
+});
+```
+
+every key is set as a property, `undefined` is skipped. three take more:
+
+- `style` as an object: kebab-case, numbers get `px` except where a number is the value (`opacity`, `lineHeight`, `zIndex` …), `--name` as it is, nullish and `false` remove. A string sets the style attribute.
+- `dataset` (or `data`): objects and lists as json, nullish removes.
+- `class` (or `className`): a string or a list, falsy entries dropped.
+
+
 ## EventTarget
 
 ### emitEvent
@@ -154,43 +185,6 @@ await panel.waitForAnimations({ name: 'slide-out' });    // then remove it
 timeout rejects with an error, an aborted signal with its reason. `waitForAnimations`
 counts a cancelled animation as done and resolves with the element.
 
-## setAttributes
-
-```js
-el.setAttributes({ ariaLabel: 'close', disabled: false, hidden: true, title: null });
-```
-
-camelCase keys become kebab-case. `false` and nullish remove, `true` sets the attribute
-empty, anything else as a string. `aria-*` keys go to `setAriaAttribute`.
-
-
-## setProperties
-
-```js
-el.setProperties({
-  hidden  : false,
-  title   : 'settings',
-  class   : ['panel', open && 'open'],
-  style   : { gap: 8, lineHeight: 1.5, '--accent': 'tomato', marginTop: null },
-  dataset : { id: 5, tags: ['a', 'b'] },
-});
-```
-
-every key is set as a property, `undefined` is skipped. three take more:
-
-- `style` as an object: kebab-case, numbers get `px` except where a number is the value
-  (`opacity`, `lineHeight`, `zIndex` …), `--name` as it is, nullish and `false` remove.
-  a string sets the style attribute.
-- `dataset` (or `data`): objects and lists as json, nullish removes.
-- `class` (or `className`): a string or a list, falsy entries dropped.
-
-## tokens
-
-
-
-a token is a custom property, the name with or without its dashes. nullish and `false`
-remove. `getToken` on `el.style` reads the inline value, on `getComputedStyle(el)` the
-value in effect.
 
 ## relatives
 
