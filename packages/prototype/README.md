@@ -91,7 +91,6 @@ const button = document.createElement('button', {
   class    : ['btn', { active: open }],
   title    : 'save',
   onClick  : save,
-  appendTo : '#toolbar',
 }, icon, 'save');
 ```
 
@@ -112,29 +111,49 @@ el.update({
   hidden    : false,
   ariaLabel : 'settings',
   onClick   : toggle,
-  onVisible : load,
   ref       : panelRef,
-  appendTo  : document.body,
 }, header, [items], cond && footer);
 ```
 
-the same as `updateElement` of `@domina/methods`: props, children, a place and a ref in
-one call, the element comes back. nullish props are skipped.
+the same as `updateElement` of `@domina/methods`: props, children and a ref in one call,
+the element comes back. nullish props are skipped.
 
-- `appendTo` / `prependTo`: an element, a domina wrapper or a spec in the document.
 - `ref`: a function gets the element, an object gets it as `.current`. last, so the
-  element has its props, its children and its place.
+  element has its props and its children.
 - `style`: a string is the style attribute, an object goes like in [`setProperties`](#setProperties).
 - `dataset` (or `data`): objects and lists as json, nullish removes.
 - `class` (or `className`): `'a b, c'`, a list or `{ name: on }`.
-- `on*` with a function: a listener (`onClick` is `click`). `onAdded`, `onAttr`,
-  `onConnected`, `onDisconnected`, `onRemoved`, `onResize` and `onVisible` go to
-  `@domina/observer`, loaded on first use.
+- `on*` with a function: a listener (`onClick` is `click`).
 - anything else: a property where the element has a writable one (svg always takes
   attributes), a boolean attribute for `true` / `false` (`aria-*` keeps `'true'` /
   `'false'`), an attribute otherwise.
 
 children are appended, nested lists flattened, nullish and `false` dropped.
+
+### observer props (opt-in)
+
+```js
+import '@domina/prototype';
+import '@domina/prototype/observer';
+
+document.createElement('img', { src, onVisible: load, onDisconnected: cleanup });
+```
+
+`onAdded`, `onAttr`, `onConnected`, `onDisconnected`, `onRemoved`, `onResize` and
+`onVisible` from `@domina/observer`. without this import they are plain listeners and
+`@domina/prototype` has no dependency.
+
+### defineProps
+
+```js
+import { defineProps } from '@domina/prototype';
+
+defineProps({ tooltip: (el, text) => el.setAttribute('aria-description', text) });
+el.update({ tooltip: 'saves the draft' });
+```
+
+own props for `update` and `createElement`, as `(element, value) => void`. they come
+before every other key.
 
 ## Element | Document | DocumentFragment (+ shadow roots)
 
