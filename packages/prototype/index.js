@@ -327,34 +327,28 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
 
 // :::::: UPDATE
 // one props object for everything an element gets, the same as updateElement of
-// @domina/methods. nullish props are skipped. own keys: appendTo / prependTo (an element
-// or a spec), ref (a function or { current }), style (a string or an object, see
-// writeStyle), dataset / data, class / className (a string, a list or { name: on }),
-// on* with a function (a listener, the observer keys below via @domina/observer).
-// anything else is a property where the element has a writable one, a boolean
-// attribute for a boolean (aria-* keeps 'true' / 'false'), an attribute otherwise.
-// children are appended, nested lists flattened, nullish and false dropped
+// @domina/methods. nullish props are skipped. own keys: ref (a function or { current }),
+// style (a string or an object, see writeStyle), dataset / data, class / className (a
+// string, a list or { name: on }), on* with a function (a listener). a key added with
+// defineProps goes to its handler. anything else is a property where the element has a
+// writable one, a boolean attribute for a boolean (aria-* keeps 'true' / 'false'), an
+// attribute otherwise. children are appended, nested lists flattened, nullish and false
+// dropped
 
-// the observer keys load @domina/observer on first use, not with the package. from then
-// on they run synchronously. the first use on a page waits a tick for the module:
-// onConnected, onVisible and onResize still see a connected element, onAdded, onRemoved
-// and onAttr miss what happens in that tick
-const OBSERVER_KEYS = new Set(['onAdded', 'onAttr', 'onConnected', 'onDisconnected', 'onRemoved', 'onResize', 'onVisible']);
+// own props from outside, as (element, value) => void. @domina/prototype/observer adds
+// onConnected, onVisible etc. this way
+const customProps = new Map;
 
-let observer = null, loading = null;
-
-function observe (key, element, handler) {
-  if (observer) return void observer[key](element, handler);
-  (loading ??= import('@domina/observer').then(module => observer = module))
-    .then(module => module[key](element, handler));
+function defineProps (map) {
+  for (const [key, handler] of toEntries(map)) if (isFn(handler)) customProps.set(key, handler);
 }
 
 // 'a b, c', ['a', ['b']], { a: true, b: false } -> 'a b c'
 function classesOf (value) {
-  if (isOff(value))    return [];
-  if (isString(value)) return value.split(/[\s,]+/).filter(Boolean);
+  if (isOff(value))         return [];
+  if (isString(value))      return value.split(/[\s,]+/).filter(Boolean);
   if (Array.isArray(value)) return value.flatMap(classesOf);
-  if (isObject(value)) return toEntries(value).filter(([, on]) => on).map(([name]) => name);
+  if (isObject(value))      return toEntries(value).filter(([, on]) => on).map(([name]) => name);
   return [String(value)];
 }
 
@@ -377,31 +371,18 @@ function isWritable (element, key) {
   return writable;
 }
 
-// a domina wrapper ({ [Symbol.for('domina.node')]: true, node }), a node, or a spec in the document
-const NODE = Symbol.for('domina.node');
-
-function resolveTarget (target) {
-  if (target?.[NODE] === true)  return target.node ?? null;
-  if (isFn(target?.append))     return target;
-  return document.getElement(target);
-}
-
 function update (props = {}, ...children) {
-  let mount, ref;
+  let ref;
 
   for (const [key, value] of toEntries(props)) {
     if (value == null) continue;
 
-         if (key === 'appendTo' || key === 'prependTo') mount = [key === 'appendTo' ? 'append' : 'prepend', value];
-    else if (key === 'ref')                             ref = value;
-    else if (key === 'style')                           isString(value) ? this.setAttribute('style', value) : writeStyle(this.style, value);
-    else if (key === 'dataset' || key === 'data')       writeDataset(this.dataset, value);
-    else if (key === 'class'   || key === 'className')  this.setAttribute('class', classesOf(value).join(' '));
-
-    else if (key.startsWith('on') && isFn(value)) {
-      OBSERVER_KEYS.has(key) ? observe(key, this, value)
-                             : this.addEventListener(key.slice(2).toLowerCase(), value);
-    }
+         if (customProps.has(key))                     customProps.get(key)(this, value);
+    else if (key === 'ref')                            ref = value;
+    else if (key === 'style')                          isString(value) ? this.setAttribute('style', value) : writeStyle(this.style, value);
+    else if (key === 'dataset' || key === 'data')      writeDataset(this.dataset, value);
+    else if (key === 'class'   || key === 'className') this.setAttribute('class', classesOf(value).join(' '));
+    else if (key.startsWith('on') && isFn(value))      this.addEventListener(key.slice(2).toLowerCase(), value);
 
     // svg properties are read-only animated values, svg always takes attributes
     else if (!(this instanceof SVGElement) && key in this && isWritable(this, key)) this[key] = value;
@@ -411,11 +392,10 @@ function update (props = {}, ...children) {
 
   const kids = children.flat(Infinity).filter(child => child != null && child !== false);
   if (kids.length) this.append(...kids);
-  if (mount)       resolveTarget(mount[1])?.[mount[0]](this);
 
-  // last, so the element has its props, its children and its place
-  if (isFn(ref))           ref(this);
-  else if (isObject(ref))  ref.current = this;
+  // last, so the element has its props and its children
+  if (isFn(ref))          ref(this);
+  else if (isObject(ref)) ref.current = this;
 
   return this;
 }
@@ -462,4 +442,4 @@ extend(Element,             { getElement, getElements, getIndex, getNextAll, get
 extend(EventTarget,         { emitEvent, onEvent, onEvents, waitForEvent });
 extend(HTMLFormElement,     { getValues, setValues });
 
-export { selectorOf };
+export { defineProps, selectorOf };

@@ -25,10 +25,6 @@ export type Child = Node | string | number | boolean | null | undefined | Child[
 
 /** the props of update and createElement. nullish props are skipped. */
 export type UpdateProps = Record<string, unknown> & {
-  /** an element, a domina wrapper or a spec in the document, the element is appended to it. */
-  appendTo?: unknown;
-  /** like appendTo, prepended. */
-  prependTo?: unknown;
   /** gets the element last, a function or `{ current }`. */
   ref?: ((element: any) => void) | { current: unknown };
   /** a string is the style attribute. an object: numbers get px where it is no plain number, nullish and false remove. */
@@ -42,6 +38,9 @@ export type UpdateProps = Record<string, unknown> & {
   /** a customized built-in, only for createElement. */
   is?: string;
 };
+
+/** own props for update and createElement, each as (element, value) => void. */
+export function defineProps (map: Record<string, (element: Element, value: any) => void>): void;
 
 /** the selector a spec stands for. */
 export function selectorOf (spec: ElementSpec): string;
@@ -79,7 +78,7 @@ declare global {
       class?: string | Array<string | null | undefined | false>;
     }): this;
 
-    /** props, children, a place and a ref in one call, the same as updateElement of @domina/methods. returns the element. */
+    /** props, children and a ref in one call, the same as updateElement of @domina/methods. returns the element. */
     update (props?: UpdateProps | null, ...children: Child[]): this;
 
     /** the element siblings, a spec filters them. */
