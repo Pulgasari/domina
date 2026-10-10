@@ -3,8 +3,6 @@
 
 // :::::: SHARED
 
-// nullish or false: the key is off, an attribute or a property is removed, a selector
-// part left out. 0 and '' are values
 const isOff    = value => value == null || value === false;
 const isFn     = value => typeof value === 'function';
 const isString = value => typeof value === 'string';
@@ -16,9 +14,6 @@ const toKebabCase = name  => name.replace(   /[A-Z]/g,     char  => '-' + char.t
 const toCamelCase = name  => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase());
 
 // :::::: SELECT
-// a selector string as it is, or an object that describes the element:
-// { tag, id, class, dataset: { key: value | true }, attribute: value | true }.
-// false and nullish leave a key out
 
 const escape = value => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(String(value)) : String(value).replace(/"/g, '\\"');
 const OWN    = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
@@ -60,8 +55,6 @@ function getElements (spec) {
 }
 
 // :::::: EVENTS
-// types as 'click keydown', 'click, keydown' or an array. focus and blur listen to their
-// bubbling twins, so a container hears its descendants. a listener comes back as off()
 
 const BUBBLING = { blur: 'focusout', focus: 'focusin' };
 const typesOf  = types => (isString(types) ? types.split(/[\s,]+/) : toList(types)).filter(Boolean).map(type => BUBBLING[type] ?? type);
@@ -326,17 +319,9 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
 }
 
 // :::::: UPDATE
-// one props object for everything an element gets, the same as updateElement of
-// @domina/methods. nullish props are skipped. own keys: ref (a function or { current }),
-// style (a string or an object, see writeStyle), dataset / data, class / className (a
-// string, a list or { name: on }), on* with a function (a listener). a key added with
-// defineProps goes to its handler. anything else is a property where the element has a
-// writable one, a boolean attribute for a boolean (aria-* keeps 'true' / 'false'), an
-// attribute otherwise. children are appended, nested lists flattened, nullish and false
-// dropped
 
-// own props from outside, as (element, value) => void. @domina/prototype/observer adds
-// onConnected, onVisible etc. this way
+// own props from outside, as (element, value) => void.
+// @domina/prototype/observer adds onConnected, onVisible etc. this way
 const customProps = new Map;
 
 function defineProps (map) {
@@ -401,9 +386,6 @@ function update (props = {}, ...children) {
 }
 
 // :::::: CREATE
-// document.createElement(tag, props, ...children): the native element, then update.
-// the native call stays as it was: a string or { is } as the second argument still
-// creates a customized built-in, the tag defaults to 'div'
 
 const nativeCreateElement = Document.prototype.createElement;
 
