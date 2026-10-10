@@ -20,6 +20,29 @@ export type Off = () => void;
 /** an aria value: true and false are kept as strings, a list is joined with spaces, nullish removes. */
 export type AriaValue = string | number | boolean | Array<string | number> | null | undefined;
 
+/** a child for update and createElement: nested lists are flattened, nullish and false dropped. */
+export type Child = Node | string | number | boolean | null | undefined | Child[];
+
+/** the props of update and createElement. nullish props are skipped. */
+export type UpdateProps = Record<string, unknown> & {
+  /** an element, a domina wrapper or a spec in the document, the element is appended to it. */
+  appendTo?: unknown;
+  /** like appendTo, prepended. */
+  prependTo?: unknown;
+  /** gets the element last, a function or `{ current }`. */
+  ref?: ((element: any) => void) | { current: unknown };
+  /** a string is the style attribute. an object: numbers get px where it is no plain number, nullish and false remove. */
+  style?: string | Record<string, string | number | false | null | undefined>;
+  /** objects and lists as json, nullish removes. */
+  dataset?: Record<string, unknown>;
+  data?: Record<string, unknown>;
+  /** 'a b, c', a list or `{ name: on }`. */
+  class?: string | Record<string, unknown> | Array<unknown>;
+  className?: string | Record<string, unknown> | Array<unknown>;
+  /** a customized built-in, only for createElement. */
+  is?: string;
+};
+
 /** the selector a spec stands for. */
 export function selectorOf (spec: ElementSpec): string;
 
@@ -56,6 +79,9 @@ declare global {
       class?: string | Array<string | null | undefined | false>;
     }): this;
 
+    /** props, children, a place and a ref in one call, the same as updateElement of @domina/methods. returns the element. */
+    update (props?: UpdateProps | null, ...children: Child[]): this;
+
     /** the element siblings, a spec filters them. */
     getSiblings<E extends Element = Element> (filter?: ElementSpec): E[];
     /** the ancestors, the nearest first. */
@@ -80,7 +106,11 @@ declare global {
     setValues (values: Record<string, unknown>, options?: { missing?: 'skip' | 'clear'; notify?: boolean }): this;
   }
 
-  interface Document extends Queryable {}
+  interface Document extends Queryable {
+    /** the native element, then update. a string or `{ is }` as the second argument is the native call. */
+    createElement<K extends keyof HTMLElementTagNameMap> (tagName: K, props?: UpdateProps | null, ...children: Child[]): HTMLElementTagNameMap[K];
+    createElement (tagName?: string, props?: UpdateProps | null, ...children: Child[]): HTMLElement;
+  }
   interface DocumentFragment extends Queryable {}
 
   interface CSSStyleDeclaration {

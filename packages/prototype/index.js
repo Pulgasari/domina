@@ -325,21 +325,140 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
   return this;
 }
 
+// :::::: UPDATE
+// one props object for everything an element gets, the same as updateElement of
+// @domina/methods. nullish props are skipped. own keys: appendTo / prependTo (an element
+// or a spec), ref (a function or { current }), style (a string or an object, see
+// writeStyle), dataset / data, class / className (a string, a list or { name: on }),
+// on* with a function (a listener, the observer keys below via @domina/observer).
+// anything else is a property where the element has a writable one, a boolean
+// attribute for a boolean (aria-* keeps 'true' / 'false'), an attribute otherwise.
+// children are appended, nested lists flattened, nullish and false dropped
+
+// the observer keys load @domina/observer on first use, not with the package. from then
+// on they run synchronously. the first use on a page waits a tick for the module:
+// onConnected, onVisible and onResize still see a connected element, onAdded, onRemoved
+// and onAttr miss what happens in that tick
+const OBSERVER_KEYS = new Set(['onAdded', 'onAttr', 'onConnected', 'onDisconnected', 'onRemoved', 'onResize', 'onVisible']);
+
+let observer = null, loading = null;
+
+function observe (key, element, handler) {
+  if (observer) return void observer[key](element, handler);
+  (loading ??= import('@domina/observer').then(module => observer = module))
+    .then(module => module[key](element, handler));
+}
+
+// 'a b, c', ['a', ['b']], { a: true, b: false } -> 'a b c'
+function classesOf (value) {
+  if (isOff(value))    return [];
+  if (isString(value)) return value.split(/[\s,]+/).filter(Boolean);
+  if (Array.isArray(value)) return value.flatMap(classesOf);
+  if (isObject(value)) return toEntries(value).filter(([, on]) => on).map(([name]) => name);
+  return [String(value)];
+}
+
+// a setter or a writable value along the prototype chain, cached per prototype and key.
+// none at all counts as writable: an expando
+const writableCache = new WeakMap;
+
+function isWritable (element, key) {
+  const proto = Object.getPrototypeOf(element);
+  let keys = writableCache.get(proto);
+  if (!keys) writableCache.set(proto, keys = new Map);
+  if (keys.has(key)) return keys.get(key);
+
+  let descriptor;
+  for (let current = element; current && !descriptor; current = Object.getPrototypeOf(current)) {
+    descriptor = Object.getOwnPropertyDescriptor(current, key);
+  }
+  const writable = !descriptor || Boolean(descriptor.set || descriptor.writable);
+  keys.set(key, writable);
+  return writable;
+}
+
+// a domina wrapper ({ [Symbol.for('domina.node')]: true, node }), a node, or a spec in the document
+const NODE = Symbol.for('domina.node');
+
+function resolveTarget (target) {
+  if (target?.[NODE] === true)  return target.node ?? null;
+  if (isFn(target?.append))     return target;
+  return document.getElement(target);
+}
+
+function update (props = {}, ...children) {
+  let mount, ref;
+
+  for (const [key, value] of toEntries(props)) {
+    if (value == null) continue;
+
+         if (key === 'appendTo' || key === 'prependTo') mount = [key === 'appendTo' ? 'append' : 'prepend', value];
+    else if (key === 'ref')                             ref = value;
+    else if (key === 'style')                           isString(value) ? this.setAttribute('style', value) : writeStyle(this.style, value);
+    else if (key === 'dataset' || key === 'data')       writeDataset(this.dataset, value);
+    else if (key === 'class'   || key === 'className')  this.setAttribute('class', classesOf(value).join(' '));
+
+    else if (key.startsWith('on') && isFn(value)) {
+      OBSERVER_KEYS.has(key) ? observe(key, this, value)
+                             : this.addEventListener(key.slice(2).toLowerCase(), value);
+    }
+
+    // svg properties are read-only animated values, svg always takes attributes
+    else if (!(this instanceof SVGElement) && key in this && isWritable(this, key)) this[key] = value;
+    else if (typeof value === 'boolean' && !key.startsWith('aria-'))                 this.toggleAttribute(key, value);
+    else                                                                             this.setAttribute(key, value);
+  }
+
+  const kids = children.flat(Infinity).filter(child => child != null && child !== false);
+  if (kids.length) this.append(...kids);
+  if (mount)       resolveTarget(mount[1])?.[mount[0]](this);
+
+  // last, so the element has its props, its children and its place
+  if (isFn(ref))           ref(this);
+  else if (isObject(ref))  ref.current = this;
+
+  return this;
+}
+
+// :::::: CREATE
+// document.createElement(tag, props, ...children): the native element, then update.
+// the native call stays as it was: a string or { is } as the second argument still
+// creates a customized built-in, the tag defaults to 'div'
+
+const nativeCreateElement = Document.prototype.createElement;
+
+function createElement (tag = 'div', props, ...children) {
+  if (isString(props)) return nativeCreateElement.call(this, tag, props);
+
+  const element = nativeCreateElement.call(this, tag, props?.is == null ? undefined : { is: props.is });
+  if (!props && !children.length) return element;
+
+  const { is, ...rest } = props ?? {};
+  return element.update(rest, ...children);
+}
+
 // :::::: INSTALL
 // non-enumerable like the native methods. an existing method is overwritten, with a warning
+
+function define (proto, name, value) {
+  Object.defineProperty(proto, name, { configurable: true, value, writable: true });
+}
 
 function extend (Class, methods) {
   const proto = Class.prototype;
   for (const [name, value] of toEntries(methods)) {
     if (name in proto) console.warn(`[@domina/prototype] ${Class.name}.prototype.${name} exists, overwritten.`);
-    Object.defineProperty(proto, name, { configurable: true, value, writable: true });
+    define(proto, name, value);
   }
 }
+
+// a compatible wrapper of the native, no warning
+define(Document.prototype, 'createElement', createElement);
 
 extend(CSSStyleDeclaration, { getToken, getTokens, setToken, setTokens });
 extend(Document,            { getElement, getElements });
 extend(DocumentFragment,    { getElement, getElements });
-extend(Element,             { getElement, getElements, getIndex, getNextAll, getParents, getPrevAll, getSiblings, isInViewport, setAriaAttribute, setAriaAttributes, setAttributes, setProperties, waitForAnimations });
+extend(Element,             { getElement, getElements, getIndex, getNextAll, getParents, getPrevAll, getSiblings, isInViewport, setAriaAttribute, setAriaAttributes, setAttributes, setProperties, update, waitForAnimations });
 extend(EventTarget,         { emitEvent, onEvent, onEvents, waitForEvent });
 extend(HTMLFormElement,     { getValues, setValues });
 
