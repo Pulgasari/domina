@@ -26,6 +26,9 @@ import '@domina/prototype';
 [`setToken`](#setToken)
 [`setTokens`](#setTokens)
 
+### Document
+[`createElement`](#createElement)
+
 ### Element | Document | DocumentFragment (+ shadow roots)
 [`getElement`](#getElement)
 [`getElements`](#getElements)
@@ -39,6 +42,7 @@ import '@domina/prototype';
 [`setAriaAttributes`](#setAriaAttributes)
 [`setAttributes`](#setAttributes)
 [`setProperties`](#setProperties)
+[`update`](#update)
 [`waitForAnimations`](#waitForAnimations)
 
 ### HTMLFormElement
@@ -77,6 +81,60 @@ el.style.setToken('accent', 'tomato'); // --accent: tomato
 ```js
 el.style.setTokens({ accent: 'tomato', size: 2 });
 ```
+
+## Document
+
+### createElement
+
+```js
+const button = document.createElement('button', {
+  class    : ['btn', { active: open }],
+  title    : 'save',
+  onClick  : save,
+  appendTo : '#toolbar',
+}, icon, 'save');
+```
+
+the native element, then [`update`](#update) with the props and children. the native
+call stays as it was: a string or `{ is }` as the second argument still creates a
+customized built-in, so code that calls `createElement` the native way keeps working.
+the tag defaults to `div`. this one wraps the native method, it does not warn.
+
+## Element
+
+### update
+
+```js
+el.update({
+  class     : 'panel, open',
+  style     : { gap: 8, '--accent': 'tomato' },
+  dataset   : { id: 5 },
+  hidden    : false,
+  ariaLabel : 'settings',
+  onClick   : toggle,
+  onVisible : load,
+  ref       : panelRef,
+  appendTo  : document.body,
+}, header, [items], cond && footer);
+```
+
+the same as `updateElement` of `@domina/methods`: props, children, a place and a ref in
+one call, the element comes back. nullish props are skipped.
+
+- `appendTo` / `prependTo`: an element, a domina wrapper or a spec in the document.
+- `ref`: a function gets the element, an object gets it as `.current`. last, so the
+  element has its props, its children and its place.
+- `style`: a string is the style attribute, an object goes like in [`setProperties`](#setProperties).
+- `dataset` (or `data`): objects and lists as json, nullish removes.
+- `class` (or `className`): `'a b, c'`, a list or `{ name: on }`.
+- `on*` with a function: a listener (`onClick` is `click`). `onAdded`, `onAttr`,
+  `onConnected`, `onDisconnected`, `onRemoved`, `onResize` and `onVisible` go to
+  `@domina/observer`, loaded on first use.
+- anything else: a property where the element has a writable one (svg always takes
+  attributes), a boolean attribute for `true` / `false` (`aria-*` keeps `'true'` /
+  `'false'`), an attribute otherwise.
+
+children are appended, nested lists flattened, nullish and `false` dropped.
 
 ## Element | Document | DocumentFragment (+ shadow roots)
 
