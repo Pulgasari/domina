@@ -10,6 +10,7 @@ const
 tryOr = (fn, fallback) => {try { return fn(); } catch { return isFn(fallback) ? fallback() : fallback; }};
 
 const
+isBool   = value => typeof value === 'boolean',
 isFn     = value => typeof value === 'function',
 isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value),
 isOff    = value => value == null || value === false,
@@ -75,30 +76,6 @@ function selectorOf (spec) {
   }
 
   return parts.join('') || '*';
-}
-
-
-
-
-function selectorOf (spec) {
-  if  (isString(spec)) return spec;
-  if (!isObject(spec)) return '*';
-
-  let selector = String(spec.tag ?? spec.tagName ?? '').toLowerCase();
-  if (spec.id) selector += '#' + escape(spec.id);
-
-  const classes = toList(spec.class ?? spec.className).join(' ').trim();
-  if (classes) selector += '.' + classes.split(/\s+/).map(escape).join('.');
-
-  for (const [key, value] of toEntries(spec.dataset ?? spec.data)) {
-    if (!isOff(value)) selector += attributeSelector(`data-${toKebabCase(key)}`, value);
-  }
-
-  for (const [key, value] of toEntries(spec)) {
-    if (!OWN.has(key) && !isOff(value)) selector += attributeSelector(toKebabCase(key), value);
-  }
-
-  return selector || '*';
 }
 
 function getElement  (spec) { return tryOr(() =>     this.querySelector    (selectorOf(spec)), null); }
@@ -454,7 +431,7 @@ function update (props = {}, ...children) {
 
     // svg properties are read-only animated values, svg always takes attributes
     else if (!(this instanceof SVGElement) && key in this && isWritable(this, key)) this[key] = value;
-    else if (typeof value === 'boolean' && !key.startsWith('aria-'))                 this.toggleAttribute(key, value);
+    else if (isBool(value) && !key.startsWith('aria-'))                 this.toggleAttribute(key, value);
     else                                                                             this.setAttribute(key, value);
   }
 
@@ -462,8 +439,8 @@ function update (props = {}, ...children) {
   if (kids.length) this.append(...kids);
 
   // last, so the element has its props and its children
-  if (isFn(ref))          ref(this);
-  else if (isObject(ref)) ref.current = this;
+       if (isFn     (ref)) ref          (this);
+  else if (isObject (ref)) ref.current = this;
 
   return this;
 }
@@ -504,7 +481,7 @@ extend(CSSStyleDeclaration, { getToken, getTokens, setToken, setTokens });
 extend(Document,            { getElement, getElements });
 extend(DocumentFragment,    { getElement, getElements });
 extend(Element,             { getElement, getElements, getIndex, getNextAll, getParents, getPrevAll, getSiblings, isInViewport, setAriaAttribute, setAriaAttributes, setAttributes, setProperties, update, waitForAnimations });
-extend(EventTarget,         { emitEvent, onEvent, onEvents, waitForEvent });
+extend(EventTarget,         { emitEvent, onCommand, onCommands, onEvent, onEvents, waitForEvent });
 extend(HTMLFormElement,     { getValues, setValues });
 
 export { defineProps, selectorOf };
