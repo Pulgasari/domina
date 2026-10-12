@@ -3,15 +3,44 @@
 
 // :::::: SHARED
 
-const isOff    = value => value == null || value === false;
-const isFn     = value => typeof value === 'function';
-const isString = value => typeof value === 'string';
-const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+const
+pipe = (...fns) => init => fns.reduce((v,fn) => fn(v), init);
 
-const toEntries   = map   => Object.entries(map ?? {});
-const toList      = value => [value ?? []].flat();
-const toKebabCase = name  => name.replace(   /[A-Z]/g,     char  => '-' + char.toLowerCase());
-const toCamelCase = name  => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase());
+const
+tryOr = (fn, fallback) => {try { return fn(); } catch { return isFn(fallback) ? fallback() : fallback; }};
+
+const
+isFn     = value => typeof value === 'function',
+isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value),
+isOff    = value => value == null || value === false,
+isString = value => typeof value === 'string';
+
+const
+toEntries = map   => Object.entries(map ?? {}),
+toList    = value => [value ?? []].flat();
+
+const
+toCamelCase = name  => name.replace(/-([a-z])/g, (_, char) =>       char.toUpperCase()),
+toKebabCase = name  => name.replace(   /[A-Z]/g,     char  => '-' + char.toLowerCase());
+
+const
+toPrefixed   = prefix => str => str.startsWith(prefix) ? str : (prefix + str),
+toUnprefixed = prefix => str => str.startsWith(prefix) ? str.slice(prefix.length) : str;
+
+const
+toAriaKey  = toPrefixed   ('aria-'),
+toDataKey  = toPrefixed   ('data-'),
+toDashed   = toPrefixed   ('--'),
+toUndashed = toUnprefixed ('--');
+
+const
+morphKey = key => ({
+  camel : toCamelCase (key),
+  kebab : toKebabCase (key),
+  dash  : toDashed    (key),
+  aria  : toAriaKey   (key),
+  data  : toDataKey   (key),
+});
 
 // :::::: SELECT
 
@@ -19,7 +48,37 @@ const escape = value => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(St
 const OWN    = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
 // [name] for true, [name="value"] otherwise
-const attributeSelector = (name, value) => value === true ? `[${name}]` : `[${name}="${escape(value)}"]`;
+const attributeSelector = (key, value) => (value === true || value === '') ? `[${key}]` : `[${key}="${CSS.escape(String(value))}"]`;
+
+// new
+function selectorOf (spec) {
+  if  (isString(spec)) return spec;
+  if (!isObject(spec)) return '*';
+
+  const parts = [];
+  
+  const tag = spec.tag ?? spec.tagName;
+  if (tag)     parts.push(String(tag).toLowerCase());
+  if (spec.id) parts.push(`#${CSS.escape(String(spec.id))}`);
+
+  const classList = toList(spec.class ?? spec.className);
+  const classes   = classList.join(' ').trim().split(/\s+/).filter(Boolean).map(CSS.escape);
+  if (classes.length > 0) parts.push(`.${classes.join('.')}`);
+
+  const dataEntries = toEntries(spec.dataset ?? spec.data);
+  for (const [key, value] of dataEntries) {
+    if (!isOff(value)) parts.push(attributeSelector(`data-${toKebabCase(key)}`, value));
+  }
+
+  for (const [key, value] of Object.entries(spec)) {
+    if (!OWN.has(key) && !isOff(value)) parts.push(attributeSelector(toKebabCase(key), value));
+  }
+
+  return parts.join('') || '*';
+}
+
+
+
 
 function selectorOf (spec) {
   if  (isString(spec)) return spec;
@@ -42,17 +101,8 @@ function selectorOf (spec) {
   return selector || '*';
 }
 
-// the first match or null, an invalid selector included
-function getElement (spec) {
-  try   { return this.querySelector(selectorOf(spec)); }
-  catch { return null; }
-}
-
-// all matches as a real array, an invalid selector gives none
-function getElements (spec) {
-  try   { return [...this.querySelectorAll(selectorOf(spec))]; }
-  catch { return []; }
-}
+function getElement  (spec) { return tryOr(() =>     this.querySelector    (selectorOf(spec)), null); }
+function getElements (spec) { return tryOr(() => [...this.querySelectorAll (selectorOf(spec))],  []); }
 
 // :::::: EVENTS
 
@@ -91,6 +141,33 @@ function waitForEvent (types, { signal, timeout } = {}) {
   });
 }
 
+function onCommand (commandName, callback) {
+  const targetCommand = normalizeCommand(commandName);
+
+  this.addEventListener('command', (event) => {
+    if (normalizeCommand(event.command) === targetCommand) {
+      callback.call(this, event);
+    }
+  });
+
+  return this;
+};
+
+function onCommands (commandMap) {
+  const normalizedMap = {};
+  for (const [key, handler] of Object.entries(commandMap)) {
+    normalizedMap[normalizeCommand(key)] = handler;
+  }
+
+  this.addEventListener('command', (event) => {
+    const activeCommand = normalizeCommand(event.command);
+    const handler = normalizedMap[activeCommand];
+    if (isFn(handler)) handler.call(this, event);
+  });
+
+  return this;
+};
+
 // :::::: ATTRIBUTES
 // camelCase keys become kebab-case. false and nullish remove, true sets the attribute
 // empty, anything else as a string. aria-* keys go to setAriaAttribute
@@ -104,6 +181,12 @@ function setAttributes (map) {
     else                               this.setAttribute    (name, String(value));
   }
   return this;
+}
+
+// Helper function to convert camelCase to kebab-case and ensure '--' prefix
+function normalizeCommand (name) {
+  name = toKebabCase(name); // 'toggleMute' -> 'toggle-mute'
+  return name.startsWith('--') ? name : `--${name}`; // ensure leading '--'
 }
 
 // :::::: ARIA
