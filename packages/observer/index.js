@@ -15,6 +15,31 @@ const _slct = buildSelector;
 // INTERNAL SHORTHANDS
 //========================================================================
 
+/*
+function createObserver (kind, items, options) {
+  const Observer = {
+    IO : IntersectionObserver,
+    MO : MutationObserver,
+    RO : ResizeObserver,
+  }[kind];
+
+  const observer = new Observer (items => {
+    for (const item of items) targets.get(item.target)?.forEach(callback => callback(item));
+  }, options)
+}
+
+const observer = createObserver('IO', items, options);
+const observer = createObserver('RO', items);
+
+
+const observer = IO(items => {
+  for (const item of items) targets.get(item.target)?.forEach(callback => callback(item));
+}, options);
+const observer = RO(items => {
+  for (const item of items) targets.get(item.target)?.forEach(callback => callback(item));
+});
+*/
+
 const
 MO = callback            => new     MutationObserver (callback),
 IO = (callback, options) => new IntersectionObserver (callback, options),
@@ -54,7 +79,7 @@ normalizeHandler = handler =>
 // REGISTRY — ein Eintrag pro Root, geteilt von allen Subscribern
 //========================================================================
 
-const registry = new WeakMap(); // root -> entry
+const registry = new WeakMap; // root -> entry
 
 const entryOf = root => {
   let entry = registry.get(root);
@@ -83,6 +108,7 @@ const ensureStructural = entry => {
   ensureBody(() => entry.structural.observe(entry.root, STRUCTURAL));
 };
 
+
 const onAddedNodes = (sub, nodes) => {
   if (sub.selector) return traverseNodes(nodes, sub.selector, element => enter(sub, element, false));
   // Einzelnes Element: nur relevant, wenn es (wieder) im Baum hängt
@@ -109,7 +135,6 @@ const ensureAttrs = entry => {
 
   const options = { attributes: true, attributeOldValue: true, subtree: true };
   if (entry.filter) options.attributeFilter = [...entry.filter];
-
   if (!entry.attrs) entry.attrs = MO(records => dispatchAttrs(entry, records));
   // Erneutes observe() auf demselben Target ersetzt die Options -> weitet den Filter
   ensureBody(() => entry.attrs.observe(entry.root, options));
@@ -145,7 +170,8 @@ const ioPool = new Map; // signature -> { observer, targets }
 
 const ioEntry = options => {
   const signature = JSON.stringify([
-    options.rootMargin ?? '', options.threshold ?? 0
+    options.rootMargin ?? '',
+    options.threshold  ?? 0
   ]);
   let pool = ioPool.get(signature);
   if (!pool) {
@@ -170,18 +196,33 @@ const roEntry = () => {
   }
   return roPool;
 };
-
+/*
 const poolAdd = (pool, element, callback) => {
   let set = pool.targets.get(element);
-  if (!set) { pool.targets.set(element, set = new Set()); pool.observer.observe(element); }
+  if (!set) {
+    pool.targets.set(element, set = new Set()); 
+    pool.observer.observe(element); }
   set.add(callback);
 };
+*/
+const poolAdd = (pool, element, callback) => {
+  const set = pool.targets.getOrInsertComputed(element, () => {
+    pool.observer.observe(element);
+    return new Set();
+  });
+
+  set.add(callback);
+};
+
 
 const poolRemove = (pool, element, callback) => {
   const set = pool.targets.get(element);
   if (!set) return;
   set.delete(callback);
-  if (!set.size) { pool.targets.delete(element); pool.observer.unobserve(element); }
+  if (!set.size) { 
+    pool.targets.delete(element); 
+    pool.observer.unobserve(element);
+  }
 };
 
 //========================================================================
