@@ -1,6 +1,6 @@
 # @domina/render — concept
 
-a working draft. decisions are marked **open** where they are not settled yet.
+a working draft. the decisions taken so far are listed at the end.
 
 ## goal
 
@@ -170,7 +170,7 @@ interprets child parts: **in `@domina/render`**, re-exported by `@rat/runtime`
 for compiled code. they are plain values (`{ type: EACH, … }`), not functions
 with access to the renderer, so a program can hold them like any other value.
 
-**open**: more helpers on the same model, if needed: `cache` (keeps the
+more helpers on the same model, if needed: `cache` (keeps the
 instances of several branches instead of rebuilding), `live` (compares a
 property against the dom, for inputs the user typed into).
 
@@ -194,10 +194,16 @@ target size: about 3 kb gz with `each` and `when`.
 - **svg:** the program carries the namespace; a template whose root is inside an
   `<svg>` is parsed in an svg context.
 
-## open
+## state
 
-- the user facing tag: `@htx/js/render` (a subpath of the vanilla adapter, which
-  already depends on `@domina/methods`) exporting `html` and `render`, or an own
-  package. recommendation: the subpath.
-- whether `configure()` is global or per `render()` call (`render(target, result, { effect })`).
-  recommendation: both, the call option wins.
+built: `tag`, `render`, `unrender`, `configure`, `each`, `when`, every part of the
+table above, live bindings, svg. `program()` is in `@htx/htx`, `@htx/js/render`
+is the user facing tag. hydration is not built.
+
+## decided
+
+- the user facing tag lives in a subpath of the vanilla adapter: `@htx/js/render`
+  exports `html` and `render` (it already depends on `@domina/methods`).
+- `configure({ effect })` sets the effect globally, `render(target, result, { effect })`
+  per call; the call option wins.
+- `when` and `each` live here, `@rat/runtime` re-exports them.

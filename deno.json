@@ -10,7 +10,8 @@
     "./packages/meta",
     "./packages/fonts",
     "./packages/stylesheet",
-    "./packages/raf"
+    "./packages/raf",
+    "./packages/render"
   ],
   "tasks": {
     "check": "deno check core/**/*.js",
