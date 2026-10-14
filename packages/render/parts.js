@@ -6,6 +6,11 @@
 // a function in a value hole is a live binding when the context has an effect
 // function: the part runs it inside an effect and writes each result. without
 // one it is called once per render. event and ref holes take functions as they are.
+//
+// a helper followed live (a function as its source) builds a row or a branch
+// once per key and keeps it: what changes inside comes through its own live
+// holes. that is the fine-grained mode a signal library wants. a helper given
+// a plain value calls its rows and branches on every render and patches them.
 
 import { isWritable } from '@domina/methods/updateElement.js';
 
@@ -21,11 +26,32 @@ const isResult   = value => value?.[RESULT] === true;
 const isObject   = value => value !== null && typeof value === 'object';
 const directive  = value => isObject(value) ? value[DIRECTIVE] : undefined;
 
+const stopper = stop => isFn(stop) ? stop : () => stop?.dispose?.();
+
 // effect(fn) returns a function or an object with dispose()
-function live (context, fn) {
-  const stop = context.effect(fn);
-  return isFn(stop) ? stop : () => stop?.dispose?.();
+const live = (context, fn) => stopper(context.effect(fn));
+
+// runs fn in an owner of its own when the context has scope(fn) -> [result, dispose]:
+// the effects and cleanups a component or a row creates go when its part goes
+function within (context, fn) {
+  if (!context.scope) return [fn(), null];
+  const [result, dispose] = context.scope(fn);
+  return [result, stopper(dispose)];
 }
+
+// a property that may have been a getter before (a spread keeps accessors)
+const define = (target, name, value) => Object.defineProperty(target, name, { configurable: true, enumerable: true, value, writable: true });
+
+const parseStyle = text => {
+  const out = {};
+  for (const declaration of text.split(';')) {
+    const colon = declaration.indexOf(':');
+    if (colon > 0) out[declaration.slice(0, colon).trim()] = declaration.slice(colon + 1).trim();
+  }
+  return out;
+};
+
+const styleObject = value => isObject(value) ? { ...value } : typeof value === 'string' ? parseStyle(value) : {};
 
 const read = (value, values) =>
     isHole(value)  ? values[value.hole]
@@ -118,6 +144,7 @@ export class ChildPart {
     this.context = context;
     this.kind    = null;
     this.last    = undefined;
+    this.owner   = null;   // dispose of the scope build() ran in
     this.stop    = null;
   }
 
@@ -128,14 +155,13 @@ export class ChildPart {
 
   commit (value) {
     // a helper with a function as its source follows that function live
-    const type   = directive(value);
-    const source = type === 'each' ? value.items : type === 'when' ? value.condition : null;
+    const source = directive(value) ? value.source : null;
 
     if (this.context.effect && (isFn(value) || isFn(source))) {
       if (value === this.last) return;
       this.halt();
       this.last = value;
-      this.stop = live(this.context, () => this.set(isFn(value) ? value() : { ...value, [type === 'each' ? 'items' : 'condition']: source() }));
+      this.stop = live(this.context, () => this.set(isFn(value) ? value() : { ...value, source: source() }, true));
       return;
     }
 
@@ -147,10 +173,20 @@ export class ChildPart {
 
   halt () { this.stop?.(); this.stop = null; }
 
-  set (value) {
+  // commits what fn returns, both in a scope of this part (see within): what the
+  // refs of the new content start belongs to it as well
+  build (fn) {
+    this.release();
+    this.owner = within(this.context, () => this.commit(fn()))[1];
+  }
+
+  release () { this.owner?.(); this.owner = null; }
+
+  set (value, live = false) {
     const type = directive(value);
-    if (type === 'each')          this.each(value);
-    else if (type === 'when')     this.when(value);
+    if (type === 'each')          this.each(value, live);
+    else if (type === 'match')    this.match(value, live);
+    else if (type === 'when')     this.choose(value.source ? 'then' : 'otherwise', value.source ? value.then : value.otherwise, live);
     else if (type === 'raw')      this.raw(value.html);
     else if (isResult(value))     this.result(value);
     else if (Array.isArray(value)) this.list(value);
@@ -213,26 +249,31 @@ export class ChildPart {
     for (const slot of slots.splice(items.length)) slot.remove();
   }
 
-  // a keyed list: rows keep their nodes when they move
-  each ({ items, key, row }) {
-    if (this.kind !== 'each') { this.clear(); this.kind = 'each'; this.content = new Map; }
-    const previous = this.content;
+  // a keyed list: rows keep their nodes when they move. a key that comes twice
+  // gets a row per occurrence, in order
+  each ({ key, otherwise, row, source }, live) {
+    if (this.kind !== 'each') { this.clear(); this.kind = 'each'; this.content = { empty: null, rows: new Map }; }
+    const previous = this.content.rows;
     const next     = new Map;
     const order    = [];
 
     let index = 0;
-    for (const item of items ?? []) {
-      const id = key(item, index);
-      let slot = previous.get(id);
-      if (slot) previous.delete(id);
-      else slot = this.slot();
-      slot.commit(row(item, index));
-      next.set(id, slot);
+    for (const item of source ?? []) {
+      const id   = key(item, index);
+      const kept = previous.get(id)?.shift();
+      const slot = kept ?? this.slot();
+      if (!kept || !live) slot.build(() => row(item, index));
+      if (next.has(id)) next.get(id).push(slot);
+      else next.set(id, [slot]);
       order.push(slot);
       index++;
     }
 
-    for (const slot of previous.values()) slot.remove();
+    for (const queue of previous.values()) for (const slot of queue) slot.remove();
+    this.content.rows = next;
+
+    if (order.length) { this.content.empty?.remove(); this.content.empty = null; }
+    else if (otherwise && (!this.content.empty || !live)) (this.content.empty ??= this.slot()).build(otherwise);
 
     // walk back to front: every row goes right before the one after it
     let anchor = this.end;
@@ -241,19 +282,22 @@ export class ChildPart {
       if (slot.end.nextSibling !== anchor) slot.moveBefore(anchor);
       anchor = slot.start;
     }
-
-    this.content = next;
   }
 
-  // the branch is told apart by the condition, not by the function: a template
-  // creates new arrow functions on every render
-  when ({ condition, then, otherwise }) {
-    const key    = condition ? 'then' : 'otherwise';
-    const branch = condition ? then : otherwise;
-    if (this.kind !== 'when') { this.clear(); this.kind = 'when'; this.content = { key: null, part: this.slot() }; }
+  // the first case whose value is the subject (Object.is), else otherwise
+  match ({ cases, otherwise, source }, live) {
+    const index = cases.findIndex(([value]) => Object.is(value, source));
+    this.choose(index, index < 0 ? otherwise : cases[index][1], live);
+  }
+
+  // one branch of when() or match(), told apart by its key, not by the function:
+  // a template creates new arrow functions on every render
+  choose (key, branch, live) {
+    if (this.kind !== 'branch') { this.clear(); this.kind = 'branch'; this.content = { key: null, part: this.slot() }; }
     const state = this.content;
+    if (state.key === key && live) return;
     if (state.key !== key) { state.part.dispose(); state.part.last = undefined; state.key = key; }
-    state.part.commit(branch ? branch() : null);
+    state.part.build(() => branch ? branch() : null);
   }
 
   moveBefore (anchor) {
@@ -267,13 +311,13 @@ export class ChildPart {
     const { content, kind } = this;
     if (kind === 'instance') content.dispose();
     if (kind === 'list')     content.forEach(slot => slot.dispose());
-    if (kind === 'each')     content.forEach(slot => slot.dispose());
-    if (kind === 'when')     content.part.dispose();
+    if (kind === 'each')     { content.rows.forEach(queue => queue.forEach(slot => slot.dispose())); content.empty?.dispose(); }
+    if (kind === 'branch')   content.part.dispose();
     this.kind = this.content = null;
     while (this.start.nextSibling && this.start.nextSibling !== this.end) this.start.nextSibling.remove();
   }
 
-  dispose () { this.halt(); this.clear(); }
+  dispose () { this.halt(); this.clear(); this.release(); }
 
   remove () { this.dispose(); this.start.remove(); this.end.remove(); }
 }
@@ -327,22 +371,32 @@ class MergedPart {
   write (resolve) {
     if (this.kind === 'class') {
       const text = joinClasses(this.entries, resolve);
-      if (text !== this.last) { this.last = text; text ? this.node.setAttribute('class', text) : this.node.removeAttribute('class'); }
+      // nothing written yet and nothing to write: classes the element set on itself stay
+      if (text === (this.last ?? '')) return;
+      this.last = text;
+      text ? this.node.setAttribute('class', text) : this.node.removeAttribute('class');
       return;
     }
+    // a string discards what came before, unless style:name entries need an object to add to
+    const named = this.entries.some(([name]) => name.startsWith('style:'));
     let merged;
-    for (const [, value] of this.entries) {
+    for (const [name, value] of this.entries) {
       const resolved = resolve(value);
+      if (name !== 'style' && name !== '...') { merged = { ...styleObject(merged), [name.slice(6)]: resolved }; continue; }
       if (!resolved) continue;
-      if (typeof resolved === 'string') merged = resolved;
-      else merged = { ...(isObject(merged) ? merged : {}), ...resolved };
+      merged = typeof resolved === 'string' && !named ? resolved : { ...styleObject(merged), ...styleObject(resolved) };
     }
+    if (merged === undefined && !this.state.written) return;
+    this.state.written = true;
     applyStyle(this.node, merged ?? null, this.state);
   }
 
   update (values) {
     this.dispose();
-    const resolve = value => { const resolved = read(value, values); return isFn(resolved) ? resolved() : resolved; };
+    const resolve = value => {
+      const resolved = 'spread' in Object(value) ? values[value.spread]?.[this.kind] : read(value, values);
+      return isFn(resolved) ? resolved() : resolved;
+    };
     const fns     = this.entries.some(([, value]) => isFn(read(value, values)));
     if (fns && this.context.effect) this.stop = live(this.context, () => this.write(resolve));
     else this.write(resolve);
@@ -350,6 +404,9 @@ class MergedPart {
 
   dispose () { this.stop?.(); this.stop = null; }
 }
+
+// class and style of a spread go through the merged parts of the element
+const MERGED = new Set(['class', 'className', 'style']);
 
 class SpreadPart {
   constructor (node, { hole }) {
@@ -361,9 +418,9 @@ class SpreadPart {
 
   update (values) {
     const next = values[this.hole] ?? {};
-    for (const name in this.last) if (!(name in next)) applyProp(this.node, name, null, this.states.get(name) ?? {});
+    for (const name in this.last) if (!(name in next) && !MERGED.has(name)) applyProp(this.node, name, null, this.states.get(name) ?? {});
     for (const name in next) {
-      if (Object.is(next[name], this.last[name])) continue;
+      if (MERGED.has(name) || Object.is(next[name], this.last[name])) continue;
       if (!this.states.has(name)) this.states.set(name, {});
       applyProp(this.node, name, next[name], this.states.get(name));
     }
@@ -384,16 +441,17 @@ class NodePart {
     this.states  = new Map;
   }
 
+  // a spread keeps its getters: a component reads props.x and its live source at once
   props (values) {
     const props   = {};
     const classes = [];
     for (const prop of this.desc.props) {
-      if (!Array.isArray(prop)) { Object.assign(props, values[prop.spread]); continue; }
+      if (!Array.isArray(prop)) { Object.defineProperties(props, Object.getOwnPropertyDescriptors(values[prop.spread] ?? {})); continue; }
       const [name, value] = prop;
       if (name === 'class' || name === 'className' || (typeof name === 'string' && name.startsWith('class:'))) classes.push([name, value]);
-      else props[name] = read(value, values);
+      else define(props, name, read(value, values));
     }
-    if (classes.length) props.class = joinClasses(classes, value => read(value, values)) || undefined;
+    if (classes.length) define(props, 'class', joinClasses(classes, value => read(value, values)) || undefined);
     return props;
   }
 
@@ -402,7 +460,7 @@ class NodePart {
     const props    = this.props(values);
     const children = this.desc.children.length ? { [RESULT]: true, program: this.desc.program, values } : null;
 
-    if (isFn(tag)) { this.child.commit(tag(props, children)); return; }
+    if (isFn(tag)) { this.child.build(() => tag(props, children)); return; }
 
     if (tag !== this.tag) {
       this.tag     = tag;
@@ -414,7 +472,7 @@ class NodePart {
       if (!this.states.has(name)) this.states.set(name, {});
       applyProp(this.element, name, props[name], this.states.get(name));
     }
-    if (children) render(this.element, children, { effect: this.child.context.effect });
+    if (children) render(this.element, children, this.child.context);
   }
 
   dispose () { this.child.dispose(); }
@@ -462,10 +520,11 @@ export function render (target, value, options = {}) {
     const start = document.createComment('');
     const end   = document.createComment('');
     target.replaceChildren(start, end);
-    root = new ChildPart(start, end, { effect: null });
+    root = new ChildPart(start, end, { effect: null, scope: null });
     roots.set(target, root);
   }
   root.context.effect = options.effect ?? defaults.effect ?? null;
+  root.context.scope  = options.scope  ?? defaults.scope  ?? null;
   root.commit(value);
   return root;
 }
@@ -476,4 +535,4 @@ export function unrender (target) {
   roots.delete(target);
 }
 
-export const defaults = { effect: null };
+export const defaults = { effect: null, scope: null };

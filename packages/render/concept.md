@@ -118,11 +118,11 @@ needs; aufbau calls it from `update()`.
 | property | a prop the element has as a property (`value`, `checked`) | the property, as `@domina/methods/updateElement` decides today |
 | event | `onClick=${fn}` | one listener per part that calls the current function, so a new function costs nothing |
 | class | `class=${value}`, `class:x=${bool}` | merged with the static classes of the element, string, array or object |
-| style | `style=${object}` | merged with the static style, removed keys are unset |
-| spread | `...${object}` | sets new props, removes the ones gone since the last render |
+| style | `style=${object}`, `style:name=${value}` | merged with the static style, removed keys are unset |
+| spread | `...${object}` | sets new props, removes the ones gone since the last render; its class and style add up with the element's own |
 | ref | `ref=${fn \| object}` | once per node, as in `@htx/js` |
 | raw | `!html=${string}` | `innerHTML`, only on a change |
-| tag | `<${Tag}>` | a string swaps the element, a function renders a component as a nested instance |
+| tag | `<${Tag}>` | a string swaps the element, a function renders a component as a nested instance; a spread keeps its getters |
 
 ## values in a child part
 
@@ -133,19 +133,19 @@ needs; aufbau calls it from `update()`.
 | a node | that node |
 | a template result | a nested instance, reused while its program stays the same |
 | an array | a list of the above, by position |
-| `each(list, key, row)` | a keyed list: rows move with their key instead of being rebuilt |
+| `each(list, key, row, otherwise)` | a keyed list: rows move with their key instead of being rebuilt, `otherwise` while empty |
 | `when(condition, then, otherwise)` | one branch, the other one removed |
+| `match(subject, cases, otherwise)` | the case whose value is the subject, keyed by case |
 | a function | a live binding if an `effect` is set (below), otherwise called once |
 
 ## live bindings
 
 ```js
-import { configure } from '@domina/render';
-import { effect }    from '@rat/runtime';
+import { render }        from '@domina/render';
+import { effect, scope } from 'some-signals';
 
-configure({ effect });   // a function in a hole is now live
-
-render(container, html`<p>${() => $count}</p>`);   // the text node follows $count, nothing else re-renders
+const options = { effect: fn => effect(fn, null), scope: fn => scope(fn, null) };
+render(container, html`<p>${() => $count}</p>`, options);   // the text node follows $count, nothing else re-renders
 ```
 
 with an `effect` function configured, a function in a child, attribute, class
@@ -154,14 +154,27 @@ writes its result into that one part, and the effect runs again when a signal
 changes. the effect is disposed with the part. event holes are not affected, a
 function there is the handler.
 
+a helper whose source is a function (`each(() => list, …)`, `when(() => ok, …)`)
+is followed live, and then works fine-grained: a row is built once per key, a
+branch once per switch, and both are kept while the source changes. what
+changes inside them comes through their own live holes. a helper with a plain
+value calls its rows and branches on every render and patches them, which is
+what a re-rendering caller (aufbau) needs.
+
+`scope(fn)` gives every component call, row and branch an owner of its own, so
+the effects and cleanups they create are disposed with them. it runs fn
+untracked as well: what a component reads while it is built does not subscribe
+the effect around it. `effect` must create an effect that no other owner
+disposes, the renderer holds and disposes it.
+
 without `effect` the renderer works without any signal library, and a function
 in a value hole is called once per render. that keeps `@domina/render` usable
 for aufbau's update cycle and for plain pages.
 
 this is what rat compiles to: every `{expr}` becomes `${() => expr}`, `@if`
-becomes `when`, `@for` becomes `each`. rat's runtime shrinks to signals plus
-`configure({ effect })`; its own dom layer is no longer needed, and the `dom:clone`
-target from rat's concept is what this renderer does anyway.
+becomes `when`, `@switch` becomes `match`, `@for` becomes `each`. rat passes
+effect and scope per render call, not through `configure()`, so aufbau elements
+on the same page keep their re-render mode.
 
 ## helpers
 
@@ -196,14 +209,16 @@ target size: about 3 kb gz with `each` and `when`.
 
 ## state
 
-built: `tag`, `render`, `unrender`, `configure`, `each`, `when`, every part of the
-table above, live bindings, svg. `program()` is in `@htx/htx`, `@htx/js/render`
+built: `tag`, `render`, `unrender`, `configure`, `each`, `when`, `match`, every
+part of the table above, live bindings with scopes, svg. element parts update
+after their children (a `<select>` has its options before its value, a ref sees
+the content). `program()` is in `@htx/htx`, `@htx/js/render`
 is the user facing tag. hydration is not built.
 
 ## decided
 
 - the user facing tag lives in a subpath of the vanilla adapter: `@htx/js/render`
   exports `html` and `render` (it already depends on `@domina/methods`).
-- `configure({ effect })` sets the effect globally, `render(target, result, { effect })`
+- `configure({ effect, scope })` sets them globally, `render(target, result, { effect, scope })`
   per call; the call option wins.
 - `when` and `each` live here, `@rat/runtime` re-exports them.

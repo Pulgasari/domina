@@ -9,6 +9,7 @@ export const SVG_NS = 'http://www.w3.org/2000/svg';
 const compiled = { html: new WeakMap, svg: new WeakMap };
 
 const isClassKey = key => key === 'class' || key === 'className' || (typeof key === 'string' && key.startsWith('class:'));
+const isStyleKey = key => key === 'style' || (typeof key === 'string' && key.startsWith('style:'));
 
 export const isHole  = value => value !== null && typeof value === 'object' && 'hole' in value;
 export const isParts = value => value !== null && typeof value === 'object' && Array.isArray(value.parts);
@@ -54,25 +55,34 @@ export function compile (program, svg = false) {
     const here = [...path, parent.childNodes.length - 1];
 
     const classes = [];
+    const own     = [];   // the element's own parts, queued after its children's
     const styles  = [];
 
     for (const prop of node.props) {
-      if (!Array.isArray(prop)) { parts.push({ hole: prop.spread, kind: 'spread', path: here }); continue; }
+      // class and style of a spread add up with the element's own, in source order
+      if (!Array.isArray(prop)) {
+        own.push({ hole: prop.spread, kind: 'spread', path: here });
+        classes.push(['...', prop]);
+        styles.push(['...', prop]);
+        continue;
+      }
       const [name, value] = prop;
-      if (isClassKey(name))  { classes.push([name, value]); continue; }
-      if (name === 'style')  { styles.push([name, value]); continue; }
-      if (isDynamic(value) || !isPrimitive(value) || name === 'ref' || name === '!html') { parts.push({ kind: 'prop', name, path: here, value }); continue; }
+      if (isClassKey(name)) { classes.push([name, value]); continue; }
+      if (isStyleKey(name)) { styles.push([name, value]); continue; }
+      if (isDynamic(value) || !isPrimitive(value) || name === 'ref' || name === '!html') { own.push({ kind: 'prop', name, path: here, value }); continue; }
       if (value === false || name === 'key') continue;
       created.setAttribute(name, value === true ? '' : String(value));
     }
 
     if (classes.length) {
-      if (classes.some(([, value]) => isDynamic(value))) parts.push({ entries: classes, kind: 'class', path: here });
+      if (classes.some(([name, value]) => isDynamic(value) || name === '...')) own.push({ entries: classes, kind: 'class', path: here });
       else { const text = joinClasses(classes); if (text) created.setAttribute('class', text); }
     }
-    if (styles.length) parts.push({ entries: styles, kind: 'style', path: here });
+    if (styles.length) own.push({ entries: styles, kind: 'style', path: here });
 
+    // children update first: a <select> has its options before its value, a ref sees the content
     children(node.children, created, here, svgHere && node.tag !== 'foreignObject');
+    parts.push(...own);
   }
 
   function children (nodes, parent, path, inSvg) {
