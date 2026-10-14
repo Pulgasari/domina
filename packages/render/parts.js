@@ -7,7 +7,7 @@
 // function: the part runs it inside an effect and writes each result. without
 // one it is called once per render. event and ref holes take functions as they are.
 
-import { isWritable } from '@domina/methods/updateElement';
+import { isWritable } from '@domina/methods/updateElement.js';
 
 import { SVG_NS, compile, isHole, isParts, joinClasses } from './compile.js';
 
