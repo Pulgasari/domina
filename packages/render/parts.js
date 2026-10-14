@@ -95,7 +95,13 @@ export function applyProp (node, name, value, state) {
 
   if (name === 'dataset' || name === 'data') { Object.assign(node.dataset, value); return; }
 
-  if (!(node instanceof SVGElement) && name in node && isWritable(node, name)) { node[name] = value; return; }
+  // a property, unless it is a method of the element (an aufbau element's part()).
+  // null clears a string property instead of turning it into "null"
+  if (!(node instanceof SVGElement) && name in node && typeof node[name] !== 'function' && isWritable(node, name)) {
+    node[name] = value == null && typeof node[name] === 'string' ? '' : value;
+    if (value == null) node.removeAttribute(name);
+    return;
+  }
 
   const aria = name.startsWith('aria-');
   if (value == null || (value === false && !aria)) node.removeAttribute(name);
@@ -145,6 +151,7 @@ export class ChildPart {
     const type = directive(value);
     if (type === 'each')          this.each(value);
     else if (type === 'when')     this.when(value);
+    else if (type === 'raw')      this.raw(value.html);
     else if (isResult(value))     this.result(value);
     else if (Array.isArray(value)) this.list(value);
     else if (value instanceof Node) this.node(value);
@@ -176,6 +183,19 @@ export class ChildPart {
     this.kind    = 'instance';
     this.content = instance;
     this.end.before(instance.fragment);
+  }
+
+  // markup that already is markup, parsed only when it changed. inert while
+  // parsing: a template runs no script and loads nothing until inserted
+  raw (markup) {
+    const text = markup == null ? '' : String(markup);
+    if (this.kind === 'raw' && this.content === text) return;
+    this.clear();
+    this.kind    = 'raw';
+    this.content = text;
+    const template = document.createElement('template');
+    template.innerHTML = text;
+    this.end.before(template.content);
   }
 
   // a new part of its own before the end of this one

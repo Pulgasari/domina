@@ -63,6 +63,9 @@ export declare function each<T> (items: Iterable<T> | (() => Iterable<T>), row: 
 /** One of two branches. A function as condition is followed live when an effect is set. */
 export declare function when (condition: unknown, then: () => unknown, otherwise?: (() => unknown) | null): unknown;
 
+/** Markup as it is, for a child hole, parsed only when it changed. Sanitize anything from someone else first. */
+export declare function raw (html: string | null | undefined): unknown;
+
 /** Whether a value is a template result. */
 export declare function isResult (value: unknown): value is TemplateResult;
 
