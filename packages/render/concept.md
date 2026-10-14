@@ -194,6 +194,12 @@ target size: about 3 kb gz with `each` and `when`.
 - **svg:** the program carries the namespace; a template whose root is inside an
   `<svg>` is parsed in an svg context.
 
+## state
+
+built: `tag`, `render`, `unrender`, `configure`, `each`, `when`, every part of the
+table above, live bindings, svg. `program()` is in `@htx/htx`, `@htx/js/render`
+is the user facing tag. hydration is not built.
+
 ## decided
 
 - the user facing tag lives in a subpath of the vanilla adapter: `@htx/js/render`
