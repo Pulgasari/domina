@@ -205,8 +205,14 @@ const poolAdd = (pool, element, callback) => {
   set.add(callback);
 };
 */
+// Map#getOrInsertComputed where the browser has it (still new), the same by hand elsewhere
+const getOrInsertComputed = (map, key, create) =>
+    map.getOrInsertComputed ? map.getOrInsertComputed(key, create)
+  : map.has(key)            ? map.get(key)
+  :                           map.set(key, create(key)).get(key);
+
 const poolAdd = (pool, element, callback) => {
-  const set = pool.targets.getOrInsertComputed(element, () => {
+  const set = getOrInsertComputed(pool.targets, element, () => {
     pool.observer.observe(element);
     return new Set();
   });
