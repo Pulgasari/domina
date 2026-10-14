@@ -145,6 +145,7 @@ export class ChildPart {
     const type = directive(value);
     if (type === 'each')          this.each(value);
     else if (type === 'when')     this.when(value);
+    else if (type === 'raw')      this.raw(value.html);
     else if (isResult(value))     this.result(value);
     else if (Array.isArray(value)) this.list(value);
     else if (value instanceof Node) this.node(value);
@@ -176,6 +177,19 @@ export class ChildPart {
     this.kind    = 'instance';
     this.content = instance;
     this.end.before(instance.fragment);
+  }
+
+  // markup that already is markup, parsed only when it changed. inert while
+  // parsing: a template runs no script and loads nothing until inserted
+  raw (markup) {
+    const text = markup == null ? '' : String(markup);
+    if (this.kind === 'raw' && this.content === text) return;
+    this.clear();
+    this.kind    = 'raw';
+    this.content = text;
+    const template = document.createElement('template');
+    template.innerHTML = text;
+    this.end.before(template.content);
   }
 
   // a new part of its own before the end of this one

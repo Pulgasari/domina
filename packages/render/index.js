@@ -46,7 +46,13 @@ function when (condition, then, otherwise = null) {
   return { [DIRECTIVE]: 'when', condition, otherwise, then };
 }
 
+// markup as it is, for a child hole: raw(markdownHtml). it is parsed, so anything
+// from someone else's hands belongs in a sanitizer first
+function raw (html) {
+  return { [DIRECTIVE]: 'raw', html };
+}
+
 const isResult = value => value?.[RESULT] === true;
 
-export { configure, each, isResult, render, tag, unrender, when };
+export { configure, each, isResult, raw, render, tag, unrender, when };
 export default render;
