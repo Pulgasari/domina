@@ -2,6 +2,7 @@
 
 // @domina/chain — jquery-artige kette über @domina/core.
 // arbeitet immer auf einer menge; getter geben arrays.
+// --- ??? deprecated ??? ---
 
 import * as dom from '@domina/core';
 
