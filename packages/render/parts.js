@@ -95,7 +95,13 @@ export function applyProp (node, name, value, state) {
 
   if (name === 'dataset' || name === 'data') { Object.assign(node.dataset, value); return; }
 
-  if (!(node instanceof SVGElement) && name in node && isWritable(node, name)) { node[name] = value; return; }
+  // a property, unless it is a method of the element (an aufbau element's part()).
+  // null clears a string property instead of turning it into "null"
+  if (!(node instanceof SVGElement) && name in node && typeof node[name] !== 'function' && isWritable(node, name)) {
+    node[name] = value == null && typeof node[name] === 'string' ? '' : value;
+    if (value == null) node.removeAttribute(name);
+    return;
+  }
 
   const aria = name.startsWith('aria-');
   if (value == null || (value === false && !aria)) node.removeAttribute(name);
