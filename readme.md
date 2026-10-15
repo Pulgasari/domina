@@ -1,4 +1,4 @@
-![Banner](/domina-000-80.webp)
+![Banner](/domina-002b-quant.png)
 
 # domina
 
