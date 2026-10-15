@@ -1,6 +1,6 @@
 // @domina/chain/shared.js
 
-export const
+export const // :::
 isInstanceOf = (v) => (type) => v instanceof type,
 isTypeOf     = (v) => (type) => typeof v === type;
 
@@ -13,3 +13,8 @@ isPlainObject = value => value !== null && typeof value === 'object' && [Object.
 isString    = isTypeOf('string'),
 isTarget    = sth => typeof sth?.addEventListener === 'function',
 hasIterator = sth => typeof sth[Symbol.iterator]  === 'function';
+
+// :::
+// (its intenionally uppercase to make it optically stand out when reading code.)
+export const DOMINA = {};
+DOMINA.ERROR = (message) => throw new TypeError('[domina] ' + message);
