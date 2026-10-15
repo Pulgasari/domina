@@ -529,6 +529,7 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 - [x] `style`
 
 ## verbs: maybe (?)
+- [ ] `a11y`
 - [ ] `add`
 - [ ] `animate`
 - [ ] `apply`
