@@ -3,8 +3,11 @@
 
 // :::::: IMPORT
 
-import * as core   from './api.js';
-import * as events from './events.js';
+import * as core      from './api.js';
+import * as events    from './events.js';
+import * as structure from './structure.js';
+import * as traversal from './traversal.js';
+import * as view      from './view.js';
 
 import { Chain, collect }            from './chain.js';
 import { api, define, extend }       from './define.js';
@@ -13,7 +16,7 @@ import { isChain }                   from './shared.js';
 
 // :::::: BUILD
 
-extend({ ...core, ...events });
+extend({ ...core, ...events, ...structure, ...traversal, ...view });
 
 // d(chain) is the chain itself, no copy
 function d (spec, context) {

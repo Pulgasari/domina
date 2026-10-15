@@ -1,15 +1,24 @@
 // @domina/chain/api.js
 // the built-in methods, as definitions (see define.js)
 
-import { getAttr }        from '@domina/methods/getAttr';
-import { getData }        from '@domina/methods/getData';
-import { getElementSize } from '@domina/methods/getElementSize';
-import { getHTML }        from '@domina/methods/getHTML';
-import { getStyle }       from '@domina/methods/getStyle';
-import { setAttr }        from '@domina/methods/setAttr';
-import { setData }        from '@domina/methods/setData';
-import { setHTML }        from '@domina/methods/setHTML';
-import { setStyle }       from '@domina/methods/setStyle';
+import { addClass as addClassTo }         from '@domina/methods/addClass';
+import { getAttr }                        from '@domina/methods/getAttr';
+import { getData }                        from '@domina/methods/getData';
+import { getElementSize }                 from '@domina/methods/getElementSize';
+import { getHTML }                        from '@domina/methods/getHTML';
+import { getStyle }                       from '@domina/methods/getStyle';
+import { getText }                        from '@domina/methods/getText';
+import { getValue }                       from '@domina/methods/getValue';
+import { hasClass as hasClassOn }         from '@domina/methods/hasClass';
+import { removeClass as removeClassFrom } from '@domina/methods/removeClass';
+import { setAttr }                        from '@domina/methods/setAttr';
+import { setClass }                       from '@domina/methods/setClass';
+import { setData }                        from '@domina/methods/setData';
+import { setHTML }                        from '@domina/methods/setHTML';
+import { setStyle }                       from '@domina/methods/setStyle';
+import { setText }                        from '@domina/methods/setText';
+import { setValue }                       from '@domina/methods/setValue';
+import { toggleClass as toggleClassOn }   from '@domina/methods/toggleClass';
 
 import { isPlainObject, toCamelCase, toKebabCase } from './shared.js';
 
@@ -53,23 +62,59 @@ export const aria = {
 };
 
 // :::::: DATA
-// dataset, strings in and strings out: nothing is cast on reading. true is an empty
-// attribute, false and null remove, objects and lists are stored as json
+// two views of data-*. both: the data- prefix is optional, null removes, a map sets several.
+//
+//   data     typed: reads are cast ('42' -> 42, 'true' -> true, '{…}' -> object),
+//            writes are encoded so they read back as written (true -> 'true', object -> json)
+//   dataset  as the dom has it: strings in, strings out, nothing cast or encoded
 
-const dataKey = name => name.startsWith('data-') ? name.slice(5) : name;
+const dataKey = name => toCamelCase(name.startsWith('data-') ? name.slice(5) : name);
 
-function writeData (element, key, value) {
-  if (value == null || value === false) delete element.dataset[toCamelCase(dataKey(key))];
-  else                                  setData(element, dataKey(key), value === true ? '' : value);
-}
+const removeData = (element, key) => { delete element.dataset[dataKey(key)]; };
 
 export const data = {
-  params : { name: 'string', value: 'string' },
-  read   : (element, name) => getData(element, name == null ? undefined : dataKey(name), { cast: false }),
-  write  : (element, nameOrMap, value) => { for (const [key, val] of entriesOf(nameOrMap, value)) writeData(element, key, val); },
+  params : { name: 'string', value: 'json' },
+  read   : (element, name) => getData(element, name == null ? undefined : dataKey(name)),
+  write  : (element, nameOrMap, value) => {
+    for (const [key, val] of entriesOf(nameOrMap, value)) {
+      if (val == null) removeData(element, key);
+      else             setData(element, dataKey(key), val);
+    }
+  },
 };
 
-export const dataset = { ...data, alias: 'data' };
+export const dataset = {
+  params : { name: 'string', value: 'string' },
+  read   : (element, name) => name == null ? { ...element.dataset } : element.dataset[dataKey(name)] ?? null,
+  write  : (element, nameOrMap, value) => {
+    for (const [key, val] of entriesOf(nameOrMap, value)) {
+      if (val == null) removeData(element, key);
+      else             element.dataset[dataKey(key)] = val;
+    }
+  },
+};
+
+// :::::: CLASSES
+// names: 'a b', 'a, b', a list, or { a: true, b: false }
+
+export const addClass    = { params: { names: 'string' },                write: (element, ...names)    => { addClassTo(element, ...names); } };
+export const removeClass = { params: { names: 'string' },                write: (element, ...names)    => { removeClassFrom(element, ...names); } };
+export const toggleClass = { params: { names: 'string', force: 'bool' }, write: (element, names, force) => { toggleClassOn(element, names, force); } };
+
+// every name on the first element (or on every element, on .all)
+export const hasClass = {
+  params : { names: 'string' },
+  read   : (element, names) => hasClassOn(element, names),
+};
+
+// the whole list: read as an array, write replaces it. exported as class
+const classList = {
+  params : { names: 'string' },
+  read   : element         => [...element.classList],
+  write  : (element, names) => { setClass(element, names); },
+};
+
+export { classList as class };
 
 // :::::: CONTENT
 
@@ -77,6 +122,22 @@ export const html = {
   params : { html: 'html' },
   read   : (element)       => getHTML(element),
   write  : (element, html) => setHTML(element, html),
+};
+
+export const text = {
+  params : { text: 'string' },
+  read   : element         => getText(element),
+  write  : (element, text) => { setText(element, text); },
+};
+
+// :::::: FORMS
+// checkbox: boolean, select multiple: array, otherwise a string. { notify: true } fires input and change
+
+export const value = {
+  params : { value: 'json' },
+  reads  : args => args.length === 0,
+  read   : element                   => getValue(element),
+  write  : (element, value, options) => { setValue(element, value, options); },
 };
 
 // :::::: STYLES
