@@ -2,7 +2,10 @@
 
 `domina` ist eine Fassade für `document`: Sie liest sich wie `document`, liefert echte Knoten, fasst keinen Prototyp an und macht die Arbeit mit dem DOM trotzdem angenehm. 
 
-Es ist eine Art Mittelweg zwischen `@domina/prototype` (verändert das DOM des ganzen Realms) und `@domina/chain` (Wrapper, der eigene Objekte zurückgibt) und `@domina/methods` (nice DX im Ergebnis immer nur auf der aktuellen Selector-Ebene).
+Es ist eine Art Mittelweg zwischen:
+- `@domina/prototype` (verändert das DOM des ganzen Realms)
+- `@domina/chain` (Wrapper, der eigene Objekte zurückgibt)
+- `@domina/methods` (nice DX im Ergebnis immer nur auf der aktuellen Selector-Ebene).
 
 ```js
 import domina from '@domina/proxy';
