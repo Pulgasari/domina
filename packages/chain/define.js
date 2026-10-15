@@ -15,8 +15,7 @@
 import { Chain } from './chain.js';
 import { isPlainObject } from './shared.js';
 
-export const api = new Map;
-
+const api = new Map;
 
 const readsByDefault = args => args.length === 0 || (args.length === 1 && !isPlainObject(args[0]));
 
@@ -50,7 +49,7 @@ function build (name, { method, read, reads = readsByDefault, write }) {
   };
 }
 
-export function define (name, definition) {
+function define (name, definition) {
   if (name in Chain.prototype) throw new Error(`[domina/chain] "${name}" exists already`);
 
   // a bare function is a setter: (element, ...args) on every element
@@ -60,6 +59,10 @@ export function define (name, definition) {
   api.set(name, { ...spec, kind: kindOf(spec), name, params: spec.params ?? {} });
 }
 
-export function extend (definitions) {
-  for (const [name, definition] of Object.entries(definitions)) define(name, definition);
+function extend (defs) {
+  for (const [name, def] of Object.entries(defs)) define(name, def);
 }
+
+// :::::: EXPORT
+
+export { api, define, extend };
