@@ -225,11 +225,11 @@ domina.values.login = { user: 'ada' }; // fills it (setFormValues)
 ### `scroll` und `focus`
 
 ```js
-domina.scroll                         // { x, y }
-domina.scroll = { y: 0 };             // instant
+domina.scroll // { x, y }
+domina.scroll = { y: 0 }; // instant
 domina.scroll = { y: 0, smooth: true };
-domina.focus                          // document.activeElement, through shadow roots to the innermost
-domina.focus = '#search';             // focuses, a selector or an element
+domina.focus // document.activeElement, through shadow roots to the innermost
+domina.focus = '#search'; // focuses, a selector or an element
 ```
 
 ---
@@ -237,14 +237,14 @@ domina.focus = '#search';             // focuses, a selector or an element
 ## 7. Umgebung und Lebenszyklus
 
 ```js
-await domina.ready                    // DOMContentLoaded, or now
-await domina.loaded                   // load
-await domina.fontsReady               // document.fonts.ready
-domina.visible                        // visibilityState === 'visible'
-domina.focused                        // document.hasFocus()
-domina.online                         // navigator.onLine
-domina.motion                         // false when prefers-reduced-motion
-domina.url                            // a URL of location, read only
+await domina.ready      // DOMContentLoaded, or now
+await domina.loaded     // load
+await domina.fontsReady // document.fonts.ready
+domina.visible          // visibilityState === 'visible'
+domina.focused          // document.hasFocus()
+domina.online           // navigator.onLine
+domina.motion           // false when prefers-reduced-motion
+domina.url              // a URL of location, read only
 ```
 
 Zustände, die sich ändern (`visible`, `focused`, `online`, `motion`), lassen sich mit `watch` beobachten ([9](#9-beobachten)).
@@ -274,7 +274,7 @@ domina.snapshot()   // { title, lang, dir, vars, data, meta, scroll, … } as a 
 ```js
 const stop = domina.watch('data.theme', (value, old) => …);
 domina.watch('title', …);
-domina.watch('vars.accent', …);       // inline changes on :root
+domina.watch('vars.accent', …); // inline changes on :root
 domina.watch('visible', …);
 domina.watch('online', …);
 ```
@@ -425,11 +425,11 @@ Das ist im Kern `proxyOf` aus `@bunker/core`. Die Bereiche entstehen einmal beim
 
 | | Subjekt | gibt zurück | verändert Prototypen | in Bibliotheken |
 |---|---|---|---|---|
-| `@domina/methods` | Argument | native Werte | nein | ja |
-| `@domina/element` | ein Element (Wrapper) | Wrapper | nein | ja |
-| `@domina/chain` | eine Menge (Wrapper) | Kette oder Werte | nein | ja |
-| `@domina/proxy` | das Dokument (Fassade) | native Werte | nein | ja |
-| `@domina/prototype` | jedes Element | native Werte | ergänzt | nein |
+| `@domina/methods`      | Argument               | native Werte     | nein | ja |
+| `@domina/element`      | ein Element (Wrapper)  | Wrapper          | nein | ja |
+| `@domina/chain`        | eine Menge (Wrapper)   | Kette oder Werte | nein | ja |
+| `@domina/proxy`        | das Dokument (Fassade) | native Werte     | nein | ja |
+| `@domina/prototype`    | jedes Element | native Werte | ergänzt | nein |
 | `@domina/prototype-hc` | jedes Element | native Werte | erweitert native | nein |
 
 `domina` ist die einzige Oberfläche, die native Werte zurückgibt **und** kein Prototyp anfasst. Der Preis: Sie arbeitet auf Dokumentebene (und mit `within` auf Bereichen), nicht auf jedem Element. Für die Arbeit am einzelnen Element bleibt `domina(el)`, also die Kette.
@@ -473,3 +473,42 @@ Zum Abhaken. „Gebaut:“ ist die Vorgabe, die gerade im Code steht.
 - [ ] **`buildSelector` macht Attributnamen nicht kebab-case:** `{ ariaCurrent: 'page' }` wird zu `[ariaCurrent="page"]`, das `aria-current` nie trifft (Attributnamen sind in HTML unabhängig von Groß-/Kleinschreibung, aber der Bindestrich fehlt). Bei `dataset` passiert es schon.
 - [ ] **`getElement`/`getElements` werfen** bei einem ungültigen Selektor (`SyntaxError`), `d()` liefert eine leere Menge. Vereinheitlichen?
 - [ ] **`emitEvent`** nimmt nur, was `resolveElement` kennt; mit einer Shadow Root als Ziel liefert es `false`. `domina.emit` nutzt deshalb `dispatchEvent` direkt.
+
+---
+
+# lol
+
+Das haste ja echt toll "zum Abhaken" gebaut. Also, abhaken kann man es, aber was das dann.bedeuten soll bei den meisten Punkten wäre irgendwie komplett unklar, weil da gefühlt nix passend formuliert ist usw. 
+
+Naja, jedenfalls:
+
+Ich weiß nicht so ganz, was du hier veranstaltet hast, aber alles ist schief und krumm, nix ist konsequent, alles wirr.
+
+Wozu braucht es denn `domina.on`, wenn `domina.addEventListener` (native like but extended) und `domina().on` (chain/short) vorhanden sind? Wären dann 3 Wege für's Selbe.
+
+```js
+// native with benefits
+domina.addEventListener
+// chain
+domina().on
+```
+
+```js
+// nativ with benefits
+domina.querySelector
+domina.querySelectorAll // returns NodeList
+// domina
+domina.select    // or get ?
+domina.selectAll // or getAll ? returns Array
+//
+d
+dd
+```
+
+## verhalten
+```js
+// auto-casting off
+domina.dataset
+// auto-casting on
+domina.data
+```
