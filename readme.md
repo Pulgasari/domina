@@ -2,7 +2,7 @@
 
 # domina
 
-JavaScript toolkit for *doing stuff* in the dom.
+JavaScript toolkit for *doing stuff* in the DOM.
 
 ### demos | playground 
 [chain](https://code.pulgasari.dev/domina/chain.html) ·
