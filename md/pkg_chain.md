@@ -4,14 +4,28 @@
 
 ## Stand
 
-Gebaut: `d`, `dd`, `.all`, `attr`, `aria`, `data` (alias `dataset`), `style`, `size`, `html`, `on`, `once`, `off`, `emit`, dazu `length`, `el`, `each`, `map` und `d.extend`. Ausprobieren: [`www/chain.html`](../www/chain.html).
+Gebaut:
+
+- **Kern:** `d`, `dd`, `.all`, `length`, `el`, `each`, `map`, `d.extend`
+- **Attribute und Inhalt:** `attr`, `aria`, `data`, `dataset`, `class`, `addClass`, `removeClass`, `toggleClass`, `hasClass`, `html`, `text`, `value`, `style`, `size`
+- **Struktur:** `append`, `prepend`, `before`, `after`, `insert`, `appendTo`, `prependTo`, `replace`, `wrap`, `unwrap`, `clear`, `remove`, `clone`, `sort`
+- **Traversal:** `find`, `closest`, `children`, `parent`, `parents`, `siblings`, `next`, `prev`, `nextAll`, `prevAll`, `filter`, `not`, `has`, `at`, `first`, `last`, `slice`, `is`, `index`
+- **Ansicht und Warten:** `offset`, `position`, `rect`, `inView`, `scrollTo`, `jumpTo`, `finished`, `wait`
+- **Events:** `on`, `once`, `off`, `emit`
+
+ Ausprobieren: [`www/chain.html`](../www/chain.html).
 
 | Datei | |
 |---|---|
 | `chain.js` | die Menge (`Chain`) und `collect()`: Selektor, Ziel, Iterable → Elemente |
 | `define.js` | baut Methoden aus Beschreibungen und führt das Register `d.api` |
-| `api.js` | `attr`, `aria`, `data`, `html`, `style`, `size` als Beschreibungen |
-| `events.js` | `on`, `once`, `off`, `emit`; Listener pro Ziel |
+| `api.js` | Attribute, ARIA, Daten, Klassen, Inhalt, Formularwert, Styles, Größe |
+| `structure.js` | Einfügen, Bewegen, Ersetzen, Wrap/Unwrap, Leeren, Entfernen, Klonen, Sortieren |
+| `traversal.js` | neue Mengen aus der Menge: hinab, hinauf, quer, filtern, auswählen |
+| `view.js` | Position, Sichtbarkeit, Scrollen, Warten auf Animationen und Events |
+| `events.js` | `on`, `once`, `off`, `emit` |
+| `listeners.js` | Listener pro Ziel, gemeinsam mit `@domina/proxy` |
+| `shared.js` | Prädikate, Schreibweisen, `DOMINA.ERROR` |
 
 Eine Methode ist **Daten**, keine Klasse:
 
@@ -166,12 +180,17 @@ d(input).prop('checked')               // boolean
 d(input).prop('checked', true)
 d(video).prop({ muted: true, currentTime: 0 })
 
-// data-*: strings in, strings out
-d(el).data('userId')                   // '42' (data-user-id)
+// data-*: typed. reads are cast, writes encoded so they read back as written
 d(el).data('userId', 42)               // data-user-id="42"
-d(el).data({ state: 'open', step: 2 })
-d(el).data()                           // { userId: '42', state: 'open', … }
+d(el).data('userId')                   // 42
+d(el).data('open', true)               // data-open="true", reads back as true
+d(el).data('config', { a: 1 })         // data-config='{"a":1}', reads back as an object
+d(el).data()                           // { userId: 42, open: true, config: { a: 1 } }
 d(el).data('state', null)              // removed
+
+// data-* as the dom has it: strings in, strings out
+d(el).dataset('userId')                // '42'
+d(el).dataset({ state: 'open' })
 
 // aria-*: the prefix is optional, true and false are values
 d(el).aria('expanded', true)           // aria-expanded="true"
@@ -181,7 +200,7 @@ d(el).aria()                           // { expanded: 'true', controls: 'menu', 
 d(el).attr('aria-hidden', false)       // aria-hidden="false": attr hands aria-* keys to aria
 ```
 
-`attr` und `prop` sind getrennt, weil sie verschiedene Dinge sind (`attr('value')` ist der Startwert, `prop('value')` der aktuelle). `data` liest das DOM, nicht einen Cache, und castet nicht (siehe [17](#17-jquery-quirks-und-was-d-stattdessen-tut)).
+`attr` und `prop` sind getrennt, weil sie verschiedene Dinge sind (`attr('value')` ist der Startwert, `prop('value')` der aktuelle). `data` und `dataset` lesen das DOM, nicht einen Cache. `data` castet beim Lesen (`autoCast` aus den Methods: `'42'` → `42`, `'true'` → `true`, JSON → Objekt; `'007'` bleibt ein String) und kodiert beim Schreiben so, dass es als dasselbe zurückkommt. `dataset` ist das native `element.dataset`, nur mit `null` zum Entfernen und Maps. Die Grenze von `data`: Ein String, der wie eine Zahl aussieht (`data('id', '42')`), kommt als Zahl zurück; wer genau den String braucht, nimmt `dataset`.
 
 ---
 
@@ -229,6 +248,58 @@ d(el).var({ accent: 'tomato', gap: 8 }) // numbers stay numbers: no px for custo
 - Lesen liest den **berechneten** Wert. Das ist fast immer gemeint (jQuery tut dasselbe, sagt es aber nicht). Der Inline-Wert nur ausdrücklich.
 - Zahlen bekommen `px`, außer bei einheitenlosen Eigenschaften (`opacity`, `z-index`, `flex-grow`, `line-height` …). Die Liste lebt in `setStyle` und ist dokumentiert, nicht magisch erweiterbar.
 - `var` ist als Property-Name in JavaScript erlaubt (`obj.var(…)`). Falls es stört: `cssVar`.
+
+---
+
+### 6.1 CSSOM: welche Schicht?
+
+Stand: Dieser Abschnitt ist zum Entscheiden. Gebaut ist `style` wie oben (Lesen berechnet, Schreiben inline).
+
+**Was die Plattform anbietet:**
+
+| API | liefert | Werte | Support |
+|---|---|---|---|
+| `el.style` | inline | Strings | überall |
+| `getComputedStyle(el)` | **resolved** (was gilt, meist in `px`) | Strings, live | überall |
+| `el.attributeStyleMap` | inline, typisiert | `CSSUnitValue`, `CSSKeywordValue` … | Chromium seit 66, Safari seit 16.4; Firefox vor Einsatz prüfen |
+| `el.computedStyleMap()` | **computed** (vor Layout, `auto` bleibt `auto`, `%` bleibt `%`) | typisiert | wie oben |
+| `CSS.px(10)`, `CSS.percent(50)`, `.add()`, `.to('rem')` | Zahlen mit Einheit, Rechnen | typisiert | wie oben |
+| `@property` / `CSS.registerProperty` | Custom Properties mit Typ, Vererbung, Startwert | | überall (Baseline 2024) |
+| `new CSSStyleSheet`, `adoptedStyleSheets` | ganze Stylesheets | | überall → `@domina/sheets` |
+
+**Zwei Fallen:**
+- **Resolved ist nicht computed.** `getComputedStyle(el).width` ist `'320px'`, `el.computedStyleMap().get('width')` kann `auto` oder `50%` sein. Wer beides mischt, bekommt verschiedene Antworten auf „wie breit?“.
+- **Lesen erzwingt Rechnen.** `getComputedStyle` und `computedStyleMap` führen ausstehende Style-Änderungen aus, bei Layout-Eigenschaften (`width`, `top`) auch das Layout. Lesen nach Schreiben in einer Schleife ist Layout Thrashing. `.all.style('width')` über 100 Elemente kostet ein Rechnen, wenn dazwischen nichts geschrieben wird; abwechselnd lesen und schreiben kostet 100.
+
+**Vorschlag:**
+
+```js
+// style: as built. reads what applies, writes inline. a CSSStyleValue as value works (it stringifies)
+d(el).style('width')                   // '320px'
+d(el).style('width', CSS.percent(50))  // width: 50%
+
+// inline: only what is set on the element, read and write
+d(el).inline('width')                  // '50%' or null
+
+// measure: a number and its unit, typed om where present, parsed from the resolved string otherwise
+d(el).measure('width')                 // { value: 320, unit: 'px' }
+d(el).measure('opacity')               // { value: 0.5, unit: '' }
+
+// var: custom properties. typed when registered with @property
+d(el).var('accent')                    // '#ff79c6'
+d(el).var('gap', 8)                    // --gap: 8 (no px for custom properties)
+d.property('--gap', { syntax: '<length>', inherits: true, initial: '8px' })   // CSS.registerProperty
+```
+
+Eine Alternative zu eigenen Verben wären Ansichten wie `.all`: `d(el).inline.style('width')`, `d(el).typed.style('width')` (gibt `CSSUnitValue` zurück). Das hält die Zahl der Verben klein, macht aber jede Leseart zu einem Modus der Kette, den `define.js` an jeden Getter weiterreichen müsste.
+
+**Zu entscheiden:**
+- [ ] `style` liest resolved (wie jetzt) oder computed (Typed OM)?
+- [ ] Inline lesen als eigenes Verb (`inline`) oder als Ansicht (`.inline.style()`)?
+- [ ] Typisierte Werte: eigenes Verb (`measure`), Ansicht (`.typed`) oder gar nicht?
+- [ ] Typed OM nur als Beschleunigung mit Fallback, oder Rückgabe von `CSSStyleValue` nach außen (dann ohne Firefox)?
+- [ ] `var` mit oder ohne `--`, und gehört `d.property()` in die Kette oder nach `@domina/sheets`?
+- [ ] Ein Schutz gegen Thrashing (alle Lesungen, dann alle Schreibungen pro Frame) als `d.measure(fn)` / `d.mutate(fn)` wie fastdom, oder Sache des Aufrufers?
 
 ---
 
@@ -469,7 +540,7 @@ d('.error').shake(8);
 | `.text()` liest alle, `.html()` und `.attr()` das erste | uneinheitlich | alle Getter lesen das erste, `.all` liest alle |
 | `.each((i, el) => …)` mit `this` | Index zuerst, anders als `Array.forEach` | `(el, i)`, kein `this` |
 | `return false` in `.each` bricht ab | versteckte Bedeutung eines Rückgabewerts | kein Abbruch; dafür `for (const el of d(…))` |
-| `.data()` hat einen Cache neben `dataset` und castet (`'1e3'` → `1000`) | DOM und `.data()` laufen auseinander; Werte ändern still ihren Typ | liest und schreibt `dataset`, Strings, kein Cast |
+| `.data()` hat einen Cache neben `dataset` und castet (`'1e3'` → `1000`) | DOM und `.data()` laufen auseinander; Werte ändern still ihren Typ | kein Cache; `data` castet ausdrücklich und dokumentiert, `dataset` gar nicht |
 | `.height(200)` rechnet `box-sizing` heraus | anderes Ergebnis als `style.height = '200px'` | setzt genau die CSS-Eigenschaft |
 | `.width()` und Co. in fünf Varianten | `innerWidth`, `outerWidth`, `outerWidth(true)` | `size({ box })` |
 | `.show()`/`.hide()` merken sich `display` | versteckter Zustand, bricht mit CSS-Klassen | `hidden`-Attribut |
@@ -541,15 +612,15 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 - [ ] `animate`
 - [ ] `apply`
 - [ ] `bind` | `unbind`
-- [ ] `clear`
+- [x] `clear`
 - [ ] `click`
 - [ ] `ensure`
-- [ ] `filter`
+- [x] `filter`
 - [ ] `focus`
 - [ ] `height`
 - [ ] `hide` | `unhide`
 - [ ] `htx`
-- [ ] `insert`
+- [x] `insert`
 - [ ] `lib`
 - [ ] `md`
 - [ ] `node`
@@ -558,24 +629,24 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 - [ ] `pipe`
 - [ ] `props`
 - [ ] `raf`
-- [ ] `rect`
+- [x] `rect`
 - [ ] `refresh`
-- [ ] `remove`
-- [ ] `replace`
+- [x] `remove`
+- [x] `replace`
 - [ ] `request`
 - [ ] `rotate`
 - [ ] `scale`
-- [ ] `scrollTo` | `jumpTo`
+- [x] `scrollTo` | `jumpTo`
 - [ ] `select`
-- [ ] `sort`
+- [x] `sort`
 - [ ] `sync`
 - [ ] `tag`
-- [ ] `text`
+- [x] `text`
 - [ ] `token`
 - [ ] `transform`
 - [ ] `trigger`
 - [ ] `width`
-- [ ] `wrap` | `unwrap`
+- [x] `wrap` | `unwrap`
 
 ## some ideas
 
