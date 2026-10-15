@@ -18,7 +18,8 @@ const app  = domina.get('#app');                          // a real element
 const rows = domina.getList({ tag: 'tr', class: 'row' }); // a real array
 const stop = domina.on('click', '[data-action]', (event, el) => run(el.dataset.action));
 
-domina('.card').style({ opacity: 1 });                 // @domina/chain
+// and '@domina/chain' is included, too
+domina('.card').style({ opacity: 1 });
 ```
 
 Die Namen spiegeln das Vorbild: 
