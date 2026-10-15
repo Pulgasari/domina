@@ -1,62 +1,31 @@
-// @ts-self-types="./mod.d.ts"
+// @domina/chain
+// @ts-self-types="./index.d.ts"
+//
+// d('.card').style({ opacity: 0 }).attr('role', 'article').on('click', '.more', open)
+// a set of elements, short verbs, everything chainable. @domina/methods does the work
 
-// @domina/chain — jquery-artige kette über @domina/core.
-// arbeitet immer auf einer menge; getter geben arrays.
-// --- ??? deprecated ??? ---
+import * as core   from './api.js';
+import * as events from './events.js';
 
-import * as dom from '@domina/core';
+import { Chain, collect }      from './chain.js';
+import { api, define, extend } from './define.js';
 
-const wrap = elements => new Chain (elements);
+extend({ ...core, ...events });
 
-class Chain {
-  constructor (elements) {
-    this.elements = elements;
-    this.length   = elements.length;
-  }
-
-  // ---- iteration
-  
-  [Symbol.iterator]() { return this.elements[Symbol.iterator](); }
-  each (fn) { this.elements.forEach(fn); return this; }
-  map  (fn) { return this.elements.map(fn); }          // verlässt die kette
-  get  (i)  { return i == null ? this.elements : this.elements.at(i); }
-
-  // ::: setter: geben this zurück
-  
-     addClass (...args) { this.elements.forEach(el => dom.addClass(el, ...a)); return this; }
-  removeClass (...args) { this.elements.forEach(el => dom.removeClass(el, ...a)); return this; }
-  
-  setAttr  (...args) { this.elements.forEach (element => dom.setAttr  (element, ...args)); return this; }    
-  setStyle (...args) { this.elements.forEach (element => dom.setStyle (element, ...args)); return this; }
-  setValue (...args) { this.elements.forEach (element => dom.setValue (element, ...args)); return this; }
-  
-  update(...a)      { this.els.forEach(el => dom.updateElement(el, ...a)); return this; }
-  remove()          { this.els.forEach(dom.remove); return this; }
-
-  // ::: getter: geben arrays, NICHT den ersten treffer
-  
-  attrs(name)  { return this.elements.map(el => dom.getAttr(el, name)); }
-  values(mode) { return this.elements.map(el => dom.getValue(el, mode)); }
-  texts()      { return this.elements.map(el => el.textContent); }
-
-  // ::: traversal: neue kette
-  
-  find    (selector) { return wrap(this.els.flatMap(el => dom.getElements(sel, el))); }
-  closest (selector) { return wrap([...new Set(this.els.map(el => el.closest(sel)).filter(Boolean))]); }
-  filter  (test)     { return wrap(this.elements.filter(test)); }
-  first   ()         { return wrap(this.elements.slice(0, 1)); }
-  last    ()         { return wrap(this.elements.slice(-1)); }
-
-  // ---- events: disposer sammeln, kette bleibt
-  
-  on(types, handler, options) {
-    this._disposers ??= [];
-    this._disposers.push(dom.on(this.els, types, handler, options));
-    return this;
-  }
-  dispose() { this._disposers?.forEach(d => d()); this._disposers = []; return this; }
+// d(chain) is the chain itself, no copy
+export function d (spec, context) {
+  return spec instanceof Chain ? spec : new Chain(collect(spec, context));
 }
 
-export const chain = spec => wrap(
-  Array.isArray(spec) ? spec.filter(Boolean) : dom.getElements(spec)
-);
+// d(...).all: getters answer for every element
+export function dd (spec, context) {
+  return new Chain(collect(spec, context), true);
+}
+
+d.all    = dd;
+d.api    = api;
+d.define = define;
+d.extend = extend;
+
+export { Chain, api, define, extend };
+export default d;
