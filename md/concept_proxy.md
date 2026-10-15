@@ -1,6 +1,8 @@
 # @domina/proxy – Konzept
 
-`domina` ist eine Fassade für `document`: Sie liest sich wie `document`, liefert echte Knoten, fasst keinen Prototyp an und macht die Arbeit mit dem DOM trotzdem angenehm. Der Mittelweg zwischen `@domina/prototype` (verändert das DOM des ganzen Realms) und den Wrappern (`@domina/element`, `@domina/chain`, die eigene Objekte zurückgeben).
+`domina` ist eine Fassade für `document`: Sie liest sich wie `document`, liefert echte Knoten, fasst keinen Prototyp an und macht die Arbeit mit dem DOM trotzdem angenehm. 
+
+Es ist eine Art Mittelweg zwischen `@domina/prototype` (verändert das DOM des ganzen Realms) und `@domina/chain` (Wrapper, der eigene Objekte zurückgibt) und `@domina/methods` (nice DX im Ergebnis immer nur auf der aktuellen Selector-Ebene).
 
 ```js
 import domina from '@domina/proxy';
@@ -16,7 +18,9 @@ const stop = domina.on('click', '[data-action]', (event, el) => run(el.dataset.a
 domina('.card').style({ opacity: 1 });                 // @domina/chain
 ```
 
-Die Namen spiegeln das Vorbild: `domina` zu `document` wie `d`/`dd` zu `$`/`$$` der DevTools.
+Die Namen spiegeln das Vorbild: 
+- `domina` zu `document`
+- `d`/`dd` zu `$`/`$$` (jQuery, DevTools)
 
 ## Stand
 
