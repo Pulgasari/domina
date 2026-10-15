@@ -510,3 +510,20 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 ### Zur alten 0-Version
 
 `packages/chain/index.js` ist nicht lauffähig und kann ersetzt werden: `addClass` reicht `...a` statt `...args` weiter, mehrere Methoden nutzen `this.els` statt `this.elements`, importiert wird `@domina/core` (heute `@domina/methods`), `deno.json` heißt noch `@pulgasari/chain` und veröffentlicht `mod.js`, das es nicht gibt.
+
+---
+
+# todo
+
+## verbs: base/core
+- [x] `d` | `dd`
+
+## methods: chain
+- [x] `all`
+- [ ] `attr`
+- [x] `html`
+- [ ] `htx` (?)
+- [x] `emit` | `off` | `on` | `once`
+- [x] `size`
+- [x] `style`
+
