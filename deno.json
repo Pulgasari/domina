@@ -5,6 +5,7 @@
     "./packages/methods",
     "./packages/observer",
     "./packages/prototype",
+    "./packages/proxy",
     "./packages/element",
     "./packages/form",
     "./packages/meta",

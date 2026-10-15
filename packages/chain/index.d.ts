@@ -113,4 +113,11 @@ export declare const api: Map<string, Entry>;
 export declare function define(name: string, definition: Extension): void;
 export declare function extend(definitions: Record<string, Extension>): void;
 
+/** Adds listeners for every type, delegated when `selector` is given. Returns one disposer. */
+export declare function listen(target: EventTarget, types: string, selector: string | null, handler: Handler, options?: AddEventListenerOptions, flags?: { once?: boolean }): () => void;
+/** `'click keydown'` or `'click, keydown'` -> `['click', 'keydown']`. */
+export declare function typesOf(types: string | null | undefined): string[];
+/** Removes what `listen` added on `target`: all, by types, or by handler. */
+export declare function unlisten(target: EventTarget, types?: string, handler?: Handler): void;
+
 export default d;
