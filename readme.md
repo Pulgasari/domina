@@ -1,4 +1,4 @@
-![Logo](/logo.svg)
+![Banner](/domina-000-80.webp)
 
 # domina
 
@@ -140,4 +140,4 @@ Gesammelte Ideen und Notizen liegen in [docs/ideas.md](./docs/ideas.md).
 
 MIT
 
-![Banner](/domina-000-80.webp)
+![Logo](/logo.svg)
