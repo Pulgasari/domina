@@ -19,6 +19,10 @@ isString      = isTypeOf('string'),
 isTarget      = sth => typeof sth?.addEventListener === 'function',
 hasIterator   = sth => typeof sth?.[Symbol.iterator] === 'function';
 
+export const // ::: CASE
+toCamelCase = name => name.replace(/-([a-z])/g, (_, char) => char.toUpperCase()),
+toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());
+
 // :::
 // (its intenionally uppercase to make it optically stand out when reading code.)
 export const DOMINA = {};

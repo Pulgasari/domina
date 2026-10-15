@@ -35,9 +35,26 @@ export declare class Chain<Many extends boolean = false> implements Iterable<Tar
 
   attr(): Read<Record<string, string>, Many>;
   attr(name: string): Read<string, Many>;
-  /** `true` sets an empty attribute, `false` and `null` remove it. */
+  /** `true` sets an empty attribute, `false` and `null` remove it. `aria-*` keys follow `aria()`. */
   attr(name: string, value: Value<string | number | boolean>): this;
   attr(map: Record<string, string | number | boolean | null>): this;
+
+  /** Every `aria-*` attribute, keys without the prefix in camelCase. */
+  aria(): Read<Record<string, string>, Many>;
+  /** The prefix is optional: `'expanded'`, `'ariaExpanded'`, `'aria-expanded'`. */
+  aria(name: string): Read<string, Many>;
+  /** `true`/`false` become `'true'`/`'false'`, a list is joined with spaces, `null` removes. */
+  aria(name: string, value: Value<string | number | boolean | string[]>): this;
+  aria(map: Record<string, string | number | boolean | string[] | null>): this;
+
+  /** `dataset` as it is: strings, nothing is cast. */
+  data(): Read<Record<string, string>, Many>;
+  data(name: string): Read<string, Many>;
+  /** `true` is an empty attribute, `false` and `null` remove, objects and lists are stored as json. */
+  data(name: string, value: Value<string | number | boolean | object>): this;
+  data(map: Record<string, string | number | boolean | object | null>): this;
+  /** Alias of `data`. */
+  dataset: Chain<Many>['data'];
 
   // :::::: content
 
