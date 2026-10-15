@@ -1,12 +1,9 @@
 {
-  "name": "@pulgasari/chain",
-  "version": "1.0.0",
+  "name": "@domina/chain",
+  "version": "0.1.0",
   "license": "MIT",
   "exports": "./index.js",
-  "imports": {
-    "@pulgasari/core": "jsr:@pulgasari/domina@^1.0.0"
-  },
   "publish": {
-    "include": ["mod.js", "mod.d.ts", "README.md", "LICENSE"]
+    "exclude": ["**/*.test.js"]
   }
 }

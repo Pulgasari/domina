@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>@domina/chain</title>
+  <script src="https://code.pulgasari.dev/importmap.js"></script>
+  <link rel="stylesheet" href="https://code.pulgasari.dev/aufbau/www/demo.css"/>
+  <style>
+    main    { gap: 0; }
+    section { padding: 1.5rem; border-radius: .75rem; }
+    section:nth-child(odd) { background-color: var(--zebra); }
+
+    .line  { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    .line input { font: inherit; padding: .35rem .5rem; min-width: 12rem; }
+
+    #steps { display: grid; gap: .75rem; }
+    .step  { display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; gap: .75rem; align-items: start; padding: .75rem; border: 1px solid var(--line); border-radius: .5rem; }
+    .step > b { color: var(--muted); padding-top: .35rem; }
+    .step .controls > div { grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
+    .step .controls label { grid-template-columns: 5.5rem minmax(0, 1fr); }
+    .step button { inline-size: auto; font-size: 1rem; padding: .25rem .6rem; }
+
+    .stage { place-items: stretch; padding: 1rem; gap: .75rem; align-content: start; }
+    .stage .row  { display: flex; gap: .75rem; flex-wrap: wrap; }
+    .stage .box  { padding: 1rem 1.25rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--panel); }
+    .stage .list { margin: 0; padding-left: 1.25rem; }
+    .stage .list li { cursor: pointer; }
+
+    #results li.error { color: color-mix(in oklab, red 70%, var(--color-fg)); }
+    #results, #log { font-family: ui-monospace, monospace; font-size: .8rem; margin: 0; padding-left: 1.25rem; }
+    #log { max-height: 12rem; overflow: auto; }
+
+    table { border-collapse: collapse; font-size: .85rem; }
+    th, td { text-align: left; padding: .3rem .75rem .3rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+    td code { white-space: nowrap; }
+
+    @media (width < 48rem) {
+      section { padding: 1rem; }
+      .step   { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <h1>@domina/chain</h1>
+    <p>a target, then steps. every step is a method of <code>d</code>, its form comes from <code>d.api</code>. the chain runs on the stage as you type.</p>
+    <nav class="list" id="presets"></nav>
+  </aside>
+
+  <main>
+
+    <section>
+      <h2>chain</h2>
+      <p class="hint">an empty value is left out: <code>style('color')</code> reads, <code>style('color', 'red')</code> writes. values are read as js where they look like it: <code>12</code>, <code>true</code>, <code>null</code>, <code>{ "a": 1 }</code>.</p>
+      <div class="line">
+        <select id="mode" aria-label="mode">
+          <option value="d">d()</option>
+          <option value="dd">dd()</option>
+        </select>
+        <input id="target" value=".box" aria-label="selector" spellcheck="false"/>
+        <span class="hint" id="count"></span>
+      </div>
+      <div id="steps"></div>
+      <div class="line">
+        <button id="step-add" type="button">add a step</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>stage</h2>
+      <p class="hint">selectors are looked up in here. it is rebuilt before every run, so listeners never pile up. click around to fire events.</p>
+      <div class="stage" id="stage"></div>
+    </section>
+
+    <section>
+      <h2>code</h2>
+      <write-code id="code" lang="js" actions="copy"></write-code>
+    </section>
+
+    <section>
+      <h2>results</h2>
+      <p class="hint">what every step returned. a chain is shown by its size.</p>
+      <ol id="results"></ol>
+    </section>
+
+    <section>
+      <h2>events</h2>
+      <div class="line"><button id="log-clear" type="button">clear</button></div>
+      <ol id="log"></ol>
+    </section>
+
+    <section>
+      <h2>api</h2>
+      <p class="hint">read off <code>d.api</code>. a method added with <code>d.extend()</code> shows up here and in the step picker by itself, like <code>shake</code> below.</p>
+      <table id="api"></table>
+    </section>
+
+  </main>
+
+  <script type="module">
+    import aufbau                  from '@aufbau/api';
+    import { readValues, render }  from '@aufbau/gui';
+    import d, { Chain, dd }        from '@domina/chain';
+
+    await aufbau.boot();
+
+    const $ = id => document.getElementById(id);
+
+    // :::::: AN EXTENSION
+    // proof that the playground knows nothing about the methods: this one shows up like the rest
+
+    d.extend({
+      shake: {
+        params : { distance: 'number' },
+        write  : (element, distance = 6) => element.animate?.(
+          [0, -distance, distance, -distance, 0].map(x => ({ translate: `${x}px 0` })),
+          { duration: 300 },
+        ),
+      },
+    });
+
+    // :::::: STAGE
+
+    const STAGE = `
+      <div class="row">
+        <div class="box" id="a">A</div>
+        <div class="box">B</div>
+        <div class="box">C</div>
+      </div>
+      <ul class="list">
+        <li>one</li>
+        <li>two</li>
+        <li>three</li>
+      </ul>
+      <div class="line"><button class="btn" type="button">button</button></div>
+    `;
+
+    // :::::: PRESETS
+
+    const PRESETS = {
+      'style and attr' : { mode: 'd', target: '.box', steps: [
+        ['style', { property: 'background', value: 'tomato' }],
+        ['attr',  { name: 'title', value: 'hello' }],
+        ['attr',  { name: 'title' }],
+      ]},
+      'size' : { mode: 'd', target: '.box', steps: [
+        ['size', { w: 120, h: 60 }],
+        ['size', {}],
+      ]},
+      'read all with dd' : { mode: 'dd', target: '.box', steps: [
+        ['style', { property: '{ "padding": 24 }' }],
+        ['size',  {}],
+        ['html',  {}],
+      ]},
+      'delegated click' : { mode: 'd', target: '.list', steps: [
+        ['on', { types: 'click', selector: 'li' }],
+      ]},
+      'once and emit' : { mode: 'd', target: '.btn', steps: [
+        ['once', { types: 'ping' }],
+        ['emit', { type: 'ping', detail: '{ "n": 1 }' }],
+        ['emit', { type: 'ping', detail: '{ "n": 2 }' }],
+      ]},
+      'on, then off' : { mode: 'd', target: '.btn', steps: [
+        ['on',  { types: 'click pointerdown' }],
+        ['off', { types: 'pointerdown' }],
+      ]},
+      'html' : { mode: 'd', target: '.list', steps: [
+        ['html', { html: '<li>new</li><li>list</li>' }],
+        ['html', {}],
+      ]},
+      'an extension' : { mode: 'd', target: '.box', steps: [
+        ['shake', { distance: 10 }],
+      ]},
+    };
+
+    // :::::: VALUES
+    // a form field is text. what looks like js is read as js, empty is left out
+
+    function coerce (text) {
+      const value = String(text ?? '').trim();
+      if (value === '')                            return undefined;
+      if (value === 'null')                        return null;
+      if (value === 'true' || value === 'false')   return value === 'true';
+      if (/^-?\d+(\.\d+)?$/.test(value))           return Number(value);
+      if (/^[[{]/.test(value)) { try { return JSON.parse(value); } catch {} }
+      return value;
+    }
+
+    // a function param gets the logger, an object definition gets its params as one object
+    function argsOf (entry, values) {
+      const args = [];
+      if (entry.object) {
+        const object = {};
+        for (const name of Object.keys(entry.params)) {
+          const value = coerce(values[name]);
+          if (value !== undefined) object[name] = value;
+        }
+        return Object.keys(object).length ? [object] : [];
+      }
+      for (const [name, type] of Object.entries(entry.params)) {
+        if (type === 'function') { if (entry.name !== 'off') args.push(log); continue; }
+        const value = coerce(values[name]);
+        if (value !== undefined) args.push(value);
+      }
+      return args;
+    }
+
+    // :::::: CODE
+
+    const LOGGER = '(event, el) => console.log(event.type, el)';
+
+    const source = value =>
+        value === log            ? LOGGER
+      : typeof value === 'string' ? `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
+      : value && typeof value === 'object'
+        ? `{ ${Object.entries(value).map(([key, item]) => `${/^[a-z_$][\w$]*$/i.test(key) ? key : `'${key}'`}: ${source(item)}`).join(', ')} }`
+      : String(value);
+
+    const describe = value =>
+        value instanceof Chain ? `chain(${value.length})${value.many ? ' .all' : ''}`
+      : value === undefined    ? 'undefined'
+      : value instanceof CSSStyleDeclaration ? 'CSSStyleDeclaration'
+      : JSON.stringify(value);
+
+    // :::::: EVENTS
+
+    const tagOf = element => element?.localName
+      ? element.localName + (element.id ? `#${element.id}` : '') + [...element.classList].map(name => `.${name}`).join('')
+      : String(element);
+
+    function log (event, element) {
+      const line = document.createElement('li');
+      line.textContent = `${event.type} on ${tagOf(element)}${event.detail != null ? ` ${JSON.stringify(event.detail)}` : ''}`;
+      $('log').prepend(line);
+    }
+
+    // :::::: STATE
+
+    let steps = [];   // { method, values, node }
+
+    const methods  = () => [...d.api.keys()];
+    const specFor  = name => ({
+      method : { type: 'text', label: 'method', values: methods(), look: 'combobox' },
+      ...Object.fromEntries(Object.entries(d.api.get(name)?.params ?? {})
+        .filter(([, type]) => type !== 'function')
+        .map(([param, type]) => [param, { type: 'text', label: `${param}` + (type === 'string' ? '' : ` (${type})`) }])),
+    });
+
+    function renderStep (step) {
+      const spec = specFor(step.method);
+      const form = render(spec, {
+        values   : { method: step.method, ...step.values },
+        wrap     : 'div',
+        onChange : (values, name) => {
+          if (name === 'method' && values.method !== step.method && d.api.has(values.method)) {
+            step.method = values.method;
+            step.values = {};
+            renderStep(step);
+          } else {
+            const { method, ...rest } = values;
+            step.values = rest;
+          }
+          run();
+        },
+      });
+      const controls = Object.assign(document.createElement('div'), { className: 'controls' });
+      controls.append(form);
+
+      const remove = document.createElement('button');
+      remove.type        = 'button';
+      remove.textContent = 'remove';
+      remove.addEventListener('click', () => { steps = steps.filter(item => item !== step); draw(); run(); });
+
+      const index = document.createElement('b');
+      index.textContent = steps.indexOf(step) + 1;
+
+      step.node.replaceChildren(index, controls, remove);
+    }
+
+    function draw () {
+      $('steps').replaceChildren(...steps.map(step => {
+        step.node ??= Object.assign(document.createElement('div'), { className: 'step' });
+        renderStep(step);
+        return step.node;
+      }));
+    }
+
+    function load ({ mode, target, steps: list }) {
+      $('mode').value   = mode;
+      $('target').value = target;
+      steps = list.map(([method, values]) => ({ method, values: Object.fromEntries(Object.entries(values).map(([key, value]) => [key, String(value)])), node: null }));
+      draw();
+      run();
+    }
+
+    // :::::: RUN
+
+    function run () {
+      const mode   = $('mode').value;
+      const target = $('target').value.trim();
+      const stage  = $('stage');
+
+      stage.innerHTML = STAGE;
+
+      let chain = (mode === 'dd' ? dd : d)(target, stage);
+      $('count').textContent = `${chain.length} element${chain.length === 1 ? '' : 's'}`;
+
+      const lines   = [`${mode}('${target}')`];
+      const results = [];
+
+      for (const step of steps) {
+        const entry = d.api.get(step.method);
+        if (!entry) continue;
+
+        const args = argsOf(entry, step.values);
+        lines.push(`  .${step.method}(${args.map(source).join(', ')})`);
+
+        try {
+          const result = chain[step.method](...args);
+          results.push([step.method, describe(result), false]);
+          if (result instanceof Chain) chain = result;
+        } catch (error) {
+          results.push([step.method, error.message, true]);
+          break;
+        }
+      }
+
+      $('code').setAttribute('code', [
+        `import d, { dd } from '@domina/chain';`,
+        ``,
+        lines.join('\n') + ';',
+      ].join('\n'));
+
+      $('results').replaceChildren(...results.map(([method, text, failed]) => {
+        const line = document.createElement('li');
+        line.textContent = `${method} → ${text}`;
+        if (failed) line.className = 'error';
+        return line;
+      }));
+
+      save();
+    }
+
+    // :::::: URL
+    // the whole state rides in the hash, so a chain can be shared as a link
+
+    function save () {
+      const state = { mode: $('mode').value, target: $('target').value, steps: steps.map(step => [step.method, step.values]) };
+      try { history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(state))); } catch {}
+    }
+
+    function restore () {
+      try { return JSON.parse(decodeURIComponent(location.hash.slice(1))); }
+      catch { return null; }
+    }
+
+    // :::::: API TABLE
+
+    function drawApi () {
+      const rows = [...d.api.values()].map(({ kind, name, object, params }) => {
+        const list = Object.entries(params).map(([param, type]) => `${param}: ${type}`).join(', ');
+        return `<tr><td><code>${name}</code></td><td>${kind}</td><td><code>${object ? `{ ${list} }` : list}</code></td></tr>`;
+      });
+      $('api').innerHTML = `<thead><tr><th>method</th><th>kind</th><th>params</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+    }
+
+    // :::::: WIRING
+
+    $('presets').replaceChildren(...Object.entries(PRESETS).map(([name, preset]) => {
+      const button = document.createElement('button');
+      button.type        = 'button';
+      button.textContent = name;
+      button.addEventListener('click', () => {
+        for (const other of $('presets').children) other.setAttribute('aria-current', String(other === button));
+        load(preset);
+      });
+      return button;
+    }));
+
+    $('step-add').addEventListener('click', () => { steps.push({ method: 'style', values: {}, node: null }); draw(); run(); });
+    $('log-clear').addEventListener('click', () => $('log').replaceChildren());
+    $('mode').addEventListener('change', run);
+    $('target').addEventListener('input', run);
+
+    drawApi();
+    load(restore() ?? PRESETS['style and attr']);
+  </script>
+
+</body>
+</html>

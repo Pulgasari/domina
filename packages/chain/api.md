@@ -1,6 +1,42 @@
 # @domina/chain – API-Skizze
 
-`d` ist eine Verbeugung vor jQuery: eine Menge von Elementen, kurze Verben, alles verkettbar. Darunter liegen die Funktionen aus `@domina/methods`, `d` selbst ist nur Fassade. Das hier ist eine Skizze der Oberfläche, noch kein Code.
+`d` ist eine Verbeugung vor jQuery: eine Menge von Elementen, kurze Verben, alles verkettbar. Darunter liegen die Funktionen aus `@domina/methods`, `d` selbst ist nur Fassade. Das hier ist eine Skizze der Oberfläche. Gebaut ist bisher der Kern (siehe Stand).
+
+## Stand
+
+Gebaut: `d`, `dd`, `.all`, `attr`, `style`, `size`, `html`, `on`, `once`, `off`, `emit`, dazu `length`, `el`, `each`, `map` und `d.extend`. Ausprobieren: [`www/chain.html`](../../www/chain.html).
+
+| Datei | |
+|---|---|
+| `chain.js` | die Menge (`Chain`) und `collect()`: Selektor, Ziel, Iterable → Elemente |
+| `define.js` | baut Methoden aus Beschreibungen und führt das Register `d.api` |
+| `api.js` | `attr`, `html`, `style`, `size` als Beschreibungen |
+| `events.js` | `on`, `once`, `off`, `emit`; Listener pro Ziel |
+
+Eine Methode ist **Daten**, keine Klasse:
+
+```js
+d.extend({
+  shake: {
+    params : { distance: 'number' },                 // for docs, types and the playground
+    write  : (element, distance = 6) => element.animate(…),
+  },
+  label: {
+    params : { text: 'string' },
+    read   : element => element.getAttribute('aria-label'),
+    write  : (element, text) => element.setAttribute('aria-label', text),
+  },
+  ping: element => element.dispatchEvent(new Event('ping')),   // a bare function is a setter
+});
+```
+
+`define.js` baut daraus einmal eine Prototyp-Methode: `read` gibt es für das erste Element (oder alle, auf `.all`), `write` läuft über alle, `reads(args)` entscheidet zwischen beiden (Default: kein Argument oder ein einzelnes, das kein Plain Object ist). Eine Funktion als Wert bekommt `(old, el, i)`. `undefined` als letzter Wert wirft, wenn es einen Getter gibt. Wer mehr braucht, gibt `method` an (`this` ist die Kette, so sind die Events gebaut).
+
+Gegenüber der Skizze unten geändert:
+- `dd(…)` ist `d(…).all`, auch als `d.all(…)`. Setter funktionieren auf `.all` wie sonst auch.
+- `.off()` wirkt pro **Element**, nicht pro Kette: `d('.tab').off()` löst, was irgendein `d('.tab').on()` angemeldet hat.
+- `d.extend` mit einer Funktion ergibt immer einen Setter. Getter brauchen `read`.
+
 
 ```js
 import d from '@domina/chain';
@@ -342,6 +378,7 @@ d(input).focus()  d(input).blur()  d(button).click()
 - Wer einen einzelnen Disposer braucht, nutzt die Funktion darunter: `onEvent(el, 'click', fn)` aus `@domina/methods` gibt ihn zurück.
 - `focus()`, `blur()`, `click()` rufen **nur** die native Methode. Event-Shorthands wie jQuerys `.click(fn)` gibt es nicht; Listener nur über `on`.
 - `emit` gibt die Menge zurück. Wer wissen will, ob `preventDefault()` aufgerufen wurde, nimmt `emitEvent()` aus den Methods.
+- **Vorschlag `trigger(action)`:** `emit` sendet ein Ereignis, `trigger` *tut* etwas, über die native Methode, sodass Standardverhalten und echte Events entstehen: `trigger('click')` → `el.click()`, `'focus'`, `'blur'`, `'submit'` → `requestSubmit()`, `'reset'`, `'select'`, `'showModal'`, `'close'`, `'showPopover'`, `'hidePopover'`, `'togglePopover'`, `'play'`, `'pause'`. Unbekannte Namen werfen statt still ein synthetisches Event zu schicken (ein `dispatchEvent(new Event('focus'))` fokussiert nichts, `'submit'` sendet nichts). Damit ersetzt `trigger` die einzelnen `focus()`/`blur()`/`click()` oben.
 
 ---
 
