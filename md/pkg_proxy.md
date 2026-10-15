@@ -5,7 +5,7 @@
 Es ist ein konzeptioneller Mittelweg zwischen:
 - `@domina/chain` (Wrapper, der eigene Objekte zurückgibt)
 - `@domina/methods` (nice DX im Ergebnis immer nur auf der aktuellen Selector-Ebene).
-- `@domina/prototype` (verändert das DOM des ganzen Realms)
+- `@domina/prototypes` (verändert das DOM des ganzen Realms)
 
 ```js
 import domina from '@domina/proxy';
@@ -387,7 +387,7 @@ export const domina = new Proxy(target, {
 
 - **Gebundene Funktionen werden gecacht**, sonst wäre `domina.querySelector !== domina.querySelector`, und `removeEventListener` mit einer gemerkten Referenz würde scheitern.
 - **Das Ziel ist eine Pfeilfunktion.** Ein Proxy um `document` könnte nicht aufgerufen werden, und eine normale Funktion hätte ein nicht konfigurierbares `prototype`, das `ownKeys` immer melden müsste.
-- **`isWritable`** prüft die Eigenschaft entlang der Prototypkette (Setter oder `writable`), wie `@domina/prototype` es in `update` schon tut.
+- **`isWritable`** prüft die Eigenschaft entlang der Prototypkette (Setter oder `writable`), wie `@domina/prototypes` es in `update` schon tut.
 
 ### Ein Bereich
 
@@ -429,7 +429,7 @@ Das ist im Kern `proxyOf` aus `@bunker/core`. Die Bereiche entstehen einmal beim
 | `@domina/element`      | ein Element (Wrapper)  | Wrapper          | nein | ja |
 | `@domina/chain`        | eine Menge (Wrapper)   | Kette oder Werte | nein | ja |
 | `@domina/proxy`        | das Dokument (Fassade) | native Werte     | nein | ja |
-| `@domina/prototype`    | jedes Element | native Werte | ergänzt | nein |
+| `@domina/prototypes`    | jedes Element | native Werte | ergänzt | nein |
 | `@domina/prototype-hc` | jedes Element | native Werte | erweitert native | nein |
 
 `domina` ist die einzige Oberfläche, die native Werte zurückgibt **und** kein Prototyp anfasst. Der Preis: Sie arbeitet auf Dokumentebene (und mit `within` auf Bereichen), nicht auf jedem Element. Für die Arbeit am einzelnen Element bleibt `domina(el)`, also die Kette.

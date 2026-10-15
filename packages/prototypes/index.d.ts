@@ -1,4 +1,4 @@
-// @domina/prototype - type declarations
+// @domina/prototypes - type declarations
 
 /** a selector, or an object that describes the element. false and nullish leave a key out. */
 export type ElementSpec = string | {

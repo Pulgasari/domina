@@ -1,4 +1,4 @@
-// @domina/form
+// @domina/forms
 
 import { getFormValues }  from '@domina/methods/getFormValues';
 import { setFormValues }  from '@domina/methods/setFormValues';

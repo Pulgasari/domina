@@ -1,4 +1,4 @@
-// @domina/stylesheet
+// @domina/sheets
 
 import { adoptStyleSheet   as adopt }   from '@domina/methods/adoptStyleSheet';
 import { getStyleSheets    as get }     from '@domina/methods/getStyleSheets';

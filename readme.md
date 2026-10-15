@@ -20,7 +20,7 @@ JavaScript toolkit for *doing stuff* in the DOM.
 | `@domina/proxy`      | [dir](packages/proxy)      | v0      | 🤔🧐😵‍💫 |
 | `@domina/raf`        | [dir](packages)            | v0      |        |
 | `@domina/render`     | [dir](packages/render)     | v0      |        |
-| `@domina/sheets`     | [dir](package/sheets)      | v0      |        |
+| `@domina/sheets`     | [dir](packages/sheets)     | v0      |        |
 | `@domina/verbs`      | [dir](packages/methods)    | v0      | 😭😭😭 |
 
 ### `@domina/analyzer`
