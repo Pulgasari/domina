@@ -529,24 +529,68 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 - [x] `style`
 
 ## verbs: maybe (?)
+- [ ] `add`
 - [ ] `animate`
+- [ ] `apply`
 - [ ] `bind` | `unbind`
+- [ ] `clear`
 - [ ] `click`
+- [ ] `ensure`
 - [ ] `filter`
 - [ ] `focus`
 - [ ] `height`
+- [ ] `hide` | `unhide`
 - [ ] `htx`
 - [ ] `insert`
+- [ ] `lib`
+- [ ] `md`
+- [ ] `node`
 - [ ] `observe`
+- [ ] `paint`
+- [ ] `pipe`
 - [ ] `props`
 - [ ] `raf`
+- [ ] `rect`
+- [ ] `refresh`
+- [ ] `remove`
+- [ ] `replace`
+- [ ] `request`
 - [ ] `rotate`
+- [ ] `scale`
 - [ ] `scrollTo` | `jumpTo`
 - [ ] `select`
 - [ ] `sort`
 - [ ] `sync`
+- [ ] `tag`
+- [ ] `text`
+- [ ] `token`
 - [ ] `transform`
 - [ ] `trigger`
 - [ ] `width`
 - [ ] `wrap` | `unwrap`
 
+## some ideas
+
+
+### `lib`
+
+vllt könnte `lib` als ne art adapter/subchain-entrypoint dienen.
+
+```js
+//
+d('#sidebar').lib('tailwind`).apply('m-4');
+
+//
+const gs = d.lib('gestalt');
+const tw = d.lib('tailwind');
+
+gs(`article.blogpost`).typo(...).surface(...);;
+tw('#sidebar').apply('m-4');
+
+
+```
+
+könnte im prinzip sogar eingebaut sein?
+- im browser = lazy import
+- im bundler = wenn/falls `@domina/analyzer` existiert, wird halt nix mit gebundelt weil aufgelöst
+  
