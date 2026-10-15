@@ -1,7 +1,18 @@
 // @domina/chain/chain.js
 // the set every call works on. immutable: a call that changes the set returns a new chain
 
-const isTarget = value => typeof value?.addEventListener === 'function';
+const
+isInstanceOf = (v) => (type) => v instanceof type,
+isTypeOf     = (v) => (type) => typeof v === type;
+
+const // ::: PREDICATES
+isBlank     = sth => sth == null || sth === '',
+isChain     = isInstanceOf(Chain),
+isNullish   = sth => sth == null,
+isFn        = isTypeOf('function'),
+isString    = isTypeOf('string'),
+isTarget    = sth => typeof sth?.addEventListener === 'function',
+hasIterator = sth => typeof sth[Symbol.iterator]  === 'function';
 
 const byDocumentOrder = (a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
 
@@ -22,16 +33,16 @@ function query (selector, context) {
 
 // a selector, a target (element, window, document) or any iterable of those -> targets.
 // a <form> or <select> is iterable too, so a target is taken as it is before anything is iterated
-export function collect (spec, context) {
-  if (spec == null || spec === '')               return [];
-  if (typeof spec === 'string')                  return query(spec, context);
-  if (spec instanceof Chain)                     return spec.elements;
-  if (isTarget(spec))                            return [spec];
-  if (typeof spec[Symbol.iterator] === 'function') return unique(Array.from(spec, item => collect(item)).flat());
+function collect (spec, context) {
+  if     (isBlank(spec)) return [];
+  if    (isString(spec)) return query(spec, context);
+  if     (isChain(spec)) return spec.elements;
+  if    (isTarget(spec)) return [spec];
+  if (hasIterator(spec)) return unique(Array.from(spec, collect).flat());
   return [];
 }
 
-export class Chain {
+class Chain {
 
   constructor (elements, many = false) {
     this.elements = elements;
@@ -48,3 +59,10 @@ export class Chain {
   map  (callback) { return this.elements.map(callback); }
 
 }
+
+// :::::: EXPORT
+
+export {
+  Chain,
+  collect,
+};
