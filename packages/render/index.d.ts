@@ -38,10 +38,15 @@ export interface TemplateResult {
 /** An effect function of a signal library: runs fn, again on every change, returns its disposer. */
 export type Effect = (fn: () => void) => (() => void) | { dispose (): void };
 
-/** The options of {@link render}. */
+/** Runs fn untracked as owner of what it creates, returns the result and its disposer. */
+export type Scope = <T> (fn: () => T) => [T, (() => void) | { dispose (): void }];
+
+/** The options of {@link render} and {@link configure}. */
 export interface RenderOptions {
-  /** Makes functions in value holes live, for this call. Wins over {@link configure}. */
+  /** Makes functions in value holes live. The effect must belong to no other owner, the renderer disposes it. */
   effect? : Effect | null;
+  /** Builds components, rows and branches in an owner of their own, disposed with them. */
+  scope?  : Scope | null;
 }
 
 /** A template tag over a parser, which is asked once per template literal. */
@@ -53,15 +58,22 @@ export declare function render (target: Element | DocumentFragment, value: unkno
 /** Takes back what render() put into a target and disposes its effects. */
 export declare function unrender (target: Element | DocumentFragment): void;
 
-/** Sets the effect function for every render, making functions in value holes live. */
-export declare function configure (options: { effect?: Effect | null }): void;
+/** Sets effect and scope for every render, making functions in value holes live. A render() option wins. */
+export declare function configure (options: RenderOptions): void;
 
-/** A keyed list: rows keep their nodes when they move. Without key the position is the key. */
-export declare function each<T> (items: Iterable<T> | (() => Iterable<T>), key: (item: T, index: number) => unknown, row: (item: T, index: number) => unknown): unknown;
+/**
+ * A keyed list: rows keep their nodes when they move, a key that comes twice gets a row per occurrence.
+ * Without key the position is the key. `otherwise` renders while the list is empty.
+ * With a function as items and an effect set, rows are built once per key and kept.
+ */
+export declare function each<T> (items: Iterable<T> | (() => Iterable<T>), key: (item: T, index: number) => unknown, row: (item: T, index: number) => unknown, otherwise?: (() => unknown) | null): unknown;
 export declare function each<T> (items: Iterable<T> | (() => Iterable<T>), row: (item: T, index: number) => unknown): unknown;
 
-/** One of two branches. A function as condition is followed live when an effect is set. */
+/** One of two branches. A function as condition is followed live when an effect is set, the branch is then built once per switch. */
 export declare function when (condition: unknown, then: () => unknown, otherwise?: (() => unknown) | null): unknown;
+
+/** The case whose value is the subject (Object.is), or otherwise. Live like {@link when}. */
+export declare function match<T> (subject: T | (() => T), cases: [T, () => unknown][], otherwise?: (() => unknown) | null): unknown;
 
 /** Markup as it is, for a child hole, parsed only when it changed. Sanitize anything from someone else first. */
 export declare function raw (html: string | null | undefined): unknown;
