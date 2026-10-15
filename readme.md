@@ -17,6 +17,7 @@ JavaScript toolkit for DOM mutation.
 | `@domina/observer`   | [dir](packages/observer)   | v0      | 🥺👉👈 |
 | `@domina/prototypes` | [dir](packages/prototypes) | v0      | 🤔     |
 | `@domina/proxy`      | [dir](packages/proxy)      | v0      | 🤔🧐😵‍💫 |
+| `@domina/raf`        | [dir](packages)            | v0      |        |
 | `@domina/render`     | [dir](packages/render)     | v0      |        |
 | `@domina/verbs`      | [dir](packages/methods)    | v0      | 😭😭😭 |
 
