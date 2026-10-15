@@ -7,8 +7,9 @@
 import * as core   from './api.js';
 import * as events from './events.js';
 
-import { Chain, collect }      from './chain.js';
-import { api, define, extend } from './define.js';
+import { Chain, collect }            from './chain.js';
+import { api, define, extend }       from './define.js';
+import { listen, typesOf, unlisten } from './listeners.js';
 
 extend({ ...core, ...events });
 
@@ -27,5 +28,5 @@ d.api    = api;
 d.define = define;
 d.extend = extend;
 
-export { Chain, api, define, extend };
+export { Chain, api, define, extend, listen, typesOf, unlisten };
 export default d;

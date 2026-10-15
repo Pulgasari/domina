@@ -9,8 +9,8 @@ domina.title       = 'Inbox (3)';
 domina.vars.accent = 'tomato';
 domina.data.theme  = 'dark';
 
-const app  = domina.$('#app');                         // a real element
-const rows = domina.$$({ tag: 'tr', class: 'row' });  // a real array
+const app  = domina.get('#app');                          // a real element
+const rows = domina.getList({ tag: 'tr', class: 'row' }); // a real array
 const stop = domina.on('click', '[data-action]', (event, el) => run(el.dataset.action));
 
 domina('.card').style({ opacity: 1 });                 // @domina/chain
@@ -18,7 +18,21 @@ domina('.card').style({ opacity: 1 });                 // @domina/chain
 
 Die Namen spiegeln das Vorbild: `domina` zu `document` wie `d`/`dd` zu `$`/`$$` der DevTools.
 
-Noch kein Code.
+## Stand
+
+Gebaut ist alles aus diesem Konzept, mit den Entscheidungen, die in der Ankreuzliste ([15](#15-offene-fragen)) als Vorgabe stehen. `$`/`$$` heißen `get`/`getList`.
+
+| Datei | |
+|---|---|
+| `facade.js` | der Proxy, das Register (`api`, Mitglieder, Bereiche), `createFacade(root)` |
+| `members.js` | Zustand und Umgebung als Werte (`title`, `lang`, `scroll`, `ready` …) |
+| `mirror.js` | gespiegelte Methoden von `document` und die Kurzformen (`get`, `getList`, `on` …) |
+| `space.js` | `space()`: ein Bereich als Proxy |
+| `spaces.js` | `vars`, `data`, `attr`, `class`, `meta`, `id`, `forms`, `values` |
+| `watch.js` | Pfade → Observer und Ereignisse |
+| `index.js` | Verdrahtung, `set`, `snapshot`, `watch`, `within`, `extend`, `space` |
+
+Listener teilt `domina` mit `@domina/chain` (`listen`/`unlisten`): `domina.off('click')` findet, was `d(document).on('click', …)` angemeldet hat, und umgekehrt.
 
 ---
 
@@ -59,7 +73,7 @@ Aus der Machbarkeit folgen die Regeln, nicht umgekehrt.
 ```
 domina(spec)                     -> 3. a chain
 domina.querySelector(…)          -> 4. document's methods, mirrored, gaps filled
-domina.$ / $$ / on / create      -> 5. short forms of 4
+domina.get / getList / on / …    -> 5. short forms of 4
 domina.title / vars / data / …   -> 6. document state as properties
 domina.ready / visible / online  -> 7. environment and lifecycle
 domina.set({ … }) / snapshot()   -> 8. many values at once
@@ -113,7 +127,7 @@ domina.removeEventListener('click');                          // every listener 
 | `addEventListener('a b', …)` | ein Typ mit Leerzeichen | weich |
 | `removeEventListener(type)` ohne Handler | `TypeError: 2 arguments required` | sicher |
 
-`querySelectorAll` bleibt bewusst eine `NodeList`: Sie in ein Array zu verwandeln, wäre ein harter Eingriff. Das Array gibt es über die Kurzform `$$`.
+`querySelectorAll` bleibt bewusst eine `NodeList`: Sie in ein Array zu verwandeln, wäre ein harter Eingriff. Das Array gibt es über die Kurzform `getList`.
 
 ---
 
@@ -122,9 +136,9 @@ domina.removeEventListener('click');                          // every listener 
 Kurze Namen für die häufigsten Aufrufe aus 4, mit den freundlicheren Rückgaben:
 
 ```js
-domina.$('#app')                       // querySelector, spec allowed, null if none
-domina.$$('li')                        // an Array, not a NodeList
-domina.$$('li', list)                  // within a context
+domina.get('#app')                     // querySelector, spec allowed, null if none
+domina.getList('li')                   // an Array, not a NodeList
+domina.getList('li', list)             // within a context
 domina.create('li', { text: 'x' })     // createElement with props
 domina.html`<li>${name}</li>`          // a fragment, values escaped
 
@@ -257,7 +271,7 @@ domina.watch('visible', …);
 domina.watch('online', …);
 ```
 
-Pfade sind die Namen aus 6 und 7. Darunter arbeitet je nach Pfad ein `MutationObserver` auf `<html>` bzw. `<head>` (`attributeFilter`, nur was beobachtet wird) oder das passende Ereignis (`visibilitychange`, `online`/`offline`, `change` einer Media Query). Geladen wird `@domina/observer` erst beim ersten `watch`.
+Pfade sind die Namen aus 6 und 7. Darunter arbeitet je nach Pfad ein `MutationObserver` auf dem Host bzw. `<head>` (`attributeFilter`, nur was beobachtet wird) oder das passende Ereignis (`visibilitychange`, `online`/`offline`, `change` einer Media Query). Der Callback läuft nur, wenn sich der Wert wirklich geändert hat (Knoten nach Identität, alles andere nach JSON-Form).
 
 Das ist die Brücke zu Stores und Signals: Ein Theme-Store schreibt in `domina.data`, eine andere Stelle beobachtet `data.theme`, ohne dass beide voneinander wissen.
 
@@ -269,13 +283,13 @@ Dieselbe Fassade für einen Teilbaum oder eine Shadow Root:
 
 ```js
 const card = domina.within('#card');
-card.$('.title')                      // searched in #card
+card.get('.title')                    // searched in #card
 card.on('click', 'button', handler)   // delegated on #card
 card.vars.accent = 'red';             // --accent on #card instead of :root
 card.data.state  = 'open';            // data-state on #card
 
 const shadow = domina.within(host.shadowRoot);
-shadow.$$('slot')
+shadow.getList('slot')
 ```
 
 Was sich auf das Dokument als Ganzes bezieht (`title`, `meta`, `ready`, `url`), gibt es in einem Bereich nicht. `within` gibt einen Proxy desselben Bauplans zurück, nur mit anderer Wurzel.
@@ -319,11 +333,13 @@ domina.tokens.radius = '6px';
 
 ```
 packages/proxy/
-  index.js        the root proxy, the members, install of the built-in spaces
-  space.js        space({ get, set, delete, keys }) -> a proxy with get, set, deleteProperty, has, ownKeys
-  spaces.js       vars, data, attr, class, meta, id, forms, values
+  facade.js       the proxy, the registry, createFacade(root)
+  members.js      state and environment as values
   mirror.js       the mirrored methods of document with their gaps (4) and the short forms (5)
-  watch.js        paths -> observers and events, loads @domina/observer on first use
+  space.js        space(definition, ctx) -> a proxy with get, set, deleteProperty, has, ownKeys
+  spaces.js       vars, data, attr, class, meta, id, forms, values
+  watch.js        paths -> observers and events
+  index.js        wiring: set, snapshot, watch, within, extend, space
   index.d.ts
 ```
 
@@ -391,7 +407,7 @@ Das ist im Kern `proxyOf` aus `@bunker/core`. Die Bereiche entstehen einmal beim
 
 - **Zugriffe:** jeder durch einen Trap, wenige bis einige zehn Nanosekunden, nicht inlinebar. Für Code auf App-Ebene bedeutungslos; in Schleifen über viele Elemente gehört `domina` nicht hinein (dafür die Methods oder ein einmal geholtes Element).
 - **`vars` lesen** ruft `getComputedStyle`, das bei ausstehenden Style-Änderungen einen Style-Recalc erzwingt. Lesen nach Schreiben in derselben Schleife ist teuer, wie überall im DOM.
-- **Größe:** Der Kern (Proxy, `space`, Spiegelung) ist klein. `watch` und `values` laden ihre Abhängigkeiten erst beim ersten Gebrauch.
+- **Größe:** Der Kern (Proxy, `space`, Spiegelung) ist klein. `watch` nutzt `MutationObserver` direkt, ohne `@domina/observer`.
 - **Ohne DOM** (Server, Worker): `domina` lässt sich importieren, jeder Zugriff wirft eine klare Meldung.
 - **Typen:** Mitglieder und Bereiche exakt. `domina.id.*`, `domina.vars.*`, `domina.data.*` als `Record<string, …>`, mit einem Generic für eigene Schlüssel (`Domina<{ vars: 'accent' | 'gap'; data: 'theme' }>`). Unbekannte Namen von `document` kommen über `Omit<Document, …>`.
 
@@ -414,10 +430,38 @@ Das ist im Kern `proxyOf` aus `@bunker/core`. Die Bereiche entstehen einmal beim
 
 ## 15. Offene Fragen
 
-- **`@domina/chain` als feste Abhängigkeit?** Dafür: `domina('.x')` funktioniert immer. Dagegen: Wer nur Zustand und `on` will, lädt die Kette mit. Alternative: `@domina/proxy` ohne Aufruf, `@domina/proxy/full` mit.
-- **Gespiegelte Methoden (4) überhaupt?** Sie machen `domina` zu einem Ersatz für `document` ohne Umlernen. Ohne sie bliebe `domina` kleiner, nur Kurzformen und Zustand.
-- **`scheme`** setzt heute zwei Dinge (`<meta name="color-scheme">` und `color-scheme` auf `:root`). Ein Mitglied oder zwei?
-- **`vars` lesen:** berechneter Wert (was gilt) oder Inline-Wert (was gesetzt wurde)? Berechnet ist nützlicher, aber `Object.keys(domina.vars)` kann nur die Inline-Werte aufzählen. Das ist eine Asymmetrie, die man dokumentieren oder auflösen muss.
-- **`domina.focus`** als Setter, der fokussiert: praktisch, aber eine Zuweisung mit Nebenwirkung. Alternative: `domina.focus` nur lesend, `domina.focusOn(spec)` als Methode.
-- **`watch` auf Ereignisse:** gehört `watch('online')` hierher oder zu `on('online')` am `window`? `domina` ist das Dokument, `online` gehört zum Fenster.
-- **Ein `@domina/proxy` für `window`** (`win.size`, `win.scroll`, `win.media['(width < 40rem)']`) wäre die naheliegende Schwester. Eigener Export oder Teil von `domina`?
+Zum Abhaken. „Gebaut:“ ist die Vorgabe, die gerade im Code steht.
+
+### Umfang
+
+- [ ] **`@domina/chain` als feste Abhängigkeit?** Gebaut: ja, `domina()` ist `d()`. Alternative: `@domina/proxy` ohne Aufruf, `@domina/proxy/full` mit Kette.
+- [ ] **Gespiegelte Methoden (4) behalten?** Gebaut: ja. Ohne sie wäre `domina` kleiner, nur Kurzformen und Zustand.
+- [ ] **Schwester für `window`** (`win.size`, `win.scroll`, `win.media['(width < 40rem)']`): eigener Export, Teil von `domina` oder gar nicht?
+- [ ] **`visible`, `focused`, `online`, `motion`** gehören eigentlich zum Fenster. Gebaut: auf `domina`. Bleiben oder in die `window`-Schwester?
+- [ ] **Playground** `www/proxy.html` analog zu `chain.html`, aus `domina.api` abgeleitet?
+
+### Namen
+
+- [ ] **`get` / `getList`:** so lassen, oder `getAll`, `find`/`findAll`, `one`/`many`?
+- [ ] **`all`** verdeckt `document.all` (die alte `HTMLAllCollection`). In Ordnung?
+- [ ] **`forms`** verdeckt `document.forms` (jetzt ein Bereich nach Namen statt `HTMLCollection`; das Original über `domina.document.forms`). In Ordnung?
+- [ ] **`class`** als Bereichsname (in JS erlaubt: `domina.class.x`), oder `classes`?
+- [ ] **`fontsReady`**, oder `fonts` als Bereich (`domina.fonts.ready`, `domina.fonts.loaded('Inter')`)? Achtung: `fonts` ist heute `document.fonts`.
+
+### Verhalten
+
+- [ ] **`scheme`** setzt zwei Dinge (`<meta name="color-scheme">` und `color-scheme` auf `:root`). Gebaut: ein Mitglied für beides.
+- [ ] **`vars` lesen:** Gebaut: berechneter Wert; `Object.keys(domina.vars)` zählt nur die Inline-Werte auf. Asymmetrie dokumentieren oder auflösen (`vars` inline, `tokens` berechnet)?
+- [ ] **`data` castet nicht** (Strings rein, Strings raus), `getData` in `@domina/methods` castet (`autoCast`). Methods angleichen?
+- [ ] **`focus` als Setter**, der fokussiert. Gebaut: ja. Alternative: nur lesend plus `focusOn(spec)`.
+- [ ] **`set()`** gibt die Fassade zurück. Oder nichts?
+- [ ] **`within()`:** Mitglieder nur fürs Dokument (`title`, `meta` …) fallen dort auf das Element durch, lesend und schreibend (`card.title` ist das `title`-Attribut des Elements). Stattdessen werfen?
+- [ ] **`html('<b>x</b>')` mit einem String** wird als HTML genommen, ungeprüft. Nur Template-Literals zulassen?
+- [ ] **`emit`:** gebaut `bubbles: true`, `cancelable: true`, `composed: false`. Für Shadow DOM `composed: true` als Default?
+- [ ] **`watch('scroll')`** feuert pro `scroll`-Event. Mit `requestAnimationFrame` drosseln?
+
+### In `@domina/methods` gefunden
+
+- [ ] **`buildSelector` macht Attributnamen nicht kebab-case:** `{ ariaCurrent: 'page' }` wird zu `[ariaCurrent="page"]`, das `aria-current` nie trifft (Attributnamen sind in HTML unabhängig von Groß-/Kleinschreibung, aber der Bindestrich fehlt). Bei `dataset` passiert es schon.
+- [ ] **`getElement`/`getElements` werfen** bei einem ungültigen Selektor (`SyntaxError`), `d()` liefert eine leere Menge. Vereinheitlichen?
+- [ ] **`emitEvent`** nimmt nur, was `resolveElement` kennt; mit einer Shadow Root als Ziel liefert es `false`. `domina.emit` nutzt deshalb `dispatchEvent` direkt.
