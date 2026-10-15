@@ -518,12 +518,35 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 ## verbs: base/core
 - [x] `d` | `dd`
 
-## methods: chain
+## verbs: chain
 - [x] `all`
+- [ ] `aria`
 - [ ] `attr`
+- [ ] `data` | `dataset`
 - [x] `html`
-- [ ] `htx` (?)
 - [x] `emit` | `off` | `on` | `once`
 - [x] `size`
 - [x] `style`
+
+## verbs: maybe (?)
+- [ ] `animate`
+- [ ] `bind` | `unbind`
+- [ ] `click`
+- [ ] `filter`
+- [ ] `focus`
+- [ ] `height`
+- [ ] `htx`
+- [ ] `insert`
+- [ ] `observe`
+- [ ] `props`
+- [ ] `raf`
+- [ ] `rotate`
+- [ ] `scrollTo` | `jumpTo`
+- [ ] `select`
+- [ ] `sort`
+- [ ] `sync`
+- [ ] `transform`
+- [ ] `trigger`
+- [ ] `width`
+- [ ] `wrap` | `unwrap`
 
