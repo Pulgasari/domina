@@ -1,18 +1,10 @@
 // @domina/chain/chain.js
 // the set every call works on. immutable: a call that changes the set returns a new chain
 
-const
-isInstanceOf = (v) => (type) => v instanceof type,
-isTypeOf     = (v) => (type) => typeof v === type;
-
-const // ::: PREDICATES
-isBlank     = sth => sth == null || sth === '',
-isChain     = isInstanceOf(Chain),
-isNullish   = sth => sth == null,
-isFn        = isTypeOf('function'),
-isString    = isTypeOf('string'),
-isTarget    = sth => typeof sth?.addEventListener === 'function',
-hasIterator = sth => typeof sth[Symbol.iterator]  === 'function';
+import {
+  isBlank, isChain, isNullish, isFn, isPlainObject, isString, isTarget,
+  hasIterator,
+} from './shared.js';
 
 const byDocumentOrder = (a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
 
