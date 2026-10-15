@@ -10,11 +10,13 @@
 //   params { name: type }                   the arguments, in order. for docs and tooling
 //   object true                             params are the keys of one object argument
 
+// :::::: IMPORT
+
 import { Chain } from './chain.js';
+import { isPlainObject } from './shared.js';
 
 export const api = new Map;
 
-const isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value));
 
 const readsByDefault = args => args.length === 0 || (args.length === 1 && !isPlainObject(args[0]));
 
