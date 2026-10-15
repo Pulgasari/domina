@@ -139,3 +139,5 @@ Gesammelte Ideen und Notizen liegen in [docs/ideas.md](./docs/ideas.md).
 ## Lizenz
 
 MIT
+
+![Banner](/domina-000-80.webp)
