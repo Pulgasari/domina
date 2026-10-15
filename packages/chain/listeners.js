@@ -2,12 +2,15 @@
 // listeners are kept per target, not per chain or facade: whatever added them,
 // unlisten() finds them again without handler references or namespaces
 
-import { delegateEvent } from '@domina/methods/delegateEvent';
-import { onEvent }       from '@domina/methods/onEvent';
+// :::::: IMPORT
+
+import delegateEvent from '@domina/methods/delegateEvent';
+import onEvent       from '@domina/methods/onEvent';
+import { isFn }      from './shared.js';
 
 const listeners = new WeakMap; // target -> Set<{ handler, selector, stop, type }>
 
-export const typesOf = types => String(types ?? '').split(/[\s,]+/).filter(Boolean);
+const typesOf = types => String(types ?? '').split(/[\s,]+/).filter(Boolean);
 
 function recordsOf (target) {
   let records = listeners.get(target);
@@ -22,8 +25,8 @@ function add (target, type, selector, handler, options, once) {
   const call    = (event, element) => { if (once) drop(); handler(event, element); };
 
   record.stop = selector
-    ? delegateEvent(target, type, selector, call, options)
-    : onEvent(target, type, event => call(event, target), options);
+    ? delegateEvent (target, type, selector, call, options)
+    : onEvent       (target, type, event => call(event, target), options);
 
   records.add(record);
   options?.signal?.addEventListener('abort', () => records.delete(record), { once: true });
@@ -32,8 +35,8 @@ function add (target, type, selector, handler, options, once) {
 
 // handler (event, element): element is the target, or the match of selector when delegated.
 // returns one disposer for every type
-export function listen (target, types, selector, handler, options, { once = false } = {}) {
-  if (typeof handler !== 'function') throw new TypeError('[domina] the handler is not a function');
+function listen (target, types, selector, handler, options, { once = false } = {}) {
+  if (!isFn(handler)) throw new TypeError('[domina] the handler is not a function');
   if (options?.signal?.aborted) return () => {};
 
   const drops = typesOf(types).map(type => add(target, type, selector || null, handler, options, once));
@@ -41,7 +44,7 @@ export function listen (target, types, selector, handler, options, { once = fals
 }
 
 // everything, by types, or by handler
-export function unlisten (target, types, handler) {
+function unlisten (target, types, handler) {
   const records = listeners.get(target);
   if (!records) return;
 
@@ -53,3 +56,7 @@ export function unlisten (target, types, handler) {
     records.delete(record);
   }
 }
+
+// :::::: EXPORT
+
+export { listen, unlisten, typesOf };
