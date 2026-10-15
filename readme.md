@@ -4,6 +4,30 @@
 
 JavaScript toolkit for DOM mutation.
 
+### demos | playground 
+[chain](https://code.pulgasari.dev/domina/chain.html) ·
+[proxy](https://code.pulgasari.dev/domina/proxy.html) 
+
+## packages
+
+| package              | dir                        | status  | mood   |
+|----------------------|----------------------------|---------|--------|
+| `@domina/analyzer`   | [dir](#)                   | concept |        |
+| `@domina/chain`      | [dir](packages/chain)      | v0      | 🔥🥵🔥 |
+| `@domina/observer`   | [dir](packages/observer)   | v0      | 🥺👉👈 |
+| `@domina/prototypes` | [dir](packages/prototypes) | v0      | 🤔     |
+| `@domina/proxy`      | [dir](packages/proxy)      | v0      | 🔥🥵🔥 |
+| `@domina/verbs`      | [dir](packages/methods)    | v0      | 😭😭😭 |
+
+
+
+
+
+
+
+
+---
+---
 ---
 
 **jump to:**
