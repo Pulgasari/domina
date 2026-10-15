@@ -4,13 +4,13 @@
 
 ## Stand
 
-Gebaut: `d`, `dd`, `.all`, `attr`, `style`, `size`, `html`, `on`, `once`, `off`, `emit`, dazu `length`, `el`, `each`, `map` und `d.extend`. Ausprobieren: [`www/chain.html`](../../www/chain.html).
+Gebaut: `d`, `dd`, `.all`, `attr`, `aria`, `data` (alias `dataset`), `style`, `size`, `html`, `on`, `once`, `off`, `emit`, dazu `length`, `el`, `each`, `map` und `d.extend`. Ausprobieren: [`www/chain.html`](../www/chain.html).
 
 | Datei | |
 |---|---|
 | `chain.js` | die Menge (`Chain`) und `collect()`: Selektor, Ziel, Iterable → Elemente |
 | `define.js` | baut Methoden aus Beschreibungen und führt das Register `d.api` |
-| `api.js` | `attr`, `html`, `style`, `size` als Beschreibungen |
+| `api.js` | `attr`, `aria`, `data`, `html`, `style`, `size` als Beschreibungen |
 | `events.js` | `on`, `once`, `off`, `emit`; Listener pro Ziel |
 
 Eine Methode ist **Daten**, keine Klasse:
@@ -172,6 +172,13 @@ d(el).data('userId', 42)               // data-user-id="42"
 d(el).data({ state: 'open', step: 2 })
 d(el).data()                           // { userId: '42', state: 'open', … }
 d(el).data('state', null)              // removed
+
+// aria-*: the prefix is optional, true and false are values
+d(el).aria('expanded', true)           // aria-expanded="true"
+d(el).aria({ controls: 'menu', labelledby: ['title', 'hint'] })   // a list is joined
+d(el).aria('expanded')                 // 'true'
+d(el).aria()                           // { expanded: 'true', controls: 'menu', … }
+d(el).attr('aria-hidden', false)       // aria-hidden="false": attr hands aria-* keys to aria
 ```
 
 `attr` und `prop` sind getrennt, weil sie verschiedene Dinge sind (`attr('value')` ist der Startwert, `prop('value')` der aktuelle). `data` liest das DOM, nicht einen Cache, und castet nicht (siehe [17](#17-jquery-quirks-und-was-d-stattdessen-tut)).
@@ -520,9 +527,9 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 
 ## verbs: chain
 - [x] `all`
-- [ ] `aria`
-- [ ] `attr`
-- [ ] `data` | `dataset`
+- [x] `aria`
+- [x] `attr`
+- [x] `data` | `dataset`
 - [x] `html`
 - [x] `emit` | `off` | `on` | `once`
 - [x] `size`

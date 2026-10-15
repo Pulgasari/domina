@@ -1,6 +1,6 @@
 # @domina/prototype-hc – Konzept und Einschätzung
 
-Notiz zu der Frage: freie Funktionen (`@domina/methods`), additive Prototyp-Methoden (`@domina/prototype`) oder die nativen Methoden selbst erweitern (`@domina/prototype-hc`). Noch kein Code.
+Notiz zu der Frage: freie Funktionen (`@domina/methods`), additive Prototyp-Methoden (`@domina/prototypes`) oder die nativen Methoden selbst erweitern (`@domina/prototype-hc`). Noch kein Code.
 
 ---
 
@@ -27,7 +27,7 @@ Das legt eine Rollenverteilung nahe, die zum Toolkit-Gedanken passt:
 @domina/methods      the engine: logic, input normalization, null safety. no user-facing ideal
  ├── @domina/element      surface: wrapper, explicit names
  ├── @domina/chain        surface: sets, short verbs (d)
- ├── @domina/prototype    surface: additive methods on the dom
+ ├── @domina/prototypes    surface: additive methods on the dom
  ├── @domina/prototype-hc surface: the native methods themselves, enhanced
  └── @domina/proxy        surface: the document as a namespace
 ```
@@ -51,7 +51,7 @@ Was die native API nach wie vor schlecht macht, und wo jede Oberfläche ansetzen
 
 ---
 
-## 2. `@domina/prototype`
+## 2. `@domina/prototypes`
 
 Der Ansatz ist gut, weil er das Ausgangsproblem tatsächlich löst: Was zurückkommt, ist ein natives Element, und es hat die Methoden schon. Kein Wrapper, keine Identitätsfragen, jede Fremdbibliothek bekommt dasselbe Objekt.
 
@@ -59,7 +59,7 @@ Drei Punkte, auf die ich achten würde:
 
 ### 2.1 Die Namensregel `get…`/`set…` ist genau die der Plattform
 
-WHATWG benennt neue Methoden selbst so: `getAttributeNames`, `getAnimations`, `getHTML`, `setHTMLUnsafe`, `setPointerCapture`, `getBoxQuads`, und `setHTML` kommt mit der Sanitizer API. `@domina/prototype` hat `getElement`, `getElements`, `setAttributes`, `setProperties`, `getValues`, `setValues`. Jeder davon ist ein plausibler Kandidat für einen künftigen nativen Namen. Wenn das passiert, überschreibt `@domina/prototype` ihn heute mit einer Warnung, also mit eigener Semantik für alle Skripte der Seite.
+WHATWG benennt neue Methoden selbst so: `getAttributeNames`, `getAnimations`, `getHTML`, `setHTMLUnsafe`, `setPointerCapture`, `getBoxQuads`, und `setHTML` kommt mit der Sanitizer API. `@domina/prototypes` hat `getElement`, `getElements`, `setAttributes`, `setProperties`, `getValues`, `setValues`. Jeder davon ist ein plausibler Kandidat für einen künftigen nativen Namen. Wenn das passiert, überschreibt `@domina/prototypes` ihn heute mit einer Warnung, also mit eigener Semantik für alle Skripte der Seite.
 
 Das ist kein theoretisches Risiko: MooTools hat `Array.prototype.flatten` definiert, deshalb heißt die native Methode heute `flat` („smooshgate“), und `Array.prototype.contains` wurde aus demselben Grund zu `includes`. Umgekehrt hat das `wrap`-Problem aus `TODO.md` (`HTMLTextAreaElement.prototype.wrap`) dieselbe Ursache.
 
@@ -75,7 +75,7 @@ Das ist kein theoretisches Risiko: MooTools hat `Array.prototype.flatten` defini
 
 Richtig im README: Eine Bibliothek darf das nicht importieren. Zwei Dinge fehlen dort noch:
 - **iframes und Fenster** haben eigene Prototypen. Ein Element aus `iframe.contentDocument` hat die Methoden nicht, bis das Paket im iframe auch läuft. Ein `install(window)` für fremde Realms wäre die Lösung.
-- **Laden:** Alles wird beim Import installiert, Tree Shaking ist ausgeschlossen. Untergruppen als eigene Importe (`@domina/prototype/query`, `/events`, `/aria`) würden das lösen und zugleich das Risiko aus 2.1 eingrenzen.
+- **Laden:** Alles wird beim Import installiert, Tree Shaking ist ausgeschlossen. Untergruppen als eigene Importe (`@domina/prototypes/query`, `/events`, `/aria`) würden das lösen und zugleich das Risiko aus 2.1 eingrenzen.
 
 Performance ist kein Thema: Methoden an `Element.prototype` hinzuzufügen kostet einmal beim Start (die Engine verwirft ein paar Caches), danach nichts. Problematisch wäre nur `Object.prototype`, und das fasst domina nicht an.
 
@@ -103,7 +103,7 @@ Jede Erweiterung wird nach dem eingestuft, was der native Aufruf **heute** mit d
 |---|---|---|
 | **sicher** | wirft (`TypeError`, `SyntaxError`, „2 arguments required“) | ja: kein funktionierender Code kann davon abhängen |
 | **weich** | tut etwas Sinnloses (`'[object Object]'`, wird ignoriert) | ja, dokumentiert |
-| **hart** | tut etwas Sinnvolles, das sich ändern würde | nein, dafür ist `@domina/prototype` da |
+| **hart** | tut etwas Sinnvolles, das sich ändern würde | nein, dafür ist `@domina/prototypes` da |
 
 Damit verhält sich jeder Code, der heute korrekt läuft, genauso wie vorher. Die Erweiterung lebt ausschließlich dort, wo der native Aufruf heute versagt.
 

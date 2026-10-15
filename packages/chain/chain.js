@@ -1,10 +1,7 @@
 // @domina/chain/chain.js
 // the set every call works on. immutable: a call that changes the set returns a new chain
 
-import {
-  isBlank, isChain, isNullish, isFn, isPlainObject, isString, isTarget,
-  hasIterator,
-} from './shared.js';
+import { CHAIN, hasIterator, isBlank, isChain, isString, isTarget } from './shared.js';
 
 const byDocumentOrder = (a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
 
@@ -30,7 +27,7 @@ function collect (spec, context) {
   if    (isString(spec)) return query(spec, context);
   if     (isChain(spec)) return spec.elements;
   if    (isTarget(spec)) return [spec];
-  if (hasIterator(spec)) return unique(Array.from(spec, collect).flat());
+  if (hasIterator(spec)) return unique(Array.from(spec, item => collect(item)).flat());   // not collect directly: Array.from passes the index
   return [];
 }
 
@@ -41,6 +38,7 @@ class Chain {
     this.many     = many;     // getters answer for every element instead of the first
   }
 
+  get [CHAIN] () { return true; }
   get length () { return this.elements.length; }
   get el     () { return this.elements[0] ?? null; }
   get all    () { return this.many ? this : new Chain(this.elements, true); }

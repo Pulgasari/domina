@@ -26,7 +26,7 @@ jedenfalls endet msn bei uneinheitlichem code, der *hier* mal nice dx-freundlich
 
 und viele methods sind eigtl nur deswegen nötig.
 
-## `@domina/prototype`
+## `@domina/prototypes`
 
 hier knallt domina nur ne handvoll methods an den prototype und unterm strich kann man damit viel sauberer arbeiten und dx-freundlich arbeiten.
 
@@ -46,4 +46,4 @@ kp ob das in praxis geht, aber komplett proxy um `document`, der dann als `domin
 
 # todo
 - [ ] rename `@domina/methods` to `@domina/verbs` (?)
-- [ ] rename `@domina/prototype` to `@domina/prototypes` (?)
+- [x] rename `@domina/prototype` to `@domina/prototypes`

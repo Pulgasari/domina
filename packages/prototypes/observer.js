@@ -1,5 +1,5 @@
 // @ts-self-types="./observer.d.ts"
-// @domina/prototype/observer
+// @domina/prototypes/observer
 
 // opt-in: the observer props of @domina/observer for update and createElement.
 // onConnected, onDisconnected, onVisible, onResize get the element, onAdded, onRemoved

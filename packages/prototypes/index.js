@@ -1,5 +1,5 @@
 // @ts-self-types="./index.d.ts"
-// @domina/prototype
+// @domina/prototypes
 
 // :::::: SHARED
 
@@ -381,7 +381,7 @@ function setValues (values = {}, { missing = 'skip', notify = false } = {}) {
 // :::::: UPDATE
 
 // own props from outside, as (element, value) => void.
-// @domina/prototype/observer adds onConnected, onVisible etc. this way
+// @domina/prototypes/observer adds onConnected, onVisible etc. this way
 const customProps = new Map;
 
 function defineProps (map) {
@@ -469,7 +469,7 @@ function define (proto, name, value) {
 function extend (Class, methods) {
   const proto = Class.prototype;
   for (const [name, value] of toEntries(methods)) {
-    if (name in proto) console.warn(`[@domina/prototype] ${Class.name}.prototype.${name} exists, overwritten.`);
+    if (name in proto) console.warn(`[@domina/prototypes] ${Class.name}.prototype.${name} exists, overwritten.`);
     define(proto, name, value);
   }
 }

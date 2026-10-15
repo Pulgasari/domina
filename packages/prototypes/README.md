@@ -1,6 +1,6 @@
 ![Logo](/logo.svg)
 
-# @domina/prototype
+# @domina/prototypes
 
 the dom verbs of domina right on the dom prototypes, for an app that owns its globals.
 
@@ -13,7 +13,7 @@ a name a prototype has already is overwritten with a warning: the app decides wh
 ## usage
 
 ```js
-import '@domina/prototype';
+import '@domina/prototypes';
 ```
 
 ---
@@ -133,20 +133,20 @@ children are appended, nested lists flattened, nullish and `false` dropped.
 ### observer props (opt-in)
 
 ```js
-import '@domina/prototype';
-import '@domina/prototype/observer';
+import '@domina/prototypes';
+import '@domina/prototypes/observer';
 
 document.createElement('img', { src, onVisible: load, onDisconnected: cleanup });
 ```
 
 `onAdded`, `onAttr`, `onConnected`, `onDisconnected`, `onRemoved`, `onResize` and
 `onVisible` from `@domina/observer`. without this import they are plain listeners and
-`@domina/prototype` has no dependency.
+`@domina/prototypes` has no dependency.
 
 ### defineProps
 
 ```js
-import { defineProps } from '@domina/prototype';
+import { defineProps } from '@domina/prototypes';
 
 defineProps({ tooltip: (el, text) => el.setAttribute('aria-description', text) });
 el.update({ tooltip: 'saves the draft' });
