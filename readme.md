@@ -14,7 +14,7 @@ JavaScript toolkit for *doing stuff* in the DOM.
 |----------------------|----------------------------|---------|--------|
 | `@domina/analyzer`   | [dir](#)                   | concept |        |
 | `@domina/chain`      | [dir](packages/chain)      | v0      | 🔥🥵🔥 |
-| `@domina/element`    | [dir](packages/element)    | soon    |        |
+| `@domina/element`    | [dir](packages/element)    | v0      |        |
 | `@domina/observer`   | [dir](packages/observer)   | v0      | 🥺👉👈 |
 | `@domina/prototypes` | [dir](packages/prototypes) | v0      | 🤔     |
 | `@domina/proxy`      | [dir](packages/proxy)      | v0      | 🤔🧐😵‍💫 |
@@ -37,7 +37,7 @@ your sincere excellence, the queen of the www, the dominatrix of humanity ...
 
 ### `@domina/element`
 
-... coming soon ...
+a base class for custom elements: attribute schema, rendering through htx, selections, config. formerly `@aufbau/element`, the base of `@aufbau/elements`.
 
 ### `@domina/observer`
 
