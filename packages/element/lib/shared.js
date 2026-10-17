@@ -1,6 +1,8 @@
 // shared.js
 
 import { CanonicalMap } from '@pulgasari/canonicalmap';
+
+export { CanonicalMap };
 //export { isFn, isPlainObject } from '@pulgasari/is';
 
 export const // inlined from: @pulgasari/is
