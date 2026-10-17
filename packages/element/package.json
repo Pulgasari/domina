@@ -1,0 +1,36 @@
+{
+  "name": "@domina/element",
+  "version": "0.1.0",
+  "description": "A base class for custom elements: attribute schema, rendering through htx, selections, config, and mixins for form controls and source elements (the base of @aufbau/elements)",
+  "type"   : "module",
+  "main"   : "./index.js",
+  "module" : "./index.js",
+  "types"  : "./index.d.ts",
+  "exports": {
+    "."   : { "types": "./index.d.ts", "default": "./index.js" },
+    "./*" : "./*"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "AufbauElement.js",
+    "Selection.js",
+    "withControl.js",
+    "withSource.js",
+    "lib",
+    "manifest.js",
+    "README.md"
+  ],
+  "keywords": [
+    "custom-elements",
+    "domina",
+    "esm",
+    "web-components"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pulgasari/domina.git",
+    "directory": "packages/element"
+  }
+}
