@@ -6,7 +6,8 @@ import { ensureLayerOrder, SKIN_LAYER }         from './styles.js';
 
 const CONFIG_KEY   = 'elements-skin';
 const DEFAULT_SKIN = 'monochrome';
-const SKIN_BASE    = new URL('../../gestalt/skins/', import.meta.url);
+// the skins are @gestalt/css's, in the gestalt repo next to this one
+const SKIN_BASE    = new URL('../../../../gestalt/packages/css/skins/', import.meta.url);
 const SKIN_KEY     = 'aufbau:skin';
 
 const skinUrl = (skin) =>
