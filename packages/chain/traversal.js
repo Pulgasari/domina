@@ -2,16 +2,16 @@
 // every step returns a new chain: deduplicated, in document order, with the .all of the
 // chain it came from. no .end() stack: keep a variable to go back
 
-import { getChildren } from '@domina/methods/getChildren';
-import { getClosest }  from '@domina/methods/getClosest';
-import { getIndex }    from '@domina/methods/getIndex';
-import { getNext }     from '@domina/methods/getNext';
-import { getNextAll }  from '@domina/methods/getNextAll';
-import { getParent }   from '@domina/methods/getParent';
-import { getParents }  from '@domina/methods/getParents';
-import { getPrev }     from '@domina/methods/getPrev';
-import { getPrevAll }  from '@domina/methods/getPrevAll';
-import { getSiblings } from '@domina/methods/getSiblings';
+import { getChildren } from '@domina/methods/getChildren.js';
+import { getClosest }  from '@domina/methods/getClosest.js';
+import { getIndex }    from '@domina/methods/getIndex.js';
+import { getNext }     from '@domina/methods/getNext.js';
+import { getNextAll }  from '@domina/methods/getNextAll.js';
+import { getParent }   from '@domina/methods/getParent.js';
+import { getParents }  from '@domina/methods/getParents.js';
+import { getPrev }     from '@domina/methods/getPrev.js';
+import { getPrevAll }  from '@domina/methods/getPrevAll.js';
+import { getSiblings } from '@domina/methods/getSiblings.js';
 
 import { Chain, collect } from './chain.js';
 import { isFn }           from './shared.js';

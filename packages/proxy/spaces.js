@@ -2,15 +2,15 @@
 // the built-in namespaces. ctx: { document, facade, host, isDocument, root }
 // host is the element they write to: <html> for the document, the element or the shadow host otherwise
 
-import { getCustomProperty } from '@domina/methods/getCustomProperty';
-import { getFormValues }     from '@domina/methods/getFormValues';
-import { getMeta }           from '@domina/methods/getMeta';
-import { removeMeta }        from '@domina/methods/removeMeta';
-import { setAttr }           from '@domina/methods/setAttr';
-import { setCustomProperty } from '@domina/methods/setCustomProperty';
-import { setData }           from '@domina/methods/setData';
-import { setFormValues }     from '@domina/methods/setFormValues';
-import { setMeta }           from '@domina/methods/setMeta';
+import { getCustomProperty } from '@domina/methods/getCustomProperty.js';
+import { getFormValues }     from '@domina/methods/getFormValues.js';
+import { getMeta }           from '@domina/methods/getMeta.js';
+import { removeMeta }        from '@domina/methods/removeMeta.js';
+import { setAttr }           from '@domina/methods/setAttr.js';
+import { setCustomProperty } from '@domina/methods/setCustomProperty.js';
+import { setData }           from '@domina/methods/setData.js';
+import { setFormValues }     from '@domina/methods/setFormValues.js';
+import { setMeta }           from '@domina/methods/setMeta.js';
 
 const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
 const toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());

@@ -67,8 +67,8 @@ export interface Domina {
 
   /** The first match or `null`. */
   get(selector: Selector, context?: Spec): Element | null;
-  /** Every match, as an array. */
-  getList(selector: Selector, context?: Spec): Element[];
+  /** Every match, as a List: an array whose find, filter, some … take a matcher object or a selector too. */
+  getList(selector: Selector, context?: Spec): List<Element>;
   /** `dd()` of `@domina/chain`. */
   all(spec?: Spec, context?: Spec): Chain<true>;
   create(tag?: string, props?: Record<string, unknown>, ...children: unknown[]): HTMLElement;
@@ -145,6 +145,20 @@ export interface Domina {
   /** Anything else of document, functions bound. */
   [key: string]: any;
 }
+
+/** A test: a function, a selector, or { key: value } (the property when the element has one, else the attribute). */
+export type Matcher<T = Element> = ((item: T, index: number, list: T[]) => unknown) | string | Record<string, unknown>;
+
+export declare class List<T = Element> extends Array<T> {
+  every     (test: Matcher<T>): boolean;
+  filter    (test: Matcher<T>): List<T>;
+  find      (test: Matcher<T>): T | undefined;
+  findIndex (test: Matcher<T>): number;
+  findLast  (test: Matcher<T>): T | undefined;
+  some      (test: Matcher<T>): boolean;
+}
+
+export declare function matcherOf<T = Element> (test: Matcher<T>): (item: T) => boolean;
 
 export declare const domina: Domina;
 export declare const api: Map<string, Entry>;

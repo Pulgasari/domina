@@ -1,11 +1,11 @@
 // @domina/sheets
 
-import { adoptStyleSheet   as adopt }   from '@domina/methods/adoptStyleSheet';
-import { getStyleSheets    as get }     from '@domina/methods/getStyleSheets';
-import { hasStyleSheet     as has }     from '@domina/methods/hasStyleSheet';
-import { releaseStyleSheet as release } from '@domina/methods/releaseStyleSheet';
-import { scopeStyleSheet   as scope }   from '@domina/methods/scopeStyleSheet';
-import { setStyleElement }              from '@domina/methods/setStyleElement';
+import { adoptStyleSheet   as adopt }   from '@domina/methods/adoptStyleSheet.js';
+import { getStyleSheets    as get }     from '@domina/methods/getStyleSheets.js';
+import { hasStyleSheet     as has }     from '@domina/methods/hasStyleSheet.js';
+import { releaseStyleSheet as release } from '@domina/methods/releaseStyleSheet.js';
+import { scopeStyleSheet   as scope }   from '@domina/methods/scopeStyleSheet.js';
+import { setStyleElement }              from '@domina/methods/setStyleElement.js';
 
 /**
  * stylesheet('/themes/nord.css', { scope: '[data-theme="nord"]' })

@@ -1,4 +1,4 @@
-export { AufbauElement }                     from './AufbauElement.js';
+export { AufbauElement, AufbauElement as DominaElement } from './AufbauElement.js';
 export { each, html, raw, when }             from '@htx/js/render';
 export { Selection }                         from './Selection.js';
 export { AufbauControlElement, withControl } from './withControl.js';

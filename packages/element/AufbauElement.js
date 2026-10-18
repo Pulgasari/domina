@@ -1,7 +1,8 @@
 // :::::: IMPORTS
 
 import { followConfig, getConfig }           from './lib/config.js';
-import { isAttribute, looseEntry, schemaOf } from './lib/schema.js';
+import { observerOf }                         from './lib/observe.js';
+import { check, isAttribute, looseEntry, reflectedOf, schemaOf } from './lib/schema.js';
 import { applySkin }                         from './lib/skin.js';
 import { adoptClassStyles }                  from './lib/styles.js';
 
@@ -15,6 +16,7 @@ import { Logger }                        from '@pulgasari/logger';
 import { toCamelCase, toKebabCase }      from '@pulgasari/str';
 
 import { isResult, render as renderInto, unrender } from '@domina/render';
+import { within }                                   from '@domina/proxy';
 
 import { Selection, SHORTHANDS } from './Selection.js';
 
@@ -203,17 +205,14 @@ export class AufbauElement extends HTMLElement {
     // the class assigns as a field of its own (this.source = …): it stays a field
     const fields = fieldsOf(this);
     for (const entry of schemaOf(this).values()) {
-      const { attribute, name, type } = entry;
+      const { name } = entry;
+      // a prop of static props that the platform or the class already has: only this.props.x reaches it
+      if (entry.fromProps && (NATIVE.has(name) || name in this.prototype)) log.warn(`<${tag}> prop "${name}" exists on the element already, it is this.props.${name} only`);
       if (entry.state || NATIVE.has(name) || name in this.prototype || (!entry.prop && fields.has(name))) continue;
       Object.defineProperty(this.prototype, name, {
         configurable : true,
         get () { return this.getAttr(name); },
-        set (value) {
-          if (entry.prop)          this.setProp(name, value);
-          else if (type === Boolean) this.toggleAttribute(attribute, Boolean(value));
-          else if (value == null)  this.removeAttribute(attribute);
-          else                     this.setAttribute(attribute, String(value));
-        },
+        set (value) { this.setValue(name, value); },
       });
     }
 
@@ -281,6 +280,7 @@ export class AufbauElement extends HTMLElement {
     try {
       this.willUpdate(names);
       this.reflectAttrs();
+      this.notifyChanges(names);
 
       // a template result is patched (@domina/render): only the holes that changed
       // are written. a string takes the 2.x path: compared, then set as innerHTML
@@ -329,7 +329,7 @@ export class AufbauElement extends HTMLElement {
   }
 
   reflectAttrs () {
-    for (const name of this.constructor.reflect ?? []) {
+    for (const name of reflectedOf(this.constructor)) {
       const { attribute } = this.entryOf(name);
       const value = this.getAttr(name);
 
@@ -348,6 +348,20 @@ export class AufbauElement extends HTMLElement {
   }
 
   invalidate () { this._markup = undefined; return this; }
+
+  // onChange of the entries whose value is another than at the last call. the first update counts
+  notifyChanges (names) {
+    const seen = this._seen ??= new Map;
+    for (const name of names) {
+      const entry = this.schema.get(name);
+      if (!entry?.onChange) continue;
+      const value = this.getAttr(name);
+      if (seen.has(entry.name) && Object.is(seen.get(entry.name), value)) continue;
+      const old = seen.get(entry.name);
+      seen.set(entry.name, value);
+      entry.onChange.call(this, value, old);
+    }
+  }
 
   // :::::: SCHEMA ::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -412,6 +426,7 @@ export class AufbauElement extends HTMLElement {
 
     const raw = authored ? this.getAttribute(attribute) : configured();
     if (raw == null) return fallback;
+    if (this.entryOf(name).schema) return this.checked(this.entryOf(name), raw);
 
     let value = coerce(raw, type, fallback);
     if (values && !values.includes(value)) value = fallback;
@@ -425,6 +440,50 @@ export class AufbauElement extends HTMLElement {
   }
 
   // :::::: PROPS AND STATE :::::::::::::::::::::::::::::::::::::
+
+  // what el.name = value does: checked against the schema of static props first. a failing
+  // value is warned about and the old one stays. a simple value lands in the attribute,
+  // a rich one is stored
+  setValue (name, value) {
+    const entry = this.entryOf(name);
+
+    if (entry.schema && value != null) {
+      const result = check(entry.schema, value);
+      if (result.issues) { this.invalid(entry, value, result.issues); return this; }
+      value = result.value;
+    }
+
+    if (entry.prop)                  return this.setProp(name, value);
+    if (entry.type === Boolean)      this.toggleAttribute(entry.attribute, Boolean(value));
+    else if (value == null)          this.removeAttribute(entry.attribute);
+    else                             this.setAttribute(entry.attribute, String(value));
+    return this;
+  }
+
+  // an attribute string through the schema: the value, or the last good one when it fails
+  checked (entry, raw) {
+    const good   = this._good ??= new Map;
+    const result = check(entry.schema, raw);
+    if (!result.issues) { good.set(entry.name, result.value); return result.value; }
+    if (this._bad?.get(entry.name) !== raw) this.invalid(entry, raw, result.issues);
+    (this._bad ??= new Map).set(entry.name, raw);
+    return good.has(entry.name) ? good.get(entry.name) : entry.fallback;
+  }
+
+  invalid (entry, value, issues) {
+    log.warn(`<${this.localName}> ${entry.name}: ${JSON.stringify(value)} is not valid (${issues.map(issue => issue.message).join(', ')}), the value stays`);
+  }
+
+  // el.props.name: every entry of the schema, also one whose name the element has already (title, hidden …)
+  get props () {
+    return this._props ??= new Proxy({}, {
+      get     : (target, key) => isString(key) ? this.getAttr(key) : undefined,
+      has     : (target, key) => isString(key) && this.schema.has(key),
+      ownKeys : ()            => [...this.schema.values()].map(entry => entry.name),
+      set     : (target, key, value) => { this.setValue(key, value); return true; },
+      getOwnPropertyDescriptor: (target, key) => this.schema.has(key) ? { configurable: true, enumerable: true, value: this.getAttr(key), writable: true } : undefined,
+    });
+  }
 
   // a stored value: el.nodes = […] for a prop, setState('hover', true) for state.
   // an update follows when hasChanged (default: not Object.is) says so
@@ -478,6 +537,12 @@ export class AufbauElement extends HTMLElement {
   }
 
   // :::::: TREE ::::::::::::::::::::::::::::::::::::::::::::::::
+
+  // @domina/proxy below the element: this.dom.get('.title'), this.dom.getList('rat-view').find({ active: true })
+  get dom () { return this._dom ??= within(this.root); }
+
+  // @domina/observer bound to the element, see lib/observe.js
+  get observe () { return this._observe ??= observerOf(this); }
 
   // static parts = ['close'] gives this.$close, see init()
   get self () { return Selection.of([this], { owner: this, signal: this.signal }); }
