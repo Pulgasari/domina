@@ -1,16 +1,21 @@
 // @domina/proxy/facade.js
-// the proxy and the registry every facade reads. a member is
-//   { get (ctx), set (value, ctx) }   a value
-//   { make (ctx) -> function }         a function built once per facade (the built-ins)
-//   { method (...args) }               a function called with the facade as this (extend)
-// `only: 'document'` hides it on facades of a subtree (within)
+
+/*
+the proxy and the registry every facade reads. a member is
+
+{ get (ctx), set (value, ctx) }   a value
+{ make (ctx) -> function }         a function built once per facade (the built-ins)
+{ method (...args) }               a function called with the facade as this (extend)
+`only: 'document'` hides it on facades of a subtree (within)
+*/
 
 import { d }     from '@domina/chain';
 import { space } from './space.js';
 
-export const api     = new Map;   // name -> { kind, name, only, writable }
-export const members = new Map;
-export const spaces  = new Map;
+export const 
+api     = new Map,   // name -> { kind, name, only, writable }
+members = new Map,
+spaces  = new Map;
 
 function assertFree (name, internal) {
   if (members.has(name) || spaces.has(name)) throw new Error(`[domina] "${name}" exists already`);
@@ -53,9 +58,9 @@ export function createFacade (root) {
   const host       = isDocument ? root.documentElement : root.host ?? root;   // a shadow root writes to its host
   const ctx        = { document: root.ownerDocument ?? root, facade: null, host, isDocument, root };
 
-  const bound = new Map;   // native functions of root, bound once: domina.x === domina.x
-  const built = new Map;   // members made for this facade
-  const views = new Map;   // spaces for this facade
+  const bound = new Map; // native functions of root, bound once: domina.x === domina.x
+  const built = new Map; // members made for this facade
+  const views = new Map; // spaces for this facade
 
   const available = entry => entry && (!entry.only || isDocument);
 
