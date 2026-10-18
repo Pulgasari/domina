@@ -15,9 +15,9 @@ const point = found => found ? { x: found.left, y: found.top } : null;
 // :::::: GEOMETRY. x and y everywhere
 
 export const 
-offset   = { params: {}, read: element => point(getElementOffset(element)) },     // in the document
-position = { params: {}, read: element => point(getElementPosition(element)) },   // in the offset parent
-rect     = { params: {}, read: element => getElementRect(element) };               // DOMRect, in the viewport
+offset   = { params: {}, read: getElementOffset   }, // in the document
+position = { params: {}, read: getElementPosition }, // in the offset parent
+rect     = { params: {}, read: getElementRect     }; // DOMRect, in the viewport
 
 // any part visible, or at least ratio of it
 export const inView = {
