@@ -2,7 +2,7 @@
 
 // :::::: IMPORT
 
-import { isObject, isString, toKebabCase } from './shared.js';
+import { isNumber, isObject, isString, toKebabCase } from './shared.js';
 
 import { createElement }  from './createElement.js';
 import { getMetaAttr }    from './getMetaAttr.js';
@@ -12,11 +12,18 @@ import { resolveElement } from './resolveElement.js';
 import { isElementish } from './_shared.js';
 import { buildSelector }  from './buildSelector.js';
 import { resolveContext } from './resolveContext.js';
+import { resolveElement } from './resolveElement.js';
 
 // :::::: CONSTS
 
 const HTTP_EQUIV_KEYS = new Set([ 'content-type', 'default-style', 'refresh', 'x-ua-compatible', 'content-security-policy' ]);      
 const SKIP_KEYS       = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
+const UNITLESS = new Set([
+  'animation-iteration-count', 'aspect-ratio', 'border-image-outset', 'border-image-slice',
+  'border-image-width', 'column-count', 'flex', 'flex-grow', 'flex-shrink', 'font-weight',
+  'grid-area', 'grid-column', 'grid-row', 'line-height', 'opacity', 'order', 'orphans',
+  'scale', 'tab-size', 'widows', 'z-index', 'zoom',
+]);
 
 // :::::: REFS
 
@@ -29,6 +36,7 @@ const escapeAttr = (value) => { const str = String(value); return typeof CSS !==
 const escapeKey  = (key)   => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
 
 const isFalsish = (sth) => sth === false || sth == null;
+const isNullish = (sth) => sth === null || sth === undefined;
 const isNodeMap = (sth) => sth instanceof NamedNodeMap;
 
 function toObj (sth) {
@@ -37,7 +45,26 @@ function toObj (sth) {
   return obj;
 }
 
+const isVar = property => property.startsWith('--');
+const normalizeStylePropertyName = property => isVar(property) ? property : toKebabCase(property);
+const cssValue = (property, value) => isNumber(value) && !UNITLESS.has(property) && !isVar(property) ? `${value}px` : String(value);
+
 // METHODS
+
+/*
+buildSelector
+resolveElement
+
+getAttribute
+getAttributes
+getStyleProperty
+getStyleProperties
+
+setAttribute
+setAttributes
+setStyleProperty
+setStyleProperties
+*/
 
 // Converts a selector string or Element Descriptor Object (EDO) into a valid CSS selector string.
 function buildSelector (sth) {
@@ -84,8 +111,6 @@ function resolveElement (sth, ctx) {
   catch { return null; } // Return null on invalid selector DOMExceptions
 }
 
-
-
 function getAttribute (spec, key) {
   const element = resolveElement(spec); if (!element) return null;
   return element.getAttribute(toKebabCase(key));
@@ -109,19 +134,36 @@ function setAttribute (spec, key, value) {
 
 function setAttributes (spec, entries) {
   const element = resolveElement(spec); if (!element) return null;
-  for (const [key, val] of entries) setAttribute(element, key, value);
+  for (const [key, value] of entries) setAttribute(element, key, value);
   return element;
 }
 
+// setStyle.js
 
 
+// Numbers almost always need px - these properties are exceptions
 
+function setStyleProperty (spec, key, value) {
+  const element  = resolveElement(spec); if (!element) return null;
+  const property = normalizedStylePropertyName(key);
+  
+  if (isFalsish(value)) element.style.removeProperty(property);
+  else                  element.style.setProperty(property, cssValue(property, value));
+  
+  return element;
+}
+
+function setStyleProperties (spec, entries) {
+  const element = resolveElement(spec); if (!element) return null;
+  for (const [key, value] of entries) setStyleProperty(element, key, value);
+  return element;
+}
 
 // Das Attribut ergibt sich aus dem Key:
 // OpenGraph/Twitter/eigene Namespaces (mit ':')
 // -> property, HTTP-Header -> http-equiv, sonst name
 
-export function getMetaAttributeName (key) {
+function getMetaAttributeName (key) {
   if !isString(key) return 'name';
   key = key.toLowerCase();
   
@@ -137,13 +179,6 @@ function getMetaElement (key) {
       ?? $HEAD?.querySelector(`meta[name="${safe}"], meta[property="${safe}"]`)
       ?? null;
 }
-
-export {
-  getMetaElement,
-};
-
-
-function setMetaKey (key, value) {}
 
 /**
  * setMeta('description', '…')
