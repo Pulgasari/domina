@@ -2,9 +2,12 @@
 // watch('data.theme', (value, old) => …) -> stop. a path is a member or a space, optionally a key in it.
 // each source listens as narrowly as it can, the callback only runs when the value really changed
 
-import { plainOf } from './facade.js';
+// :::::: IMPORT
 
-const toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());
+import { plainOf } from './facade.js';
+import { toKebabCase } from './shared.js';
+
+//const toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());
 
 function mutations (target, options, notify) {
   if (!target) return () => {};
@@ -55,7 +58,7 @@ const same = (a, b) =>
   Object.is(a, b) || (a !== null && b !== null && typeof a === 'object' && typeof b === 'object' &&
     !(a instanceof Node) && !(b instanceof Node) && JSON.stringify(a) === JSON.stringify(b));
 
-export function watch (ctx, path, callback) {
+function watch (ctx, path, callback) {
   if (typeof callback !== 'function') throw new TypeError('[domina] watch(): the callback is not a function');
 
   const [name, ...rest] = String(path).split('.');
@@ -75,4 +78,8 @@ export function watch (ctx, path, callback) {
   });
 }
 
-export const watchable = Object.keys(SOURCES);
+const watchable = Object.keys(SOURCES);
+
+// :::::: EXPORT
+
+export { watch, watchable };
