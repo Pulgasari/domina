@@ -9,6 +9,7 @@ export const
 undashed = name => name.startsWith('--') ? name.slice(2) : name;
 
 export const
+isArray       = Array.isArray,
 isFalsish     = (sth) => sth === false || sth == null,
 isFn          = (sth) => typeof sth === 'function',
 isNullish     = (sth) => sth === null || sth === undefined,
