@@ -5,11 +5,13 @@
 
 import { dd, listen, typesOf, unlisten } from '@domina/chain';
 
-import { buildSelector } from '@domina/methods/buildSelector';
-import { createHTML }    from '@domina/methods/createHTML';
-import { getElement }    from '@domina/methods/getElement';
-import { getElements }   from '@domina/methods/getElements';
-import { updateElement } from '@domina/methods/updateElement';
+import { buildSelector } from '@domina/methods/buildSelector.js';
+import { createHTML }    from '@domina/methods/createHTML.js';
+import { getElement }    from '@domina/methods/getElement.js';
+import { getElements }   from '@domina/methods/getElements.js';
+import { updateElement } from '@domina/methods/updateElement.js';
+
+import { List } from './query.js';
 
 const isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value));
 
@@ -76,8 +78,9 @@ export const get = {
   make: ({ root }) => (spec, context) => getElement(spec, context ?? root),
 };
 
+// a List: find, filter … take a matcher object or a selector as well (query.js)
 export const getList = {
-  make: ({ root }) => (spec, context) => getElements(spec, context ?? root),
+  make: ({ root }) => (spec, context) => List.from(getElements(spec, context ?? root)),
 };
 
 export const all = {

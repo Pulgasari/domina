@@ -4,8 +4,8 @@
 
 // :::::: IMPORT
 
-import delegateEvent from '@domina/methods/delegateEvent';
-import onEvent       from '@domina/methods/onEvent';
+import delegateEvent from '@domina/methods/delegateEvent.js';
+import onEvent       from '@domina/methods/onEvent.js';
 import { isFn }      from './shared.js';
 
 const listeners = new WeakMap; // target -> Set<{ handler, selector, stop, type }>

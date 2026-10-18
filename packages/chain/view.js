@@ -1,14 +1,14 @@
 // @domina/chain/view.js
 // where elements are and whether they are seen; scrolling; waiting
 
-import { getElementOffset }           from '@domina/methods/getElementOffset';
-import { getElementPosition }         from '@domina/methods/getElementPosition';
-import { getElementRect }             from '@domina/methods/getElementRect';
-import { isElementInViewport }        from '@domina/methods/isElementInViewport';
-import { jumpTo as jumpIntoView }     from '@domina/methods/jumpTo';
-import { scrollTo as scrollIntoView } from '@domina/methods/scrollTo';
-import { waitForAnimations }          from '@domina/methods/waitForAnimations';
-import { waitForEvent }               from '@domina/methods/waitForEvent';
+import { getElementOffset }           from '@domina/methods/getElementOffset.js';
+import { getElementPosition }         from '@domina/methods/getElementPosition.js';
+import { getElementRect }             from '@domina/methods/getElementRect.js';
+import { isElementInViewport }        from '@domina/methods/isElementInViewport.js';
+import { jumpTo as jumpIntoView }     from '@domina/methods/jumpTo.js';
+import { scrollTo as scrollIntoView } from '@domina/methods/scrollTo.js';
+import { waitForAnimations }          from '@domina/methods/waitForAnimations.js';
+import { waitForEvent }               from '@domina/methods/waitForEvent.js';
 
 const point = found => found ? { x: found.left, y: found.top } : null;
 

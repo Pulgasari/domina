@@ -1,13 +1,13 @@
 // @domina/fonts
 
-import { addFont }       from '@domina/methods/addFont';
-import { eachFont }      from '@domina/methods/eachFont';
-import { fontsReady }    from '@domina/methods/fontsReady';
-import { getFontStatus } from '@domina/methods/getFontStatus';
-import { getFonts }      from '@domina/methods/getFonts';
-import { hasFont }       from '@domina/methods/hasFont';
-import { loadFont }      from '@domina/methods/loadFont';
-import { removeFont }    from '@domina/methods/removeFont';
+import { addFont }       from '@domina/methods/addFont.js';
+import { eachFont }      from '@domina/methods/eachFont.js';
+import { fontsReady }    from '@domina/methods/fontsReady.js';
+import { getFontStatus } from '@domina/methods/getFontStatus.js';
+import { getFonts }      from '@domina/methods/getFonts.js';
+import { hasFont }       from '@domina/methods/hasFont.js';
+import { loadFont }      from '@domina/methods/loadFont.js';
+import { removeFont }    from '@domina/methods/removeFont.js';
 
 /**
  * font('Inter')

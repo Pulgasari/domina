@@ -1,9 +1,9 @@
 // @domina/proxy/members.js
 // document state and environment as values. { get (ctx), set (value, ctx), only }
 
-import { getScroll } from '@domina/methods/getScroll';
-import { setMeta }   from '@domina/methods/setMeta';
-import { setScroll } from '@domina/methods/setScroll';
+import { getScroll } from '@domina/methods/getScroll.js';
+import { setMeta }   from '@domina/methods/setMeta.js';
+import { setScroll } from '@domina/methods/setScroll.js';
 
 const attribute = name => ({
   get : ({ host })        => host.getAttribute(name),

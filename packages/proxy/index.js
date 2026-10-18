@@ -8,12 +8,14 @@
 //   domina.vars.accent = 'tomato';
 //   domina.on('click', '[data-action]', (event, el) => run(el.dataset.action));
 //   domina('.card').style({ opacity: 1 });
+//   domina.getList('.card').find({ active: true });
 
 import * as mirror   from './mirror.js';
 import * as builtins from './spaces.js';
 
 import { api, createFacade, plainOf, register, registerSpace, spaces } from './facade.js';
 import { members }                                                   from './members.js';
+import { List, matcherOf }                                           from './query.js';
 import { watch, watchable }                                          from './watch.js';
 
 const internal = { internal: true };
@@ -78,5 +80,5 @@ export const domina = typeof document === 'undefined' ? unavailable : facadeOf(d
 export const extend = definitions => domina.extend(definitions);
 export const within = spec => domina.within(spec);
 
-export { api, registerSpace as space, watchable };
+export { List, api, matcherOf, registerSpace as space, watchable };
 export default domina;

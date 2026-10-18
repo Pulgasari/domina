@@ -1,9 +1,9 @@
 // @domina/meta
 
-import { getMeta }    from '@domina/methods/getMeta';
-import { hasMeta }    from '@domina/methods/hasMeta';
-import { removeMeta } from '@domina/methods/removeMeta';
-import { setMeta }    from '@domina/methods/setMeta';
+import { getMeta }    from '@domina/methods/getMeta.js';
+import { hasMeta }    from '@domina/methods/hasMeta.js';
+import { removeMeta } from '@domina/methods/removeMeta.js';
+import { setMeta }    from '@domina/methods/setMeta.js';
 import { isString, isSymbol } from './_shared.js';
 
 const stripColon = prefix        => prefix.endsWith(':') ? prefix.slice(0, -1) : prefix;

@@ -13,7 +13,44 @@ builds on, two mixins add to it:
 class WriteText extends withSource(withControl(AufbauElement)) {}
 ```
 
-## AufbauElement
+## AufbauElement (also `DominaElement`)
+
+### static props, this.dom, this.observe
+
+```js
+import { DominaElement } from '@domina/element';
+import { Bool, Enum, List, Num, Str } from '@rat/types';     // or any standard schema: zod, valibot …
+
+class MyApp extends DominaElement {
+  static props = {
+    routing : Enum('hash', 'path', 'none'),                   // 'hash' to start with, reflected into routing="hash"
+    zoom    : Num.range(50, 200).default(100),                // zoom="120" reads as 120, zoom = 999 is warned about and stays
+    open    : Bool,                                           // the attribute's presence
+    tags    : List(Str),                                      // a stored prop, no attribute
+    skin    : { type: Str.optional(), onChange: value => gestalt.set({ skin: value }) },
+  };
+
+  onConnected () {
+    this.observe.added('my-view', view => this.track(…));     // present now or added later, stops on disconnect
+  }
+
+  get active () { return this.dom.getList('my-view').find({ active: true }); }   // or find('[active]')
+}
+```
+
+- every prop is `this.props.name` and, unless the element has the name already (`title`,
+  `hidden` …, a warning says so), `this.name`.
+- simple values (bool, enum, num, str) live in the attribute and are reflected, others
+  (a list, a record) are stored. `{ reflect: false }` turns reflecting off.
+- `onChange(value, old)` runs in the update when the value is another than last time, the
+  first update included.
+- `this.dom` is `@domina/proxy` below the element. `getList()` gives a `List`: an array whose
+  `find`, `filter`, `some`, `every`, `findIndex` take a matcher object or a selector too.
+- `this.observe`: `added`, `removed`, `attr`, `resized`, `visible` from `@domina/observer`.
+  selectors go through `element.matches()`, so no `:scope`.
+- `static attr` works as before, both can be used side by side.
+
+### static attr
 
 ```js
 import { AufbauElement } from '@domina/element';

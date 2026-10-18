@@ -55,8 +55,40 @@ export declare class Selection implements Iterable<Element> {
   focus (options?: FocusOptions): this;
 }
 
+/** Anything with a standard schema interface: @rat/types, zod, valibot … */
+export interface StandardSchema<T = unknown> {
+  readonly '~standard': { validate (value: unknown): { value: T, issues?: undefined } | { issues: readonly { message: string }[] } | Promise<unknown> };
+  /** Where the prop starts, @rat/types has it. */
+  readonly initial?: T;
+  /** @rat/types: 'bool', 'enum', 'num', 'str' live in the attribute, anything else is a stored prop. */
+  readonly kind?: string;
+}
+
+/** A schema or a constructor, or { type, onChange, reflect }. */
+export type PropEntry = StandardSchema | StringConstructor | NumberConstructor | BooleanConstructor
+  | { type: StandardSchema | StringConstructor | NumberConstructor | BooleanConstructor, onChange?: (this: AufbauElement, value: any, old: any) => void, reflect?: boolean };
+
+/** Observers bound to the element, stopped when it is disconnected. Each returns its stop. */
+export interface ElementObserver {
+  /** Present now or added later, below the element. */
+  added   (selector: string, fn: (element: Element) => void): () => void;
+  attr    (name: string, fn: (change: { name: string, value: string | null, old: string | null }) => void): () => void;
+  removed (selector: string, fn: (element: Element) => void): () => void;
+  resized (fn: (entry: ResizeObserverEntry) => void): () => void;
+  visible (fn: (visible: boolean, entry: IntersectionObserverEntry) => void): () => void;
+}
+
 export declare class AufbauElement extends HTMLElement {
   static attr?      : Record<string, AttrEntry>;
+  /** Props from schemas: checked on every set (a failing value is warned about, the old one stays), simple ones reflected. */
+  static props?     : Record<string, PropEntry>;
+  /** Every entry of the schema, also one whose name the element has already (title, hidden …). */
+  readonly props    : Record<string, any>;
+  /** @domina/proxy below the element: dom.get(), dom.getList() whose find/filter take a matcher object or a selector. */
+  readonly dom      : import('@domina/proxy').Domina;
+  readonly observe  : ElementObserver;
+  /** What el.name = value does: checked against the schema, then the attribute or the stored prop. */
+  setValue (name: string, value: unknown): this;
   /** `false` updates at once on every change instead of once per microtask. */
   static batch?     : boolean;
   /** The events it fires, name -> description, for the manifest. */
@@ -201,3 +233,6 @@ export declare function each<T> (items: Iterable<T>, row: (item: T, index: numbe
 export declare function raw (html: string | null | undefined): unknown;
 /** One of two branches for a child hole. */
 export declare function when (condition: unknown, then: () => unknown, otherwise?: (() => unknown) | null): unknown;
+
+/** The same class: AufbauElement under its domina name. */
+export declare const DominaElement: typeof AufbauElement;
