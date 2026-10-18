@@ -13,7 +13,7 @@ the proxy and the registry every facade reads. a member is
 
 import { d }     from '@domina/chain';
 import { space } from './space.js';
-import { isFn }  from './shared.js';
+import { isFn, isSymbol }  from './shared.js';
 
 //const isDocument = (sth) => sth.nodeType === 9;
 
@@ -102,7 +102,7 @@ function createFacade (root) {
   // an arrow function as target: callable, and without a non-configurable prototype to report
   const facade = new Proxy(() => {}, {
     apply : (_, __, [spec, context]) => d(spec, context ?? (isDocument ? undefined : root)),
-    get   : (_, key) => typeof key === 'symbol' ? undefined : read(key),
+    get   : (_, key) => isSymbol(key) ? undefined : read(key),
 
     set (_, key, value) {
       const member = members.get(key);
