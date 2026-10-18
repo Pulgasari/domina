@@ -10,6 +10,7 @@ undashed = name => name.startsWith('--') ? name.slice(2) : name;
 
 export const
 isFalsish     = (sth) => sth === false || sth == null,
+isFn          = (sth) => typeof sth === 'function',
 isNullish     = (sth) => sth === null || sth === undefined,
 isNodeMap     = (sth) => sth instanceof NamedNodeMap,
 isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value)),
