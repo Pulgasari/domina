@@ -10,6 +10,15 @@ const attribute = name => ({
   set : (value, { host }) => { value == null ? host.removeAttribute(name) : host.setAttribute(name, value); },
 });
 
+/*
+import { getAttribute, setAttribute } from './methods.js';
+
+const attribute = (key) => ({
+  get : (       { host }) => getAttribute(host, key),
+  set : (value, { host }) => setAttribute(host, key, value),
+});
+*/
+
 const once = (target, type) => new Promise(resolve => target.addEventListener(type, () => resolve(), { once: true }));
 
 // activeElement stops at a shadow host, the focused element may sit deeper
