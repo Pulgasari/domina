@@ -3,8 +3,10 @@
 // :::::: IMPORT
 
 import { 
-  isElementish, isNumber, isObject, isString, 
-  toKebabCase,
+  isElementish, isNullish, isNumber, isObject, isString, 
+  isFalsish, isNodeMap,
+  toKebabCase, 
+  toObj,
 } from './shared.js';
 
 import { createElement }  from './createElement.js';
@@ -30,16 +32,6 @@ const NODE  = Symbol.for('domina.node');
 
 const escapeAttr = (value) => { const str = String(value); return typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(str) : str.replace(/"/g, '\\"'); };
 const escapeKey  = (key)   => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
-
-const isFalsish = (sth) => sth === false || sth == null;
-const isNullish = (sth) => sth === null || sth === undefined;
-const isNodeMap = (sth) => sth instanceof NamedNodeMap;
-
-function toObj (sth) {
-  const obj = {};
-  if (isNodeMap(sth)) for (const { name, value } of sth) attrs[name] = value;
-  return obj;
-}
 
 const isVar = property => property.startsWith('--');
 const normalizeStylePropertyName = property => isVar(property) ? property : toKebabCase(property);
