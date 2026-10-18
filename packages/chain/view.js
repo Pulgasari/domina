@@ -10,8 +10,6 @@ import { scrollTo as scrollIntoView } from '@domina/methods/scrollTo.js';
 import { waitForAnimations }          from '@domina/methods/waitForAnimations.js';
 import { waitForEvent }               from '@domina/methods/waitForEvent.js';
 
-const point = found => found ? { x: found.left, y: found.top } : null;
-
 // :::::: GEOMETRY. x and y everywhere
 
 export const 
