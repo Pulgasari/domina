@@ -29,10 +29,10 @@ export function matcherOf (test) {
 }
 
 export class List extends Array {
-  every     (test, self) { return super.every(matcherOf(test), self); }
-  filter    (test, self) { return super.filter(matcherOf(test), self); }
-  find      (test, self) { return super.find(matcherOf(test), self); }
-  findIndex (test, self) { return super.findIndex(matcherOf(test), self); }
-  findLast  (test, self) { return super.findLast(matcherOf(test), self); }
-  some      (test, self) { return super.some(matcherOf(test), self); }
+  every     (test, self) { return super.every     (matcherOf(test), self); }
+  filter    (test, self) { return super.filter    (matcherOf(test), self); }
+  find      (test, self) { return super.find      (matcherOf(test), self); }
+  findIndex (test, self) { return super.findIndex (matcherOf(test), self); }
+  findLast  (test, self) { return super.findLast  (matcherOf(test), self); }
+  some      (test, self) { return super.some      (matcherOf(test), self); }
 }
