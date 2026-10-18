@@ -44,7 +44,7 @@ function registerSpace (name, def, { internal = false } = {}) {
   spaces.set(name, { ...def, name });
 
   const only = def.only ?? null;
-  api.set(name, { kind: 'space', name, only, writable: Boolean(definition.set) });
+  api.set(name, { kind: 'space', name, only, writable: Boolean(def.set) });
 }
 
 // a property with a setter or a writable value along the chain.
