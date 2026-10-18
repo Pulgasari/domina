@@ -7,3 +7,5 @@ export { toCamelCase, toKebabCase } from '@pulgasari/str';
 
 export const undashed    = name => name.startsWith('--') ? name.slice(2) : name;
 
+export const 
+isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value));       
