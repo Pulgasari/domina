@@ -1,0 +1,133 @@
+//
+
+// :::::: IMPORT
+
+import { isObject, isString, toKebabCase } from './shared.js';
+
+import { createElement }  from './createElement.js';
+import { getMetaAttr }    from './getMetaAttr.js';
+import { getMetaElement } from './getMetaElement.js';
+import { removeMeta }     from './removeMeta.js';
+import { resolveElement } from './resolveElement.js';
+
+
+// :::::: CONSTS
+
+const HTTP_EQUIV_KEYS = new Set([ 'content-type', 'default-style', 'refresh', 'x-ua-compatible', 'content-security-policy' ]);      
+
+// :::::: REFS
+
+const $HEAD = () => document.head;
+
+// :::::: HELPERS
+
+const escapeKey = (key) => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
+const isFalsiwh = (sth) => sth === false || sth == null;
+
+
+// METHODS
+
+// @domina/core/methods/getAttr.js
+
+import { resolveElement } from './resolveElement.js';
+import { toKebabCase } from './_shared.js';
+
+/**
+ * getAttr(spec)         -> { name: value } of every attribute
+ * getAttr(spec, 'name') -> string | null
+ */
+function getAttribute (spec, key) {
+  const element = resolveElement(spec); if (!element) return null;
+  
+  return element.getAttribute(toKebabCase(key));
+}
+
+function getAttributes (spec) {
+  const element = resolveElement(spec); if (!element) return {};
+  
+  return Object.fromEntries([...element.attributes].map(a => [a.name, a.value])); // ???
+}
+
+
+
+function setAttribute (spec, key, value) {
+  const element = resolveElement(spec); if (!element) return null;
+  const name    = toKebabCase(key);
+  
+       if (isFalsish(key)) element.removeAttribute(name);
+  else if (value === true) element.setAttribute(name, '');
+  else                     element.setAttribute(name, String(value));
+  
+  return element;
+}
+
+function setAttributes (spec, entries) {
+  const element = resolveElement(spec); if (!element) return null;
+  for (const [key, val] of entries) setAttribute(element, key, value);
+  return element;
+}
+
+
+
+
+
+// Das Attribut ergibt sich aus dem Key:
+// OpenGraph/Twitter/eigene Namespaces (mit ':')
+// -> property, HTTP-Header -> http-equiv, sonst name
+
+export function getMetaAttributeName (key) {
+  if !isString(key) return 'name';
+  key = key.toLowerCase();
+  
+  return HTTP_EQUIV_KEYS.has(key)  ? 'http-equiv'
+       : key.includes(':')         ? 'property'
+       : 'name';
+}
+
+function getMetaElement (key) {
+  if (!isString(key) || !key) return null;
+  const safe = escapeKey(key);
+  return $HEAD?.querySelector(`meta[${getMetaAttributeName(key)}="${safe}"]`)
+      ?? $HEAD?.querySelector(`meta[name="${safe}"], meta[property="${safe}"]`)
+      ?? null;
+}
+
+export {
+  getMetaElement,
+};
+
+
+function setMetaKey (key, value) {}
+
+/**
+ * setMeta('description', '…')
+ * setMeta({ description: '…', 'og:image': '…' })
+ * null/undefined als Wert entfernt das Tag.
+ */
+export function setMeta (keyOrMap, value) {
+  if (isObject(keyOrMap)) {
+    const entries = Object.entries(keyOrMap);
+    const written = {};
+    for (const [key, val] of entries) written[key] = setMeta(key, val);
+    return written;
+  }
+
+  const key = keyOrMap;
+  if (!isString(key) || !key) return null;
+
+  if (value == null) {
+    removeMeta(key);
+    return null;
+  }
+
+  const content = String(value);
+  const element = getMetaElement(key);
+
+  if (element) {
+    element.setAttribute('content', content);
+    return element;
+  }
+  return createElement('meta', { [getMetaAttr(key)]: key, content, appendTo: head() });
+}
+
+export default setMeta;
