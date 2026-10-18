@@ -2,22 +2,22 @@
 // the built-in namespaces. ctx: { document, facade, host, isDocument, root }
 // host is the element they write to: <html> for the document, the element or the shadow host otherwise
 
-import { getCustomProperty } from '@domina/methods/getCustomProperty.js';
-import { getFormValues }     from '@domina/methods/getFormValues.js';
-import { getMeta }           from '@domina/methods/getMeta.js';
-import { removeMeta }        from '@domina/methods/removeMeta.js';
-import { setAttr }           from '@domina/methods/setAttr.js';
-import { setCustomProperty } from '@domina/methods/setCustomProperty.js';
-import { setData }           from '@domina/methods/setData.js';
-import { setFormValues }     from '@domina/methods/setFormValues.js';
-import { setMeta }           from '@domina/methods/setMeta.js';
+// :::::: IMPORT
 
-const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-const toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());
-const undashed    = name => name.startsWith('--') ? name.slice(2) : name;
+import getCustomProperty from '@domina/methods/getCustomProperty.js';
+import getFormValues     from '@domina/methods/getFormValues.js';
+import getMeta           from '@domina/methods/getMeta.js';
+import removeMeta        from '@domina/methods/removeMeta.js';
+import setAttr           from '@domina/methods/setAttr.js';
+import setCustomProperty from '@domina/methods/setCustomProperty.js';
+import setData           from '@domina/methods/setData.js';
+import setFormValues     from '@domina/methods/setFormValues.js';
+import setMeta           from '@domina/methods/setMeta.js';
+
+import { toCamelCase, toKebabCase, undashed } from './shared.js';
 
 const formOf    = (name, { document }) => document.forms.namedItem(name);
-const formNames = ({ document }) => [...document.forms].map(form => form.name || form.id).filter(Boolean);
+const formNames = (      { document }) => [...document.forms].map(form => form.name || form.id).filter(Boolean);
 
 // :::::: STYLE
 
