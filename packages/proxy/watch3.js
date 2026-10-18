@@ -52,6 +52,23 @@ const headObserver = observeMutation(headTarget, () => ({
   subtree: true
 }));
 
+// Signature:
+// - observeAttr('class')           -> Fixed attribute name
+// - observeAttr({ prefix: 'data-' }) -> Dynamic key attribute with prefix
+// - observeAttr({ prefix: '' })    -> Dynamic key attribute without prefix
+const observeAttr = (spec) => observeMutation(
+  ctx => ctx.host,
+  (_, key) => {
+    if (typeof spec === 'string') {
+      return { attributeFilter: [spec] };
+    }
+
+    const name = key ? `${spec.prefix ?? ''}${toKebabCase(key)}` : null;
+    return name ? { attributeFilter: [name] } : { attributes: true };
+  }
+);
+
+
 // :::::: SOURCES DICTIONARY
 
 const SOURCES = {
