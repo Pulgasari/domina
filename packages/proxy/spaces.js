@@ -25,7 +25,7 @@ const formNames = (      { document }) => [...document.forms].map(form => form.n
 // :::::: STYLE
 
 // read: the computed value. keys: the inline custom properties, nothing else can be listed
-export const vars = {
+const vars = {
   get    : (name,        { host }) =>   getStyleToken (name,        host),
   set    : (name, value, { host }) => { setStyleToken (name, value, host); },
   delete : (name,        { host }) => { host.style.removeProperty(`--${undashed(name)}`); },
@@ -35,14 +35,14 @@ export const vars = {
 // :::::: ATTRIBUTES
 
 // strings in, strings out. true is an empty attribute, false removes
-export const data = {
+const data = {
   get    : (name, { host })        => host.dataset[toCamelCase(name)] ?? null,
   set    : (name, value, { host }) => { value === false ? delete host.dataset[toCamelCase(name)] : setData(host, name, value === true ? '' : value); },
   delete : (name, { host })        => { delete host.dataset[toCamelCase(name)]; },
   keys   : ({ host })              => Object.keys(host.dataset),
 };
 
-export const attr = {
+const attr = {
   get    : (name, { host })        => host.getAttribute(toKebabCase(name)),
   set    : (name, value, { host }) => { setAttr(host, name, value); },
   delete : (name, { host })        => { host.removeAttribute(toKebabCase(name)); },
@@ -50,7 +50,7 @@ export const attr = {
 };
 
 // class.name = boolean toggles, Object.keys(class) lists them
-export const classes = {
+const classes = {
   get    : (name, { host })        => host.classList.contains(name),
   set    : (name, value, { host }) => { host.classList.toggle(name, Boolean(value)); },
   delete : (name, { host })        => { host.classList.remove(name); },
@@ -60,7 +60,12 @@ export const classes = {
 
 // :::::: DOCUMENT
 
-export const meta = {
+const id = {
+  get  : (name, { root }) => root.getElementById ? root.getElementById(name) : root.querySelector(`#${CSS.escape(name)}`),
+  keys : ({ root })       => [...root.querySelectorAll('[id]')].map(element => element.id),
+};
+
+const meta = {
   only   : 'document',
   get    : key          => getMeta(key),
   set    : (key, value) => { setMeta(key, value); },
@@ -68,20 +73,18 @@ export const meta = {
   keys   : ()           => Object.keys(getMeta()),
 };
 
-export const id = {
-  get  : (name, { root }) => root.getElementById ? root.getElementById(name) : root.querySelector(`#${CSS.escape(name)}`),
-  keys : ({ root })       => [...root.querySelectorAll('[id]')].map(element => element.id),
-};
-
-export const forms = {
+const forms = {
   only : 'document',
   get  : formOf,
   keys : formNames,
 };
 
-export const values = {
+const values = {
   only : 'document',
   get  : (name, ctx)        => { const form = formOf(name, ctx); return form ? getFormValues(form) : null; },
   set  : (name, value, ctx) => { const form = formOf(name, ctx); if (form) setFormValues(form, value); },
   keys : formNames,
 };
+
+export         { attr, classes, data, id, forms, meta, values, vars };
+export default { attr, classes, data, id, forms, meta, values, vars };
