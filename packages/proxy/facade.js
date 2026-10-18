@@ -9,8 +9,15 @@ the proxy and the registry every facade reads. a member is
 `only: 'document'` hides it on facades of a subtree (within)
 */
 
+// :::::: IMPORT
+
 import { d }     from '@domina/chain';
 import { space } from './space.js';
+import { isFn }  from './shared.js';
+
+//const isDocument = (sth) => sth.nodeType === 9;
+
+// :::::: REFS
 
 export const 
 api     = new Map,   // name -> { kind, name, only, writable }
@@ -22,20 +29,26 @@ function assertFree (name, internal) {
   if (!internal && typeof document !== 'undefined' && name in document) throw new Error(`[domina] "${name}" is a member of document`);
 }
 
-export function register (name, definition, { internal = false } = {}) {
+function register (name, def, { internal = false } = {}) {
   assertFree(name, internal);
-  const member = typeof definition === 'function' ? { method: definition } : definition;
+  const member = isFn(def) ? { method: def } : def;
   members.set(name, member);
-  api.set(name, { kind: member.get ? 'value' : 'method', name, only: member.only ?? null, writable: Boolean(member.set) });
+  
+  const kind = member.get ? 'value' : 'method';
+  const only = member.only ?? null;
+  api.set(name, { kind, name, only, writable: Boolean(member.set) });
 }
 
-export function registerSpace (name, definition, { internal = false } = {}) {
+function registerSpace (name, def, { internal = false } = {}) {
   assertFree(name, internal);
-  spaces.set(name, { ...definition, name });
-  api.set(name, { kind: 'space', name, only: definition.only ?? null, writable: Boolean(definition.set) });
+  spaces.set(name, { ...def, name });
+
+  const only = def.only ?? null;
+  api.set(name, { kind: 'space', name, only, writable: Boolean(definition.set) });
 }
 
-// a property with a setter or a writable value along the chain. none at all is not writable here:
+// a property with a setter or a writable value along the chain.
+// none at all is not writable here:
 // an unknown write is a typo, not an expando
 function isWritable (object, key) {
   for (let current = object; current; current = Object.getPrototypeOf(current)) {
@@ -46,14 +59,14 @@ function isWritable (object, key) {
 }
 
 // to a plain object, for snapshot() and watch()
-export function plainOf (facade, name) {
+function plainOf (facade, name) {
   const value = facade[name];
   if (!spaces.has(name)) return value;
   const keys = Object.keys(value);
   return name === 'class' ? keys : Object.fromEntries(keys.map(key => [key, value[key]]));
 }
 
-export function createFacade (root) {
+function createFacade (root) {
   const isDocument = root.nodeType === 9;
   const host       = isDocument ? root.documentElement : root.host ?? root;   // a shadow root writes to its host
   const ctx        = { document: root.ownerDocument ?? root, facade: null, host, isDocument, root };
@@ -79,7 +92,7 @@ export function createFacade (root) {
     }
 
     const value = root[key];
-    if (typeof value !== 'function') return value;
+    if (!isFn(value)) return value;
     if (!bound.has(key)) bound.set(key, value.bind(root));
     return bound.get(key);
   }
@@ -110,3 +123,7 @@ export function createFacade (root) {
   ctx.facade = facade;
   return facade;
 }
+
+// EXPORT
+
+export { createFacade, plainOf, register, registerSpace };
