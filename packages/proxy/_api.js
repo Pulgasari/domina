@@ -144,11 +144,12 @@ function setAttributes (spec, entries) {
 
 // :::::::::::: STYLE ::::::::::::::::::::::::::::::::::::::::::::::::
 
-const getInlineStyle = (spec) => resolveElement(spec)?.style ?? null:
+const getComputedStyleObj = (spec) => { const element = resolveElement(spec) ?? null; return getComputedStyle(element); }
+const   getInlineStyleObj = (spec) => resolveElement(spec)?.style ?? null:
 
 function getComputedStylePropertyValue (spec, key) {
   const element  = resolveElement(spec); if (!element) return null;
-  const styleObj = getComputedStyle(element);
+  const styleObj = getComputedStyleObj(element);
   const name     = normalizeStylePropertyName(key);
   
   return styleObj.getPropertyValue(name).trim() || null;
@@ -156,7 +157,7 @@ function getComputedStylePropertyValue (spec, key) {
 
 function   getInlineStylePropertyValue () {
   const element  = resolveElement(spec); if (!element) return null;
-  const styleObj = getInlineStyle(element);
+  const styleObj = getInlineStyleObj(element);
   const name     = normalizeStylePropertyName(key);
   
   return styleObj.getPropertyValue(name).trim() || null;
