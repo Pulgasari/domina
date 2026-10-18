@@ -16,15 +16,17 @@ import { resolveContext } from './resolveContext.js';
 // :::::: CONSTS
 
 const HTTP_EQUIV_KEYS = new Set([ 'content-type', 'default-style', 'refresh', 'x-ua-compatible', 'content-security-policy' ]);      
+const SKIP_KEYS       = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
 
 // :::::: REFS
 
 const $HEAD = () => document.head;
-const NODE = Symbol.for('domina.node');
+const NODE  = Symbol.for('domina.node');
 
 // :::::: HELPERS
 
-const escapeKey = (key) => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
+const escapeAttr = (value) => { const str = String(value); return typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(str) : str.replace(/"/g, '\\"'); };
+const escapeKey  = (key)   => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
 
 const isFalsish = (sth) => sth === false || sth == null;
 const isNodeMap = (sth) => sth instanceof NamedNodeMap;
@@ -37,29 +39,14 @@ function toObj (sth) {
 
 // METHODS
 
-// buildSelector.js
-
-import { isObject, isString, toKebabCase } from './_shared.js';
-
-const SKIP_KEYS = new Set(['tag', 'tagName', 'id', 'class', 'className', 'dataset', 'data']);
-
-// scapes attribute values safely for CSS query selectors.
-const escapeAttr = value => {
-  const str = String(value);
-  return typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(str) : str.replace(/"/g, '\\"');
-  //return CSS?.escape(str) ?? str.replace(/"/g, '\\"');
-};
-
 // Converts a selector string or Element Descriptor Object (EDO) into a valid CSS selector string.
-export function buildSelector (sth) {
+function buildSelector (sth) {
   if  (isString(sth)) return sth;
   if (!isObject(sth)) return '*';
 
   let selector = String(sth.tag || sth.tagName || '').toLowerCase();
 
-  if (sth.id) {
-    selector += '#' + escapeAttr(sth.id);
-  }
+  if (sth.id) selector += '#' + escapeAttr(sth.id);
 
   const className = sth.class || sth.className;
   if (className) {
@@ -69,7 +56,7 @@ export function buildSelector (sth) {
 
   const data = sth.dataset || sth.data;
   if (isObject(data)) {
-    for (const [k, v] of Object.entries(data)) {
+    for (const [k,v] of Object.entries(data)) {
       if (v === false || v == null) continue;
       const key = toKebabCase(k);
       selector += v === true ? `[data-${key}]` : `[data-${key}="${escapeAttr(v)}"]`;
@@ -84,10 +71,8 @@ export function buildSelector (sth) {
   return selector || '*';
 }
 
-export default buildSelector;
-
 // Resolves input (Selector, EDO, Node, or Wrapper) to a single DOM Element.
-export function resolveElement (sth, ctx) {
+function resolveElement (sth, ctx) {
   if (!sth)               return null;
   if (sth[NODE] === true) return sth.node ?? null;
   if (isElementish(sth))  return sth;
@@ -110,10 +95,6 @@ function getAttributes (spec) {
   const element = resolveElement(spec); if (!element) return {};
   return toObj(element.attributes);
 }
-
-
-
-
 
 function setAttribute (spec, key, value) {
   const element = resolveElement(spec); if (!element) return null;
