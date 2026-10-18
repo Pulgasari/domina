@@ -1,30 +1,34 @@
 // @domina/proxy
 // @ts-self-types="./index.d.ts"
-//
-// domina is a facade for document: it reads like document, hands back real nodes,
-// touches no prototype, and holds the document's state as properties.
-//
-//   domina.title       = 'Inbox (3)';
-//   domina.vars.accent = 'tomato';
-//   domina.on('click', '[data-action]', (event, el) => run(el.dataset.action));
-//   domina('.card').style({ opacity: 1 });
-//   domina.getList('.card').find({ active: true });
+
+/*
+domina is a facade for document: 
+- it reads like document, 
+- hands back real nodes,
+- touches no prototype, 
+- and holds the document's state as properties.
+
+domina.title       = 'Inbox (3)';
+domina.vars.accent = 'tomato';
+domina.on('click', '[data-action]', (event, el) => run(el.dataset.action));
+domina('.card').style({ opacity: 1 });
+domina.getList('.card').find({ active: true });
+*/
 
 import * as mirror   from './mirror.js';
 import * as builtins from './spaces.js';
 
 import { api, createFacade, plainOf, register, registerSpace, spaces } from './facade.js';
-import { members }                                                   from './members.js';
-import { List, matcherOf }                                           from './query.js';
-import { watch, watchable }                                          from './watch.js';
+import { members }          from './members.js';
+import { List, matcherOf }  from './query.js';
+import { watch, watchable } from './watch.js';
 
 const internal = { internal: true };
-
 const SNAPSHOT = ['title', 'lang', 'dir', 'scheme', 'scroll', 'vars', 'data', 'class', 'meta'];
 
 // :::::: ROOTS
 
-const facades = new WeakMap;   // root -> facade, so within('#card') twice is the same facade
+const facades = new WeakMap; // root -> facade, so within('#card') twice is the same facade
 
 function rootOf (spec) {
   const root = typeof spec === 'string' ? document.querySelector(spec) : spec;
@@ -70,15 +74,15 @@ register('space',  { make: () => (name, definition) => registerSpace(name, defin
 // :::::: EXPORT
 
 // without a dom every access says so, instead of "document is not defined" somewhere deeper
-const unavailable = new Proxy(() => {}, {
+const unavailable = new Proxy (() => {}, {
   apply () { throw new Error('[domina] no document here'); },
   get   () { throw new Error('[domina] no document here'); },
 });
 
-export const domina = typeof document === 'undefined' ? unavailable : facadeOf(document);
-
-export const extend = definitions => domina.extend(definitions);
-export const within = spec => domina.within(spec);
+export const
+domina = typeof document === 'undefined' ? unavailable : facadeOf(document),
+extend = defs => domina.extend(defs),
+within = spec => domina.within(spec);
 
 export { List, api, matcherOf, registerSpace as space, watchable };
 export default domina;
