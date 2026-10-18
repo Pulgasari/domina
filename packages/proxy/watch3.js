@@ -42,22 +42,26 @@ const headTarget = ctx => ctx.document.head;
 const attrFilter = (prefix = '') => (ctx, key) =>
   key ? { attributeFilter: [`${prefix}${toKebabCase(key)}`] } : { attributes: true };
 
-const   fixedAttr = attr   => observeMutation(ctx => ctx.host, () => ({ attributeFilter: [attr] }));
-const dynamicAttr = prefix => observeMutation(ctx => ctx.host, attrFilter(prefix));
+const observeAttr        = attr   => observeMutation(ctx => ctx.host, () => ({ attributeFilter: [attr] }));
+const observeDynamicAttr = prefix => observeMutation(ctx => ctx.host, attrFilter(prefix));
 
 const headObserver = observeMutation(headTarget, () => ({
-  attributes: true, characterData: true, childList: true, subtree: true
+  attributes: true, 
+  characterData: true, 
+  childList: true, 
+  subtree: true
 }));
 
 // :::::: SOURCES DICTIONARY
 
 const SOURCES = {
-  attr    : dynamicAttr(''),
-  class   : fixedAttr('class'),
-  data    : dynamicAttr('data-'),
-  dir     : fixedAttr('dir'),
-  lang    : fixedAttr('lang'),
-  vars    : fixedAttr('style'),
+  attr    : observeDynamicAttr(''),
+  data    : observeDynamicAttr('data-'),
+  
+  class   : observeAttr('class'),
+  dir     : observeAttr('dir'),
+  lang    : observeAttr('lang'),
+  vars    : observeAttr('style'),
 
   meta    : headObserver,
   title   : headObserver,
