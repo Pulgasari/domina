@@ -14,6 +14,9 @@ import setData           from '@domina/methods/setData.js';
 import setFormValues     from '@domina/methods/setFormValues.js';
 import setMeta           from '@domina/methods/setMeta.js';
 
+import getStyleToken from '@domina/methods/getStyleToken.js';
+import setStyleToken from '@domina/methods/setStyleToken.js';
+
 import { toCamelCase, toKebabCase, undashed } from './shared.js';
 
 const formOf    = (name, { document }) => document.forms.namedItem(name);
@@ -23,9 +26,9 @@ const formNames = (      { document }) => [...document.forms].map(form => form.n
 
 // read: the computed value. keys: the inline custom properties, nothing else can be listed
 export const vars = {
-  get    : (name, { host })        => getCustomProperty(host, name),
-  set    : (name, value, { host }) => { setCustomProperty(host, name, value); },
-  delete : (name, { host })        => { host.style.removeProperty(`--${undashed(name)}`); },
+  get    : (name,        { host }) =>   getStyleToken (name,        host),
+  set    : (name, value, { host }) => { setStyleToken (name, value, host); },
+  delete : (name,        { host }) => { host.style.removeProperty(`--${undashed(name)}`); },
   keys   : ({ host })              => [...host.style].filter(property => property.startsWith('--')).map(undashed),
 };
 
