@@ -1,3 +1,9 @@
 // shared.js
 
-export { toKebabCase } from '@pulgasari/str';
+export { toCamelCase, toKebabCase } from '@pulgasari/str';
+
+//const toCamelCase = name => name.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+//const toKebabCase = name => name.replace(/[A-Z]/g, char => '-' + char.toLowerCase());
+
+export const undashed    = name => name.startsWith('--') ? name.slice(2) : name;
+
