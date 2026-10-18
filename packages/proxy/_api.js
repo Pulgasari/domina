@@ -2,17 +2,13 @@
 
 // :::::: IMPORT
 
-import { isNumber, isObject, isString, toKebabCase } from './shared.js';
+import { 
+  isElementish, isNumber, isObject, isString, 
+  toKebabCase,
+} from './shared.js';
 
 import { createElement }  from './createElement.js';
-import { getMetaAttr }    from './getMetaAttr.js';
-import { getMetaElement } from './getMetaElement.js';
-import { removeMeta }     from './removeMeta.js';
-import { resolveElement } from './resolveElement.js';
-import { isElementish } from './_shared.js';
-import { buildSelector }  from './buildSelector.js';
 import { resolveContext } from './resolveContext.js';
-import { resolveElement } from './resolveElement.js';
 
 // :::::: CONSTS
 
@@ -211,7 +207,7 @@ function getMetaElement (key) {
  * setMeta({ description: '…', 'og:image': '…' })
  * null/undefined als Wert entfernt das Tag.
  */
-export function setMeta (keyOrMap, value) {
+function setMeta (keyOrMap, value) {
   if (isObject(keyOrMap)) {
     const entries = Object.entries(keyOrMap);
     const written = {};
