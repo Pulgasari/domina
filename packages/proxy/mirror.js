@@ -12,7 +12,7 @@ import { getElements }   from '@domina/methods/getElements.js';
 import { updateElement } from '@domina/methods/updateElement.js';
 
 //import { buildSelector, createHTML, getElement, getElements, updateElement } from './methods';
-import { isPlainObject } from './shared.js';
+import { isArray, isFn, isNullish, isPlainObject, isString } from './shared.js';
 
 import { List } from './query.js';
 
@@ -21,10 +21,10 @@ import { List } from './query.js';
 const selectorOf = spec => isPlainObject(spec) ? buildSelector(spec) : spec;
 
 const ESCAPES = { '"': '&quot;', '&': '&amp;', "'": '&#39;', '<': '&lt;', '>': '&gt;' };
-const escape  = value => Array.isArray(value) ? value.map(escape).join('') : String(value ?? '').replace(/["&'<>]/g, char => ESCAPES[char]);
+const escape  = value => isArray(value) ? value.map(escape).join('') : String(value ?? '').replace(/["&'<>]/g, char => ESCAPES[char]);
 
 // (types, handler, options) or (types, selector, handler, options)
-const listenerArgs = args => typeof args[0] === 'function' ? [null, ...args] : args;
+const listenerArgs = args => isFn(args[0]) ? [null, ...args] : args;
 
 function build (document, tag, props, children) {
   const { is, ...rest } = props ?? {};
@@ -46,7 +46,7 @@ export const querySelectorAll = {
 export const createElement = {
   only : 'document',
   make : ({ document }) => function createElement (tag, props, ...children) {
-    const native = !children.length && (props == null || typeof props === 'string' || (isPlainObject(props) && Object.keys(props).every(key => key === 'is')));
+    const native = !children.length && (props == null || isString(props) || (isPlainObject(props) && Object.keys(props).every(key => key === 'is')));
     return native ? document.createElement(tag, props) : build(document, tag, props, children);
   },
 };
@@ -54,7 +54,7 @@ export const createElement = {
 // a selector as second argument delegates, several types are split. a disposer comes back
 export const addEventListener = {
   make: ({ root }) => function addEventListener (types, ...args) {
-    if (typeof args[0] === 'string') {
+    if (isString(args[0])) {
       const [selector, handler, options] = args;
       return listen(root, types, selector, handler, options);
     }
@@ -97,9 +97,11 @@ export const create = {
 // a template literal with escaped values, or a string taken as html as it is
 export const html = {
   only : 'document',
-  make : () => (strings, ...values) => createHTML(typeof strings === 'string'
-    ? strings
-    : strings.reduce((out, part, index) => out + escape(values[index - 1]) + part)),
+  make : () => (strings, ...values) => createHTML(
+    isString(strings)
+      ? strings
+      : strings.reduce((out, part, index) => out + escape(values[index - 1]) + part)
+  ),
 };
 
 export const on = {
