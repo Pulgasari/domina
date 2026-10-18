@@ -15,6 +15,7 @@ isFn          = (sth) => typeof sth === 'function',
 isNullish     = (sth) => sth === null || sth === undefined,
 isNodeMap     = (sth) => sth instanceof NamedNodeMap,
 isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value)),
+isString      = (sth) => typeof sth === 'string',
 isSymbol      = (sth) => typeof sth === 'symbol';
 
 
