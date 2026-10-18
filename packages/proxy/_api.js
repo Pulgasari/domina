@@ -10,7 +10,6 @@ import { getMetaElement } from './getMetaElement.js';
 import { removeMeta }     from './removeMeta.js';
 import { resolveElement } from './resolveElement.js';
 
-
 // :::::: CONSTS
 
 const HTTP_EQUIV_KEYS = new Set([ 'content-type', 'default-style', 'refresh', 'x-ua-compatible', 'content-security-policy' ]);      
@@ -22,31 +21,29 @@ const $HEAD = () => document.head;
 // :::::: HELPERS
 
 const escapeKey = (key) => typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(key) : key;
-const isFalsiwh = (sth) => sth === false || sth == null;
 
+const isFalsish = (sth) => sth === false || sth == null;
+const isNodeMap = (sth) => sth instanceof NamedNodeMap;
+
+function toObj (sth) {
+  const obj = {};
+  if (isNodeMap(sth)) for (const { name, value } of sth) attrs[name] = value;
+  return obj;
+}
 
 // METHODS
 
-// @domina/core/methods/getAttr.js
-
-import { resolveElement } from './resolveElement.js';
-import { toKebabCase } from './_shared.js';
-
-/**
- * getAttr(spec)         -> { name: value } of every attribute
- * getAttr(spec, 'name') -> string | null
- */
 function getAttribute (spec, key) {
   const element = resolveElement(spec); if (!element) return null;
-  
   return element.getAttribute(toKebabCase(key));
 }
 
 function getAttributes (spec) {
   const element = resolveElement(spec); if (!element) return {};
-  
-  return Object.fromEntries([...element.attributes].map(a => [a.name, a.value])); // ???
+  return toObj(element.attributes);
 }
+
+
 
 
 
