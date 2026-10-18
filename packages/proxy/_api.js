@@ -49,6 +49,8 @@ const isVar = property => property.startsWith('--');
 const normalizeStylePropertyName = property => isVar(property) ? property : toKebabCase(property);
 const cssValue = (property, value) => isNumber(value) && !UNITLESS.has(property) && !isVar(property) ? `${value}px` : String(value);
 
+
+
 // METHODS
 
 /*
@@ -140,33 +142,25 @@ function setAttributes (spec, entries) {
 
 
 
-// getStyle.js
+// :::::::::::: STYLE ::::::::::::::::::::::::::::::::::::::::::::::::
 
-import { resolveElement } from './resolveElement.js';
-import { toKebabCase } from './_shared.js';
+const getInlineStyle = (spec) => resolveElement(spec)?.style ?? null:
 
-const isVar = property => property.startsWith('--');
-
-// --custom-props remain as-is, everything else is converted to kebab-case
-const propertyName = property => isVar(property) ? property : toKebabCase(property);
-
-/**
- * getStyle(spec)              -> CSSStyleDeclaration (computed)
- * getStyle(spec, 'fontSize')  -> '16px'
- * getStyle(spec, 'x', true)   -> reads inline style instead of computed
- */
-function getStyle (spec, property, inline = false) {
-  const element = resolveElement(spec); if (!element) return null;
-
-  const declaration = inline ? element.style : getComputedStyle(element);
-  if (!property) return declaration;
-
-  return declaration.getPropertyValue(propertyName(property)).trim() || null;
+function getComputedStylePropertyValue (spec, key) {
+  const element  = resolveElement(spec); if (!element) return null;
+  const styleObj = getComputedStyle(element);
+  const name     = normalizeStylePropertyName(key);
+  
+  return styleObj.getPropertyValue(name).trim() || null;
 }
 
-function getComputedStylePropertyValue () {}
-function   getInlineStylePropertyValue () {}
-
+function   getInlineStylePropertyValue () {
+  const element  = resolveElement(spec); if (!element) return null;
+  const styleObj = getInlineStyle(element);
+  const name     = normalizeStylePropertyName(key);
+  
+  return styleObj.getPropertyValue(name).trim() || null;
+}
 
 function setStyleProperty (spec, key, value) {
   const element  = resolveElement(spec); if (!element) return null;
