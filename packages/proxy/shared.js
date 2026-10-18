@@ -12,7 +12,8 @@ export const
 isFalsish     = (sth) => sth === false || sth == null,
 isNullish     = (sth) => sth === null || sth === undefined,
 isNodeMap     = (sth) => sth instanceof NamedNodeMap,
-isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value));       
+isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value)),
+isSymbol      = (sth) => typeof sth === 'symbol';
 
 
 
