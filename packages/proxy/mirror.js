@@ -11,9 +11,11 @@ import { getElement }    from '@domina/methods/getElement.js';
 import { getElements }   from '@domina/methods/getElements.js';
 import { updateElement } from '@domina/methods/updateElement.js';
 
+//import { buildSelector, createHTML, getElement, getElements, updateElement } from './methods';
+import { isPlainObject } from './shared.js';
+
 import { List } from './query.js';
 
-const isPlainObject = value => value !== null && typeof value === 'object' && [Object.prototype, null].includes(Object.getPrototypeOf(value));
 
 // a spec object fills the gap, anything else goes to the native call as it is
 const selectorOf = spec => isPlainObject(spec) ? buildSelector(spec) : spec;
