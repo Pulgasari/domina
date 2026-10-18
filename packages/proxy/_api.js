@@ -159,6 +159,12 @@ function setStyleProperties (spec, entries) {
   return element;
 }
 
+/*
+const 
+setAttributes      = (spec, entries) => entries.forEach([k,v] => setAttribute     (spec, k, v)),   
+setStyleProperties = (spec, entries) => entries.forEach([k,v] => setStyleProperty (spec, k, v));   
+*/
+
 // Das Attribut ergibt sich aus dem Key:
 // OpenGraph/Twitter/eigene Namespaces (mit ':')
 // -> property, HTTP-Header -> http-equiv, sonst name
