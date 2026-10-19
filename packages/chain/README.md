@@ -14,9 +14,9 @@ import { d, dd } from `@domina/chain':
 
 ## methods
 
-[addClass](#addclass) ·
-[after](#after) ·
-[append](#append) ·
+[`addClass`](#addclass) ·
+[`after`](#after) ·
+[`append`](#append) ·
 [appendTo](#appendto) ·
 [aria](#aria) ·
 [attr](#attr) ·
