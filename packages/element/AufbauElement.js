@@ -544,7 +544,7 @@ export class AufbauElement extends HTMLElement {
 
   // :::::: TREE ::::::::::::::::::::::::::::::::::::::::::::::::
 
-  // @domina/proxy below the element: this.dom.get('.title'), this.dom.getList('rat-view').find({ active: true })
+  // @domina/proxy below the element: this.dom.get('.title'), this.dom.getListOfElements('rat-view').find({ active: true })
   get dom () { return this._dom ??= within(this.root); }
 
   // @domina/observer bound to the element, see lib/observe.js

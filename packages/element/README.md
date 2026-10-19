@@ -34,7 +34,7 @@ class MyApp extends DominaElement {
     this.observe.added('my-view', view => this.track(…));     // present now or added later, stops on disconnect
   }
 
-  get active () { return this.dom.getList('my-view').find({ active: true }); }   // or find('[active]')
+  get active () { return this.dom.getListOfElements('my-view').find({ active: true }); }   // or find('[active]')
 }
 ```
 
@@ -44,7 +44,7 @@ class MyApp extends DominaElement {
   (a list, a record) are stored. `{ reflect: false }` turns reflecting off.
 - `onChange(value, old)` runs in the update when the value is another than last time, the
   first update included.
-- `this.dom` is `@domina/proxy` below the element. `getList()` gives a `List`: an array whose
+- `this.dom` is `@domina/proxy` below the element. `getListOfElements()` (or `getElements()`) gives a `List`: an array whose
   `find`, `filter`, `some`, `every`, `findIndex` take a matcher object or a selector too.
 - `this.observe`: `added`, `removed`, `attr`, `resized`, `visible` from `@domina/observer`.
 - `this.media`: `dark`, `light`, `hover`, `coarse`, `print`, `matches(query)`, `on(query, fn)` (stops on disconnect).

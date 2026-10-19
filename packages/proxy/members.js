@@ -9,7 +9,7 @@ does nonsense, the gap is filled.
   querySelectorAll({ tag: 'li' })               a NodeList, as natively
   getElement(spec, context?)                    the first match or null
   getElements(spec, context?)                   a List (query.js): find/filter take a matcher or selector
-  get, getList                                  short names of the two, to find out which reads better
+  get, getListOfElements                        other names of the two, to find out which reads better
   createElement('button', { class, onClick }, 'save')   props and children ({ is } and strings stay native)
   addEventListener / removeEventListener        see events.js
 
@@ -50,10 +50,10 @@ export function membersOf ({ document, host, root }) {
     querySelector    (spec) { return root.querySelector(selectorOf(spec)); },
     querySelectorAll (spec) { return root.querySelectorAll(selectorOf(spec)); },
 
-    getElement  : first,
-    getElements : all,
-    get         : first,
-    getList     : all,
+    getElement        : first,
+    getElements       : all,
+    get               : first,
+    getListOfElements : all,
 
     // :::::: CREATE
 

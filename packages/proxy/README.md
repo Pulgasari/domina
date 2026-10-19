@@ -15,7 +15,8 @@ domina.querySelectorAll({ tag: 'li', class: 'done' });       // a NodeList, as n
 
 domina.getElement('#app');                                    // the first match or null
 domina.getElements('.card').find({ active: true });           // a List: find/filter take a matcher or selector
-domina.get('#app');  domina.getList('.card');                 // short names, to find out which reads better
+domina.get('#app');                                           // other names of the two,
+domina.getListOfElements('.card');                            // to find out which reads better
 
 // props and children fill the gap ({ is } and strings stay native)
 domina.createElement('button', { class: 'primary', onClick: save }, 'save');
@@ -64,5 +65,5 @@ or `document` has already throws.
 - [ ] `_raf.js` (ehem. `@domina/raf`) integrieren
 - [ ] `_sheets.js` (ehem. `@domina/sheets`) integrieren
 - [ ] `_trash/` durchsehen: was davon (vars, data, class, scroll, focus, ready, watch …) zurückkommt
-- [ ] `url` schreibbar (history) oder nur lesen?
+- [ ] `url`: am ende nochmal drauf zurück. schreibbar (history) oder nur lesen? `@pulgasari/url` als `@domina/url`?
 - [x] `_meta.js` integriert (`meta.js`)

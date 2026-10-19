@@ -106,7 +106,7 @@ export declare class AufbauElement extends HTMLElement {
   static props?     : Record<string, PropEntry>;
   /** Every entry of the schema, also one whose name the element has already (title, hidden …). */
   readonly props    : Record<string, any>;
-  /** @domina/proxy below the element: dom.get(), dom.getList() whose find/filter take a matcher object or a selector. */
+  /** @domina/proxy below the element: dom.get(), dom.getListOfElements() whose find/filter take a matcher object or a selector. */
   readonly dom      : import('@domina/proxy').Domina;
   readonly observe  : ElementObserver;
   readonly a11y     : A11y;

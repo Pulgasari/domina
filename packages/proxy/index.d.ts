@@ -42,12 +42,12 @@ export type Meta = Record<string, any>;
 
 export interface Members {
   /** A spec object fills the gap. */
-  querySelector    (selector: Selector): Element | null;
-  querySelectorAll (selector: Selector): NodeListOf<Element>;
-  getElement       (selector: Selector, context?: unknown): Element | null;
-  getElements      (selector: Selector, context?: unknown): List<Element>;
-  get              (selector: Selector, context?: unknown): Element | null;
-  getList          (selector: Selector, context?: unknown): List<Element>;
+  querySelector     (selector: Selector): Element | null;
+  querySelectorAll  (selector: Selector): NodeListOf<Element>;
+  getElement        (selector: Selector, context?: unknown): Element | null;
+  getElements       (selector: Selector, context?: unknown): List<Element>;
+  get               (selector: Selector, context?: unknown): Element | null;
+  getListOfElements (selector: Selector, context?: unknown): List<Element>;
   /** Props and children fill the gap. A string or `{ is }` alone stay native. */
   createElement (tag: string, props?: string | ElementCreationOptions | Record<string, unknown>, ...children: unknown[]): HTMLElement;
   /** Several types, delegation with a selector, and a disposer back. */

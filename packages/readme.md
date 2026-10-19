@@ -6,7 +6,7 @@
 
 die packages wurden nochmal umstrukturiert:
 
-## `@domina/dom` (geplant)
+## `@domina/dom`
 
 kombiniert `@domina/proxy` (`dom`, wie `document`), `@domina/chain` (`d`, `dd`, wie `$`, `$$`) und `@domina/observer` (`dom.observer`).
 
@@ -27,5 +27,6 @@ kombiniert `@domina/proxy` (`dom`, wie `document`), `@domina/chain` (`d`, `dd`, 
 
 # todo
 - [x] rename `@domina/methods` to `@domina/verbs`
-- [ ] `@domina/dom`: `dom` (proxy, callable as `d`), `d`, `dd`, `dom.observer`. proxy und chain bleiben zwei apis
+- [x] `@domina/dom`: `dom` (proxy, callable as `d`), `d`, `dd`, `dom.observer`. proxy und chain bleiben zwei apis
+- [ ] `@pulgasari/url` als `@domina/url`? (mit `domina.url` am ende nochmal anschauen)
 - [x] rename `@domina/prototype` to `@domina/prototypes`
