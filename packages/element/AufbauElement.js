@@ -1,22 +1,27 @@
+// DominaElement.js
+
 // :::::: IMPORTS
 
-import { followConfig, getConfig }           from './lib/config.js';
-import { observerOf }                         from './lib/observe.js';
+import { followConfig, getConfig } from './lib/config.js';
+import { observerOf }              from './lib/observe.js';
 import { check, isAttribute, looseEntry, reflectedOf, schemaOf } from './lib/schema.js';
-import { applySkin }                         from './lib/skin.js';
-import { adoptClassStyles }                  from './lib/styles.js';
+import { applySkin }               from './lib/skin.js';
+import { adoptClassStyles }        from './lib/styles.js';
 
 import { hasAttr }       from '@domina/methods/hasAttr.js';
 import { setAttr }       from '@domina/methods/setAttr.js';
 import { setStyleToken } from '@domina/methods/setStyleToken.js';
-
-import { coerce, toBoolean }             from '@pulgasari/coerce';
-import { isFn, isPlainObject, isString } from '@pulgasari/is';
-import { Logger }                        from '@pulgasari/logger';
-import { toCamelCase, toKebabCase }      from '@pulgasari/str';
-
 import { isResult, render as renderInto, unrender } from '@domina/render';
 import { within }                                   from '@domina/proxy';
+
+import {
+  isFn, isPlainObject, isString,
+  coerce, toBoolean,
+  Logger,
+  toCamelCase, toKebabCase,
+} from './_shared.js';
+
+
 
 import { Selection, SHORTHANDS } from './Selection.js';
 
