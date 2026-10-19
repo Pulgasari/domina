@@ -1,5 +1,19 @@
 # @domina/chain
 
+## usage
+
+```js
+import d from `@domina/chain':
+```
+
+```js
+import { d, dd } from `@domina/chain':
+```
+
+---
+
+## methods
+
 [addClass](#addclass) ·
 [after](#after) ·
 [append](#append) ·
