@@ -47,6 +47,8 @@ class MyApp extends DominaElement {
 - `this.dom` is `@domina/proxy` below the element. `getList()` gives a `List`: an array whose
   `find`, `filter`, `some`, `every`, `findIndex` take a matcher object or a selector too.
 - `this.observe`: `added`, `removed`, `attr`, `resized`, `visible` from `@domina/observer`.
+- `this.media`: `dark`, `light`, `hover`, `coarse`, `print`, `matches(query)`, `on(query, fn)` (stops on disconnect).
+- `this.a11y`: `reducedMotion`, `contrast`, `forcedColors`, `reducedTransparency`. `media` and `a11y` are exported too.
   selectors go through `element.matches()`, so no `:scope`.
 - `static attr` works as before, both can be used side by side.
 

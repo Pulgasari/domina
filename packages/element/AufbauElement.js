@@ -3,6 +3,7 @@
 // :::::: IMPORTS
 
 import { followConfig, getConfig } from './lib/config.js';
+import { a11y, mediaOf }           from './lib/media.js';
 import { observerOf }              from './lib/observe.js';
 import { check, isAttribute, looseEntry, reflectedOf, schemaOf } from './lib/schema.js';
 import { applySkin }               from './lib/skin.js';
@@ -548,6 +549,10 @@ export class AufbauElement extends HTMLElement {
 
   // @domina/observer bound to the element, see lib/observe.js
   get observe () { return this._observe ??= observerOf(this); }
+
+  // media queries and the preferences of the user, see lib/media.js
+  get a11y  () { return a11y; }
+  get media () { return this._mediaOf ??= mediaOf(this); }
 
   // static parts = ['close'] gives this.$close, see init()
   get self () { return Selection.of([this], { owner: this, signal: this.signal }); }

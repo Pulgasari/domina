@@ -22,6 +22,6 @@ isSymbol      = (sth) => typeof sth === 'symbol';
 
 export function toObj (sth) {
   const obj = {};
-  if (isNodeMap(sth)) for (const { name, value } of sth) attrs[name] = value;
+  if (isNodeMap(sth)) for (const { name, value } of sth) obj[name] = value;
   return obj;
 }

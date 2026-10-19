@@ -78,6 +78,28 @@ export interface ElementObserver {
   visible (fn: (visible: boolean, entry: IntersectionObserverEntry) => void): () => void;
 }
 
+export interface Media {
+  readonly coarse : boolean;
+  readonly dark   : boolean;
+  readonly hover  : boolean;
+  readonly light  : boolean;
+  readonly print  : boolean;
+  matches (query: string): boolean;
+  /** On a change of the query, returns its stop. On an element it stops on disconnect too. */
+  on (query: string, fn: (matches: boolean, event: MediaQueryListEvent) => void): () => void;
+}
+
+/** The preferences of the user that elements have to respect. */
+export interface A11y {
+  readonly contrast            : boolean;
+  readonly forcedColors        : boolean;
+  readonly reducedMotion       : boolean;
+  readonly reducedTransparency : boolean;
+}
+
+export declare const a11y  : A11y;
+export declare const media : Media;
+
 export declare class AufbauElement extends HTMLElement {
   static attr?      : Record<string, AttrEntry>;
   /** Props from schemas: checked on every set (a failing value is warned about, the old one stays), simple ones reflected. */
@@ -87,6 +109,8 @@ export declare class AufbauElement extends HTMLElement {
   /** @domina/proxy below the element: dom.get(), dom.getList() whose find/filter take a matcher object or a selector. */
   readonly dom      : import('@domina/proxy').Domina;
   readonly observe  : ElementObserver;
+  readonly a11y     : A11y;
+  readonly media    : Media;
   /** What el.name = value does: checked against the schema, then the attribute or the stored prop. */
   setValue (name: string, value: unknown): this;
   /** `false` updates at once on every change instead of once per microtask. */
