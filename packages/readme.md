@@ -19,13 +19,11 @@ kombiniert `@domina/proxy` und `@domina/chain` und `@domina/observer` zu handy g
 
 ## render html
 - `@domina/render`
-
-##
-`@domina/element`: basisklasse zur erstellung von webcomponents
--  `@htx` + `@domina/render`
--  `@aufbau/gestures`
--  `@domina/proxy`
--  `@domina/observer`
+- `@domina/element`: basisklasse zur erstellung von webcomponents
+  -  `@htx` + `@domina/render`
+  -  `@aufbau/gestures`
+  -  `@domina/proxy`
+  -  `@domina/observer`
 
 # todo
 - [ ] rename `@domina/methods` to `@domina/verbs` (?)
