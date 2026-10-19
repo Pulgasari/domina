@@ -1,8 +1,8 @@
 // config.js
 
 import { CanonicalMap, isPlainObject } from './shared.js';
-import { emitEvent }     from '@domina/methods/emitEvent.js';
-import { onEvent }       from '@domina/methods/onEvent.js';
+import { emitEvent }     from '@domina/verbs/emitEvent.js';
+import { onEvent }       from '@domina/verbs/onEvent.js';
 
 // page wide defaults. an attribute falls back to the key tag-attribute:
 // setConfig('app-panel-controls', 'close') is the default of <app-panel controls>

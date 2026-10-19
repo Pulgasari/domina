@@ -115,7 +115,7 @@ needs; aufbau calls it from `update()`.
 |---|---|---|
 | child | `${value}` between tags | text, nodes, a nested template instance, a list |
 | attribute | `title=${value}` | `setAttribute`, removed for `null`, `undefined` and `false` |
-| property | a prop the element has as a property (`value`, `checked`) | the property, as `@domina/methods/updateElement` decides today |
+| property | a prop the element has as a property (`value`, `checked`) | the property, as `@domina/verbs/updateElement` decides today |
 | event | `onClick=${fn}` | one listener per part that calls the current function, so a new function costs nothing |
 | class | `class=${value}`, `class:x=${bool}` | merged with the static classes of the element, string, array or object |
 | style | `style=${object}`, `style:name=${value}` | merged with the static style, removed keys are unset |
@@ -218,7 +218,7 @@ is the user facing tag. hydration is not built.
 ## decided
 
 - the user facing tag lives in a subpath of the vanilla adapter: `@htx/js/render`
-  exports `html` and `render` (it already depends on `@domina/methods`).
+  exports `html` and `render` (it already depends on `@domina/verbs`).
 - `configure({ effect, scope })` sets them globally, `render(target, result, { effect, scope })`
   per call; the call option wins.
 - `when` and `each` live here, `@rat/runtime` re-exports them.

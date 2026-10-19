@@ -78,7 +78,7 @@ declare global {
       class?: string | Array<string | null | undefined | false>;
     }): this;
 
-    /** props, children and a ref in one call, the same as updateElement of @domina/methods. returns the element. */
+    /** props, children and a ref in one call, the same as updateElement of @domina/verbs. returns the element. */
     update (props?: UpdateProps | null, ...children: Child[]): this;
 
     /** the element siblings, a spec filters them. */

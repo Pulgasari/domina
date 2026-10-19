@@ -2,7 +2,7 @@
   "workspace": [
     "./core",
     "./packages/chain",
-    "./packages/methods",
+    "./packages/verbs",
     "./packages/observer",
     "./packages/prototypes",
     "./packages/proxy",

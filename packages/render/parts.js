@@ -12,7 +12,7 @@
 // holes. that is the fine-grained mode a signal library wants. a helper given
 // a plain value calls its rows and branches on every render and patches them.
 
-import { isWritable } from '@domina/methods/updateElement.js';
+import { isWritable } from '@domina/verbs/updateElement.js';
 
 import { SVG_NS, compile, isHole, isParts, joinClasses } from './compile.js';
 
@@ -69,7 +69,7 @@ function move (node, anchor) {
 }
 
 // :::::: PROPS
-// the rules of @domina/methods/updateElement, with memory of the last value
+// the rules of @domina/verbs/updateElement, with memory of the last value
 
 const kebab = name => name.replace(/[A-Z]/g, char => `-${char.toLowerCase()}`);
 

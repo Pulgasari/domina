@@ -6,15 +6,15 @@
 
 die packages wurden nochmal umstrukturiert:
 
-## `@domina/domina`
+## `@domina/dom` (geplant)
 
-kombiniert `@domina/proxy` und `@domina/chain` und `@domina/observer` zu handy gott-objekt.
+kombiniert `@domina/proxy` (`dom`, wie `document`), `@domina/chain` (`d`, `dd`, wie `$`, `$$`) und `@domina/observer` (`dom.observer`).
 
 ## fighting the dom
 - `@domina/chain`: jQuery-like interface mit kurzen identifieren
-- `@domina/methods`:
+- `@domina/verbs`: einzelne funktionen (`getElement`, `setMeta` …), vormals `@domina/methods`
 - `@domina/prototypes`: evtl. deprecated
-- `@domina/proxy`:
+- `@domina/proxy`: fassade für `document`, native namen, lücken gefüllt
 - `@domina/observer`:
 
 ## render html
@@ -26,5 +26,6 @@ kombiniert `@domina/proxy` und `@domina/chain` und `@domina/observer` zu handy g
   -  `@domina/observer`
 
 # todo
-- [ ] rename `@domina/methods` to `@domina/verbs` (?)
+- [x] rename `@domina/methods` to `@domina/verbs`
+- [ ] `@domina/dom`: `dom` (proxy, callable as `d`), `d`, `dd`, `dom.observer`. proxy und chain bleiben zwei apis
 - [x] rename `@domina/prototype` to `@domina/prototypes`

@@ -1,24 +1,24 @@
 // @domina/chain/api.js
 // the built-in methods, as definitions (see define.js)
 
-import { addClass as addClassTo }         from '@domina/methods/addClass.js';
-import { getAttr }                        from '@domina/methods/getAttr.js';
-import { getData }                        from '@domina/methods/getData.js';
-import { getElementSize }                 from '@domina/methods/getElementSize.js';
-import { getHTML }                        from '@domina/methods/getHTML.js';
-import { getStyle }                       from '@domina/methods/getStyle.js';
-import { getText }                        from '@domina/methods/getText.js';
-import { getValue }                       from '@domina/methods/getValue.js';
-import { hasClass as hasClassOn }         from '@domina/methods/hasClass.js';
-import { removeClass as removeClassFrom } from '@domina/methods/removeClass.js';
-import { setAttr }                        from '@domina/methods/setAttr.js';
-import { setClass }                       from '@domina/methods/setClass.js';
-import { setData }                        from '@domina/methods/setData.js';
-import { setHTML }                        from '@domina/methods/setHTML.js';
-import { setStyle }                       from '@domina/methods/setStyle.js';
-import { setText }                        from '@domina/methods/setText.js';
-import { setValue }                       from '@domina/methods/setValue.js';
-import { toggleClass as toggleClassOn }   from '@domina/methods/toggleClass.js';
+import { addClass as addClassTo }         from '@domina/verbs/addClass.js';
+import { getAttr }                        from '@domina/verbs/getAttr.js';
+import { getData }                        from '@domina/verbs/getData.js';
+import { getElementSize }                 from '@domina/verbs/getElementSize.js';
+import { getHTML }                        from '@domina/verbs/getHTML.js';
+import { getStyle }                       from '@domina/verbs/getStyle.js';
+import { getText }                        from '@domina/verbs/getText.js';
+import { getValue }                       from '@domina/verbs/getValue.js';
+import { hasClass as hasClassOn }         from '@domina/verbs/hasClass.js';
+import { removeClass as removeClassFrom } from '@domina/verbs/removeClass.js';
+import { setAttr }                        from '@domina/verbs/setAttr.js';
+import { setClass }                       from '@domina/verbs/setClass.js';
+import { setData }                        from '@domina/verbs/setData.js';
+import { setHTML }                        from '@domina/verbs/setHTML.js';
+import { setStyle }                       from '@domina/verbs/setStyle.js';
+import { setText }                        from '@domina/verbs/setText.js';
+import { setValue }                       from '@domina/verbs/setValue.js';
+import { toggleClass as toggleClassOn }   from '@domina/verbs/toggleClass.js';
 
 import { isPlainObject, toCamelCase, toKebabCase } from './shared.js';
 

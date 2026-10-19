@@ -2,16 +2,16 @@
 // every step returns a new chain: deduplicated, in document order, with the .all of the
 // chain it came from. no .end() stack: keep a variable to go back
 
-import { getChildren } from '@domina/methods/getChildren.js';
-import { getClosest }  from '@domina/methods/getClosest.js';
-import { getIndex }    from '@domina/methods/getIndex.js';
-import { getNext }     from '@domina/methods/getNext.js';
-import { getNextAll }  from '@domina/methods/getNextAll.js';
-import { getParent }   from '@domina/methods/getParent.js';
-import { getParents }  from '@domina/methods/getParents.js';
-import { getPrev }     from '@domina/methods/getPrev.js';
-import { getPrevAll }  from '@domina/methods/getPrevAll.js';
-import { getSiblings } from '@domina/methods/getSiblings.js';
+import { getChildren } from '@domina/verbs/getChildren.js';
+import { getClosest }  from '@domina/verbs/getClosest.js';
+import { getIndex }    from '@domina/verbs/getIndex.js';
+import { getNext }     from '@domina/verbs/getNext.js';
+import { getNextAll }  from '@domina/verbs/getNextAll.js';
+import { getParent }   from '@domina/verbs/getParent.js';
+import { getParents }  from '@domina/verbs/getParents.js';
+import { getPrev }     from '@domina/verbs/getPrev.js';
+import { getPrevAll }  from '@domina/verbs/getPrevAll.js';
+import { getSiblings } from '@domina/verbs/getSiblings.js';
 
 import { Chain, collect } from './chain.js';
 import { isFn }           from './shared.js';

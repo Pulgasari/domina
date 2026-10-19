@@ -1,8 +1,8 @@
 # todo
 
-## migration (@domina/methods)
+## migration (@domina/verbs)
 
-- [x] circular dep: `updateElement` imported `@domina/observer`, which imports `@domina/methods`.
+- [x] circular dep: `updateElement` imported `@domina/observer`, which imports `@domina/verbs`.
       `updateElement` loads the observer on first use now, the static cycle is gone.
 - [ ] publish dep not on jsr yet: `_shared.js` imports `@pulgasari/str` (mapped to
       `jsr:@pulgasari/str@^1.0.0`), but that package returns 404 on jsr. publish

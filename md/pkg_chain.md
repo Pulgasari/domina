@@ -1,6 +1,6 @@
 # @domina/chain – API-Skizze
 
-`d` ist eine Verbeugung vor jQuery: eine Menge von Elementen, kurze Verben, alles verkettbar. Darunter liegen die Funktionen aus `@domina/methods`, `d` selbst ist nur Fassade. Das hier ist eine Skizze der Oberfläche. Gebaut ist bisher der Kern (siehe Stand).
+`d` ist eine Verbeugung vor jQuery: eine Menge von Elementen, kurze Verben, alles verkettbar. Darunter liegen die Funktionen aus `@domina/verbs`, `d` selbst ist nur Fassade. Das hier ist eine Skizze der Oberfläche. Gebaut ist bisher der Kern (siehe Stand).
 
 ## Stand
 
@@ -201,7 +201,7 @@ Ein Format für alles: **`x`, `y`, `w`, `h`**. Kein Mischen von `left`/`top`/`wi
 
 Regeln:
 
-- **Gelesen wird die Layout-Größe** (`offsetWidth`/`offsetHeight` bzw. `clientWidth` für `content`), nicht `getBoundingClientRect()`. Der Rect enthält Transformationen: Ein mit `scale(.5)` animiertes Element meldet sonst die halbe Größe. Wer die sichtbare Größe will, nimmt `.rect()`. (Heute nutzt `getElementSize` den Rect; das wäre in `@domina/methods` zu entscheiden.)
+- **Gelesen wird die Layout-Größe** (`offsetWidth`/`offsetHeight` bzw. `clientWidth` für `content`), nicht `getBoundingClientRect()`. Der Rect enthält Transformationen: Ein mit `scale(.5)` animiertes Element meldet sonst die halbe Größe. Wer die sichtbare Größe will, nimmt `.rect()`. (Heute nutzt `getElementSize` den Rect; das wäre in `@domina/verbs` zu entscheiden.)
 - **Gesetzt wird genau die CSS-Eigenschaft.** jQuery rechnet bei `height(200)` je nach `box-sizing` Padding und Border heraus. `d` schreibt `height: 200px` und überlässt `box-sizing` dem CSS.
 - `size({ w, h })` ist der kurze Weg für beides. Ein eigenes `resize()` gibt es nicht: `resize` ist ein Event-Name, und ein Verb, das so heißt wie ein Event, ist genau die Verwechslung, die jQuery mit `.resize(fn)` hatte.
 - Keine `innerWidth`/`outerWidth(true)`-Familie. `box: 'content' | 'border' | 'scroll'` deckt es ab, `margin` liest man über `style('margin')`.
@@ -215,7 +215,7 @@ d(el).inView()                         // boolean, any part visible
 d(el).inView({ ratio: 0.5 })           // at least half
 ```
 
-`scroll()` ist die eigene Scroll-Position, `scrollTo()` bewegt den Viewport zum Element. Das sind die Namen aus `@domina/methods` (`scrollTo`, `jumpTo`, `getScroll`/`setScroll`), nur ohne Präfix.
+`scroll()` ist die eigene Scroll-Position, `scrollTo()` bewegt den Viewport zum Element. Das sind die Namen aus `@domina/verbs` (`scrollTo`, `jumpTo`, `getScroll`/`setScroll`), nur ohne Präfix.
 
 ---
 
@@ -259,7 +259,7 @@ d('.row').append(node)                 // one node, several targets: error (dev)
   stop.abort();
   ```
 
-- Wer einen einzelnen Disposer braucht, nutzt die Funktion darunter: `onEvent(el, 'click', fn)` aus `@domina/methods` gibt ihn zurück.
+- Wer einen einzelnen Disposer braucht, nutzt die Funktion darunter: `onEvent(el, 'click', fn)` aus `@domina/verbs` gibt ihn zurück.
 - `focus()`, `blur()`, `click()` rufen **nur** die native Methode. Event-Shorthands wie jQuerys `.click(fn)` gibt es nicht; Listener nur über `on`.
 - `emit` gibt die Menge zurück. Wer wissen will, ob `preventDefault()` aufgerufen wurde, nimmt `emitEvent()` aus den Methods.
 - **Vorschlag `trigger(action)`:** `emit` sendet ein Ereignis, `trigger` *tut* etwas, über die native Methode, sodass Standardverhalten und echte Events entstehen: `trigger('click')` → `el.click()`, `'focus'`, `'blur'`, `'submit'` → `requestSubmit()`, `'reset'`, `'select'`, `'showModal'`, `'close'`, `'showPopover'`, `'hidePopover'`, `'togglePopover'`, `'play'`, `'pause'`. Unbekannte Namen werfen statt still ein synthetisches Event zu schicken (ein `dispatchEvent(new Event('focus'))` fokussiert nichts, `'submit'` sendet nichts). Damit ersetzt `trigger` die einzelnen `focus()`/`blur()`/`click()` oben.
@@ -376,13 +376,13 @@ Beide sollten dieselbe Mechanik nutzen: eine Tabelle Name → Methode → Art, p
 - **`value({ as: 'number' })`:** das einzige Objekt-Argument, das liest. Alternativ `number()`, `date()` als eigene Getter oder `value.as('number')`.
 - **`var` oder `cssVar`:** `var` ist kürzer und erlaubt, liest sich aber für manche wie ein Schlüsselwort.
 - **Leere Menge im Entwicklungsmodus:** warnen, wenn ein Setter auf eine leere Menge trifft (Tippfehler im Selektor), oder still bleiben?
-- **`getData` castet heute** (`autoCast`), `getElementSize` misst über den Rect: Beides widerspricht den Regeln oben. In `@domina/methods` ändern oder in der Fassade umgehen?
+- **`getData` castet heute** (`autoCast`), `getElementSize` misst über den Rect: Beides widerspricht den Regeln oben. In `@domina/verbs` ändern oder in der Fassade umgehen?
 - **`d.with` für Bibliotheken:** nötig, oder reicht der Kollisionsfehler von `d.extend`?
 - **Größe:** `d` importiert alle Methoden, die es abbildet. Eine `lazy`-Variante wie bei `@domina/element` (Methoden erst beim ersten Aufruf laden) passt schlecht zu synchronen Gettern; eher eine `lite`-Variante mit Kernmenge?
 
 ### Zur alten 0-Version
 
-`packages/chain/index.js` ist nicht lauffähig und kann ersetzt werden: `addClass` reicht `...a` statt `...args` weiter, mehrere Methoden nutzen `this.els` statt `this.elements`, importiert wird `@domina/core` (heute `@domina/methods`), `deno.json` heißt noch `@pulgasari/chain` und veröffentlicht `mod.js`, das es nicht gibt.
+`packages/chain/index.js` ist nicht lauffähig und kann ersetzt werden: `addClass` reicht `...a` statt `...args` weiter, mehrere Methoden nutzen `this.els` statt `this.elements`, importiert wird `@domina/core` (heute `@domina/verbs`), `deno.json` heißt noch `@pulgasari/chain` und veröffentlicht `mod.js`, das es nicht gibt.
 
 ---
 

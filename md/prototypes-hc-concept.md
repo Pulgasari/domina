@@ -1,6 +1,6 @@
 # @domina/prototype-hc – Konzept und Einschätzung
 
-Notiz zu der Frage: freie Funktionen (`@domina/methods`), additive Prototyp-Methoden (`@domina/prototypes`) oder die nativen Methoden selbst erweitern (`@domina/prototype-hc`). Noch kein Code.
+Notiz zu der Frage: freie Funktionen (`@domina/verbs`), additive Prototyp-Methoden (`@domina/prototypes`) oder die nativen Methoden selbst erweitern (`@domina/prototype-hc`). Noch kein Code.
 
 ---
 
@@ -24,7 +24,7 @@ Daraus folgen zwei Dinge:
 Das legt eine Rollenverteilung nahe, die zum Toolkit-Gedanken passt:
 
 ```
-@domina/methods      the engine: logic, input normalization, null safety. no user-facing ideal
+@domina/verbs      the engine: logic, input normalization, null safety. no user-facing ideal
  ├── @domina/element      surface: wrapper, explicit names
  ├── @domina/chain        surface: sets, short verbs (d)
  ├── @domina/prototypes    surface: additive methods on the dom

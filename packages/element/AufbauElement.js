@@ -3,17 +3,17 @@
 // :::::: IMPORTS
 
 import { followConfig, getConfig } from './lib/config.js';
-import { a11y, mediaOf }           from './lib/media.js';
+import { mediaOf }                 from './lib/media.js';
 import { observerOf }              from './lib/observe.js';
 import { check, isAttribute, looseEntry, reflectedOf, schemaOf } from './lib/schema.js';
 import { applySkin }               from './lib/skin.js';
 import { adoptClassStyles }        from './lib/styles.js';
 
-import { hasAttr }       from '@domina/methods/hasAttr.js';
-import { setAttr }       from '@domina/methods/setAttr.js';
-import { setStyleToken } from '@domina/methods/setStyleToken.js';
+import { hasAttr }       from '@domina/verbs/hasAttr.js';
+import { setAttr }       from '@domina/verbs/setAttr.js';
+import { setStyleToken } from '@domina/verbs/setStyleToken.js';
 import { isResult, render as renderInto, unrender } from '@domina/render';
-import { within }                                   from '@domina/proxy';
+import { a11y, within }                             from '@domina/proxy';
 
 import {
   isFn, isPlainObject, isString,

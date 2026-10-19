@@ -6,14 +6,14 @@
 //   a function      (element, index) -> content, called per element. the way to give
 //                   every element its own node
 
-import { clearElement }   from '@domina/methods/clearElement.js';
-import { cloneElement }   from '@domina/methods/cloneElement.js';
-import { insertAt }       from '@domina/methods/insertAt.js';
-import { removeElement }  from '@domina/methods/removeElement.js';
-import { replaceElement } from '@domina/methods/replaceElement.js';
-import { sortElements }   from '@domina/methods/sortElements.js';
-import { unwrapElement }  from '@domina/methods/unwrapElement.js';
-import { wrapElement }    from '@domina/methods/wrapElement.js';
+import { clearElement }   from '@domina/verbs/clearElement.js';
+import { cloneElement }   from '@domina/verbs/cloneElement.js';
+import { insertAt }       from '@domina/verbs/insertAt.js';
+import { removeElement }  from '@domina/verbs/removeElement.js';
+import { replaceElement } from '@domina/verbs/replaceElement.js';
+import { sortElements }   from '@domina/verbs/sortElements.js';
+import { unwrapElement }  from '@domina/verbs/unwrapElement.js';
+import { wrapElement }    from '@domina/verbs/wrapElement.js';
 
 import { Chain, collect }        from './chain.js';
 import { DOMINA, isChain, isFn } from './shared.js';

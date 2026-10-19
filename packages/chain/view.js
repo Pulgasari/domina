@@ -1,14 +1,14 @@
 // @domina/chain/view.js
 // where elements are and whether they are seen; scrolling; waiting
 
-import { getElementOffset }           from '@domina/methods/getElementOffset.js';
-import { getElementPosition }         from '@domina/methods/getElementPosition.js';
-import { getElementRect }             from '@domina/methods/getElementRect.js';
-import { isElementInViewport }        from '@domina/methods/isElementInViewport.js';
-import { jumpTo as jumpIntoView }     from '@domina/methods/jumpTo.js';
-import { scrollTo as scrollIntoView } from '@domina/methods/scrollTo.js';
-import { waitForAnimations }          from '@domina/methods/waitForAnimations.js';
-import { waitForEvent }               from '@domina/methods/waitForEvent.js';
+import { getElementOffset }           from '@domina/verbs/getElementOffset.js';
+import { getElementPosition }         from '@domina/verbs/getElementPosition.js';
+import { getElementRect }             from '@domina/verbs/getElementRect.js';
+import { isElementInViewport }        from '@domina/verbs/isElementInViewport.js';
+import { jumpTo as jumpIntoView }     from '@domina/verbs/jumpTo.js';
+import { scrollTo as scrollIntoView } from '@domina/verbs/scrollTo.js';
+import { waitForAnimations }          from '@domina/verbs/waitForAnimations.js';
+import { waitForEvent }               from '@domina/verbs/waitForEvent.js';
 
 // :::::: GEOMETRY. x and y everywhere
 

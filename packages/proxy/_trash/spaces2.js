@@ -4,18 +4,18 @@
 
 // :::::: IMPORT
 
-import getCustomProperty from '@domina/methods/getCustomProperty.js';
-import getFormValues     from '@domina/methods/getFormValues.js';
-import getMeta           from '@domina/methods/getMeta.js';
-import removeMeta        from '@domina/methods/removeMeta.js';
-import setAttr           from '@domina/methods/setAttr.js';
-import setCustomProperty from '@domina/methods/setCustomProperty.js';
-import setData           from '@domina/methods/setData.js';
-import setFormValues     from '@domina/methods/setFormValues.js';
-import setMeta           from '@domina/methods/setMeta.js';
+import getCustomProperty from '@domina/verbs/getCustomProperty.js';
+import getFormValues     from '@domina/verbs/getFormValues.js';
+import getMeta           from '@domina/verbs/getMeta.js';
+import removeMeta        from '@domina/verbs/removeMeta.js';
+import setAttr           from '@domina/verbs/setAttr.js';
+import setCustomProperty from '@domina/verbs/setCustomProperty.js';
+import setData           from '@domina/verbs/setData.js';
+import setFormValues     from '@domina/verbs/setFormValues.js';
+import setMeta           from '@domina/verbs/setMeta.js';
 
-import getStyleToken from '@domina/methods/getStyleToken.js';
-import setStyleToken from '@domina/methods/setStyleToken.js';
+import getStyleToken from '@domina/verbs/getStyleToken.js';
+import setStyleToken from '@domina/verbs/setStyleToken.js';
 
 import { toCamelCase, toKebabCase, undashed } from './shared.js';
 

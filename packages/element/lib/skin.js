@@ -1,5 +1,5 @@
-import adoptStyleSheet   from '@domina/methods/adoptStyleSheet.js';
-import releaseStyleSheet from '@domina/methods/releaseStyleSheet.js';
+import adoptStyleSheet   from '@domina/verbs/adoptStyleSheet.js';
+import releaseStyleSheet from '@domina/verbs/releaseStyleSheet.js';
 
 import { getConfig, onConfigChange, setConfig } from './config.js';
 import { ensureLayerOrder, SKIN_LAYER }         from './styles.js';
