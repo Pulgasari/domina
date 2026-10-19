@@ -164,22 +164,38 @@ d('.card').all.size()        // [{ w, h }, …]
 
 ## 4. Attribute, Properties, Daten
 
+### `attr`
+
 ```js
 // attributes: strings in the dom, booleans mean presence
+// read (get)
+d(el).attr()                           // { name: value } of the first element
 d(el).attr('href')                     // string | null
+// write (set)
 d(el).attr('href', '/next')
 d(el).attr('hidden', true)             // hidden=""
 d(el).attr('hidden', false)            // removed (as null)
 d(el).attr({ role: 'tab', ariaSelected: true })   // camelCase -> kebab-case
-d(el).attr()                           // { name: value } of the first element
-d(el).hasAttr('disabled')              // boolean
-d(el).toggleAttr('open', force?)
+// has
+d(el).attr.has('disabled')              // boolean
+// toggle
+d(el).attr.toggle('open')                            // single
+d(el).attr.toggle(['open', 'disabled'])              // multiple
+d(el).attr.toggle({ 'open': true, disabled: false }) // multiple with force
+```
 
+### `prop`
+
+```js
 // properties: the js side of the element
 d(input).prop('checked')               // boolean
 d(input).prop('checked', true)
 d(video).prop({ muted: true, currentTime: 0 })
+```
 
+### `data` | `dataset`
+
+```js
 // data-*: typed. reads are cast, writes encoded so they read back as written
 d(el).data('userId', 42)               // data-user-id="42"
 d(el).data('userId')                   // 42
@@ -191,7 +207,11 @@ d(el).data('state', null)              // removed
 // data-* as the dom has it: strings in, strings out
 d(el).dataset('userId')                // '42'
 d(el).dataset({ state: 'open' })
+```
 
+### `aria`
+
+```js
 // aria-*: the prefix is optional, true and false are values
 d(el).aria('expanded', true)           // aria-expanded="true"
 d(el).aria({ controls: 'menu', labelledby: ['title', 'hint'] })   // a list is joined
