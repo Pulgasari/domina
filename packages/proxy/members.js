@@ -20,10 +20,10 @@ does nonsense, the gap is filled.
   a11y, media                                   see media.js
 */
 
-import { buildSelector } from '@domina/verbs/buildSelector.js';
-import { getElement }    from '@domina/verbs/getElement.js';
-import { getElements }   from '@domina/verbs/getElements.js';
-import { updateElement } from '@domina/verbs/updateElement.js';
+import buildSelector from '@domina/verbs/buildSelector.js';
+import getElement    from '@domina/verbs/getElement.js';
+import getElements   from '@domina/verbs/getElements.js';
+import updateElement from '@domina/verbs/updateElement.js';
 
 import * as observer from '@domina/observer';
 import { url }       from '@pulgasari/url';
@@ -35,9 +35,7 @@ import { List }               from './query.js';
 import { isPlainObject, isString } from './shared.js';
 
 const selectorOf = spec => isPlainObject(spec) ? buildSelector(spec) : spec;
-
-// a string, { is } or nothing: what createElement() takes natively
-const isNative = (props, children) => !children.length && (props == null || isString(props) || (isPlainObject(props) && Object.keys(props).every(key => key === 'is')));
+const isNative  = (props, children) => !children.length && (props == null || isString(props) || (isPlainObject(props) && Object.keys(props).every(key => key === 'is')));
 
 export function membersOf ({ document, host, root }) {
   const first = (spec, context = root) => getElement(spec, context);
