@@ -30,7 +30,7 @@ analyze a code base which is using @domina-packages to provide plugins to get it
 
 a hommage to jQuery.
 
-### `@domina/domina`
+### `@domina/dom`
 
 your sincere excellence, the queen of the www, the dominatrix of humanity ...
 
@@ -50,17 +50,9 @@ alert! bad practice! danger! evil! forbidden! nobody does that kind of shit anym
 
 a proxy-like wrapper on `document` (without being a proxy or touching any prototype)
 
-### `@domina/raf`
-
-api to deal with `requestAnimationFrame`.
-
 ### `@domina/render`
 
 api to render and update html-templates.
-
-### `@domina/sheets`
-
-api to deal with constructed stylesheets, css/stylesheet-files and style-elements.
 
 ### `@domina/verbs`
 
