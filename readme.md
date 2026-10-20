@@ -5,8 +5,8 @@
 JavaScript toolkit for *doing stuff* in the DOM.
 
 ### demos | playground 
-[chain](https://code.pulgasari.dev/domina/chain.html) ·
-[proxy](https://code.pulgasari.dev/domina/proxy.html) 
+[chain](https://code.pulgasari.dev/domina/www/chain.html) ·
+[proxy](https://code.pulgasari.dev/domina/www/proxy.html) 
 
 ## packages
 
