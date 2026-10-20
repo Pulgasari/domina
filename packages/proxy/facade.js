@@ -1,55 +1,21 @@
-// @domina/proxy/facade.js
+// @domina/proxy :: facade
 
 /*
-the proxy and the registry every facade reads. a member is
+a facade reads like its root (document, an element, a shadow root): what
+domina adds comes first (members.js, then extend()), everything else is the
+root's own, its functions bound once. it hands back real nodes, never itself.
 
-{ get (ctx), set (value, ctx) }   a value
-{ make (ctx) -> function }         a function built once per facade (the built-ins)
-{ method (...args) }               a function called with the facade as this (extend)
-`only: 'document'` hides it on facades of a subtree (within)
+writing goes to a setter domina has or to a writable property of the root.
+anything else throws: a typo, not an expando.
 */
 
-// :::::: IMPORT
+import { membersOf }      from './members.js';
+import { isFn, isSymbol } from './shared.js';
 
-import { d }     from '@domina/chain';
-import { space } from './space.js';
-import { isFn, isSymbol }  from './shared.js';
+// extend() writes here, every facade reads it
+export const extensions = Object.create(null);
 
-//const isDocument = (sth) => sth.nodeType === 9;
-
-// :::::: REFS
-
-export const 
-api     = new Map,   // name -> { kind, name, only, writable }
-members = new Map,
-spaces  = new Map;
-
-function assertFree (name, internal) {
-  if (members.has(name) || spaces.has(name)) throw new Error(`[domina] "${name}" exists already`);
-  if (!internal && typeof document !== 'undefined' && name in document) throw new Error(`[domina] "${name}" is a member of document`);
-}
-
-function register (name, def, { internal = false } = {}) {
-  assertFree(name, internal);
-  const member = isFn(def) ? { method: def } : def;
-  members.set(name, member);
-  
-  const kind = member.get ? 'value' : 'method';
-  const only = member.only ?? null;
-  api.set(name, { kind, name, only, writable: Boolean(member.set) });
-}
-
-function registerSpace (name, def, { internal = false } = {}) {
-  assertFree(name, internal);
-  spaces.set(name, { ...def, name });
-
-  const only = def.only ?? null;
-  api.set(name, { kind: 'space', name, only, writable: Boolean(def.set) });
-}
-
-// a property with a setter or a writable value along the chain.
-// none at all is not writable here:
-// an unknown write is a typo, not an expando
+// a setter or a writable value somewhere along the prototype chain
 function isWritable (object, key) {
   for (let current = object; current; current = Object.getPrototypeOf(current)) {
     const descriptor = Object.getOwnPropertyDescriptor(current, key);
@@ -58,72 +24,48 @@ function isWritable (object, key) {
   return false;
 }
 
-// to a plain object, for snapshot() and watch()
-function plainOf (facade, name) {
-  const value = facade[name];
-  if (!spaces.has(name)) return value;
-  const keys = Object.keys(value);
-  return name === 'class' ? keys : Object.fromEntries(keys.map(key => [key, value[key]]));
+// the members as fixed properties: domina.getElement = … is an error, not a replacement
+function fixed (members) {
+  const descriptors = Object.getOwnPropertyDescriptors(members);
+  for (const descriptor of Object.values(descriptors)) if ('value' in descriptor) descriptor.writable = false;
+  return Object.defineProperties(Object.create(extensions), descriptors);
 }
 
 function createFacade (root) {
   const isDocument = root.nodeType === 9;
-  const host       = isDocument ? root.documentElement : root.host ?? root;   // a shadow root writes to its host
-  const ctx        = { document: root.ownerDocument ?? root, facade: null, host, isDocument, root };
+  const host       = isDocument ? root.documentElement : root.host ?? root;   // a shadow root stands for its host
+  const own        = fixed(membersOf({ document: root.ownerDocument ?? root, host, isDocument, root }));
+  const bound      = new Map;
 
-  const bound = new Map; // native functions of root, bound once: domina.x === domina.x
-  const built = new Map; // members made for this facade
-  const views = new Map; // spaces for this facade
-
-  const available = entry => entry && (!entry.only || isDocument);
-
-  function read (key) {
-    const member = members.get(key);
-    if (available(member)) {
-      if (member.get) return member.get(ctx);
-      if (!built.has(key)) built.set(key, member.make ? member.make(ctx) : member.method.bind(ctx.facade));
-      return built.get(key);
-    }
-
-    const definition = spaces.get(key);
-    if (available(definition)) {
-      if (!views.has(key)) views.set(key, space(definition, ctx));
-      return views.get(key);
-    }
-
-    const value = root[key];
-    if (!isFn(value)) return value;
-    if (!bound.has(key)) bound.set(key, value.bind(root));
-    return bound.get(key);
-  }
-
-  const own = key => available(members.get(key)) || available(spaces.get(key));
-
-  // an arrow function as target: callable, and without a non-configurable prototype to report
-  const facade = new Proxy(() => {}, {
-    apply : (_, __, [spec, context]) => d(spec, context ?? (isDocument ? undefined : root)),
-    get   : (_, key) => isSymbol(key) ? undefined : read(key),
-
-    set (_, key, value) {
-      const member = members.get(key);
-      if (available(member) && member.set) { member.set(value, ctx); return true; }
-      if (available(spaces.get(key))) throw new TypeError(`[domina] "${key}" is a namespace: write its keys, or set({ ${key}: { … } })`);
-
-      // what is not available here falls through to the root, for reading and writing alike
-      if (!available(member) && isWritable(root, key)) { root[key] = value; return true; }
-      throw new TypeError(`[domina] "${String(key)}" is not writable`);
+  const facade = new Proxy(own, {
+    get (target, key) {
+      if (key in target) return Reflect.get(target, key, facade);
+      if (isSymbol(key)) return undefined;
+      const value = root[key];
+      if (!isFn(value)) return value;
+      if (!bound.has(key)) bound.set(key, value.bind(root));
+      return bound.get(key);
     },
 
-    has     : (_, key) => own(key) || key in root,
-    ownKeys : ()       => [...members.keys(), ...spaces.keys()].filter(own),
+    has : (target, key) => key in target || key in root,
 
-    getOwnPropertyDescriptor : (_, key) => own(key) ? { configurable: true, enumerable: true, value: read(key), writable: true } : undefined,
+    set (target, key, value) {
+      if (key in target) {
+        if (!Reflect.set(target, key, value, facade)) throw new TypeError(`[domina] "${String(key)}" can not be written`);
+      }
+      else if (isWritable(root, key)) root[key] = value;
+      else throw new TypeError(`[domina] "${String(key)}" is no property here, a typo?`);
+      return true;
+    },
   });
 
-  ctx.facade = facade;
   return facade;
 }
 
-// EXPORT
+// one facade per root: within('#card') twice is the same facade
+const facades = new WeakMap;
 
-export { createFacade, plainOf, register, registerSpace };
+export function facadeOf (root) {
+  if (!facades.has(root)) facades.set(root, createFacade(root));
+  return facades.get(root);
+}

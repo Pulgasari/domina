@@ -1,4 +1,4 @@
-// @domina/methods/_shared/styleSheet.js
+// @domina/verbs/_shared/styleSheet.js
 
 import { resolveElement } from './../resolveElement.js';
 import { isString }       from './../_shared.js';

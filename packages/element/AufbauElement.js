@@ -3,16 +3,17 @@
 // :::::: IMPORTS
 
 import { followConfig, getConfig } from './lib/config.js';
+import { mediaOf }                 from './lib/media.js';
 import { observerOf }              from './lib/observe.js';
 import { check, isAttribute, looseEntry, reflectedOf, schemaOf } from './lib/schema.js';
 import { applySkin }               from './lib/skin.js';
 import { adoptClassStyles }        from './lib/styles.js';
 
-import { hasAttr }       from '@domina/methods/hasAttr.js';
-import { setAttr }       from '@domina/methods/setAttr.js';
-import { setStyleToken } from '@domina/methods/setStyleToken.js';
+import { hasAttr }       from '@domina/verbs/hasAttr.js';
+import { setAttr }       from '@domina/verbs/setAttr.js';
+import { setStyleToken } from '@domina/verbs/setStyleToken.js';
 import { isResult, render as renderInto, unrender } from '@domina/render';
-import { within }                                   from '@domina/proxy';
+import { a11y, within }                             from '@domina/proxy';
 
 import {
   isFn, isPlainObject, isString,
@@ -543,11 +544,15 @@ export class AufbauElement extends HTMLElement {
 
   // :::::: TREE ::::::::::::::::::::::::::::::::::::::::::::::::
 
-  // @domina/proxy below the element: this.dom.get('.title'), this.dom.getList('rat-view').find({ active: true })
+  // @domina/proxy below the element: this.dom.get('.title'), this.dom.getListOfElements('rat-view').find({ active: true })
   get dom () { return this._dom ??= within(this.root); }
 
   // @domina/observer bound to the element, see lib/observe.js
   get observe () { return this._observe ??= observerOf(this); }
+
+  // media queries and the preferences of the user, see lib/media.js
+  get a11y  () { return a11y; }
+  get media () { return this._mediaOf ??= mediaOf(this); }
 
   // static parts = ['close'] gives this.$close, see init()
   get self () { return Selection.of([this], { owner: this, signal: this.signal }); }

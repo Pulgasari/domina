@@ -1,9 +1,9 @@
 // @domina/forms
 
-import { getFormValues }  from '@domina/methods/getFormValues.js';
-import { setFormValues }  from '@domina/methods/setFormValues.js';
-import { onEvent }        from '@domina/methods/onEvent.js';
-import { resolveElement } from '@domina/methods/resolveElement.js';
+import { getFormValues }  from '@domina/verbs/getFormValues.js';
+import { setFormValues }  from '@domina/verbs/setFormValues.js';
+import { onEvent }        from '@domina/verbs/onEvent.js';
+import { resolveElement } from '@domina/verbs/resolveElement.js';
 
 /**
  * form('#login')

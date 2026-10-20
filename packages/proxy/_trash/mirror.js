@@ -5,11 +5,11 @@
 
 import { dd, listen, typesOf, unlisten } from '@domina/chain';
 
-import { buildSelector } from '@domina/methods/buildSelector.js';
-import { createHTML }    from '@domina/methods/createHTML.js';
-import { getElement }    from '@domina/methods/getElement.js';
-import { getElements }   from '@domina/methods/getElements.js';
-import { updateElement } from '@domina/methods/updateElement.js';
+import { buildSelector } from '@domina/verbs/buildSelector.js';
+import { createHTML }    from '@domina/verbs/createHTML.js';
+import { getElement }    from '@domina/verbs/getElement.js';
+import { getElements }   from '@domina/verbs/getElements.js';
+import { updateElement } from '@domina/verbs/updateElement.js';
 
 //import { buildSelector, createHTML, getElement, getElements, updateElement } from './methods';
 import { isArray, isFn, isNullish, isPlainObject, isString } from './shared.js';

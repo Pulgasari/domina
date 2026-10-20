@@ -4,7 +4,7 @@
 
 Es ist ein konzeptioneller Mittelweg zwischen:
 - `@domina/chain` (Wrapper, der eigene Objekte zurückgibt)
-- `@domina/methods` (nice DX im Ergebnis immer nur auf der aktuellen Selector-Ebene).
+- `@domina/verbs` (nice DX im Ergebnis immer nur auf der aktuellen Selector-Ebene).
 - `@domina/prototypes` (verändert das DOM des ganzen Realms)
 
 ```js
@@ -425,7 +425,7 @@ Das ist im Kern `proxyOf` aus `@bunker/core`. Die Bereiche entstehen einmal beim
 
 | | Subjekt | gibt zurück | verändert Prototypen | in Bibliotheken |
 |---|---|---|---|---|
-| `@domina/methods`      | Argument               | native Werte     | nein | ja |
+| `@domina/verbs`      | Argument               | native Werte     | nein | ja |
 | `@domina/element`      | ein Element (Wrapper)  | Wrapper          | nein | ja |
 | `@domina/chain`        | eine Menge (Wrapper)   | Kette oder Werte | nein | ja |
 | `@domina/proxy`        | das Dokument (Fassade) | native Werte     | nein | ja |
@@ -460,7 +460,7 @@ Zum Abhaken. „Gebaut:“ ist die Vorgabe, die gerade im Code steht.
 
 - [ ] **`scheme`** setzt zwei Dinge (`<meta name="color-scheme">` und `color-scheme` auf `:root`). Gebaut: ein Mitglied für beides.
 - [ ] **`vars` lesen:** Gebaut: berechneter Wert; `Object.keys(domina.vars)` zählt nur die Inline-Werte auf. Asymmetrie dokumentieren oder auflösen (`vars` inline, `tokens` berechnet)?
-- [ ] **`data` castet nicht** (Strings rein, Strings raus), `getData` in `@domina/methods` castet (`autoCast`). Methods angleichen?
+- [ ] **`data` castet nicht** (Strings rein, Strings raus), `getData` in `@domina/verbs` castet (`autoCast`). Methods angleichen?
 - [ ] **`focus` als Setter**, der fokussiert. Gebaut: ja. Alternative: nur lesend plus `focusOn(spec)`.
 - [ ] **`set()`** gibt die Fassade zurück. Oder nichts?
 - [ ] **`within()`:** Mitglieder nur fürs Dokument (`title`, `meta` …) fallen dort auf das Element durch, lesend und schreibend (`card.title` ist das `title`-Attribut des Elements). Stattdessen werfen?
@@ -468,7 +468,7 @@ Zum Abhaken. „Gebaut:“ ist die Vorgabe, die gerade im Code steht.
 - [ ] **`emit`:** gebaut `bubbles: true`, `cancelable: true`, `composed: false`. Für Shadow DOM `composed: true` als Default?
 - [ ] **`watch('scroll')`** feuert pro `scroll`-Event. Mit `requestAnimationFrame` drosseln?
 
-### In `@domina/methods` gefunden
+### In `@domina/verbs` gefunden
 
 - [ ] **`buildSelector` macht Attributnamen nicht kebab-case:** `{ ariaCurrent: 'page' }` wird zu `[ariaCurrent="page"]`, das `aria-current` nie trifft (Attributnamen sind in HTML unabhängig von Groß-/Kleinschreibung, aber der Bindestrich fehlt). Bei `dataset` passiert es schon.
 - [ ] **`getElement`/`getElements` werfen** bei einem ungültigen Selektor (`SyntaxError`), `d()` liefert eine leere Menge. Vereinheitlichen?

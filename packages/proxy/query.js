@@ -2,7 +2,7 @@
 // elements as a list whose tests take a function, a selector or a matcher object
 
 /*
-  domina.getList('.card')                      a List of the elements, in document order
+  domina.getElements('.card')                  a List of the elements, in document order
   list.find({ active: true })                  every key has to match
   list.filter('[open]')                        a selector, element.matches()
   list.find(element => element.dataset.id)     a function, as on an array

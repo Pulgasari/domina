@@ -6,5 +6,6 @@ export { AufbauSourceElement, withSource }   from './withSource.js';
 
 export { CONFIG_EVENT, getConfig, onConfigChange, setConfig } from './lib/config.js';
 export { session, store }                                     from './lib/persist.js';
+export { a11y, media }                                        from '@domina/proxy';
 export { applySkin, setSkin }                                 from './lib/skin.js';
 export { adoptBaseStyles, cssOf }                             from './lib/styles.js';

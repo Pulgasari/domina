@@ -1,4 +1,4 @@
-import adoptStyleSheet         from '@domina/methods/adoptStyleSheet.js';
+import adoptStyleSheet         from '@domina/verbs/adoptStyleSheet.js';
 import { isFn, isPlainObject } from './shared.js';
 
 export const BASE_LAYER = 'aufbau.elements';

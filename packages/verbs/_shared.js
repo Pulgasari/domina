@@ -1,4 +1,4 @@
-// @domina/methods/_shared.js
+// @domina/verbs/_shared.js
 
 import buildSelector  from './buildSelector.js';
 import getElements    from './getElements.js';
