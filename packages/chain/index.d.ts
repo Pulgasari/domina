@@ -51,6 +51,7 @@ export declare class Chain<Many extends boolean = false> implements Iterable<Tar
 
   /** Typed: reads are cast (`'42'` -> `42`, `'true'` -> `true`, json -> object), writes encoded to read back the same. `null` removes. */
   data(): Read<Record<string, unknown>, Many>;
+  /** The prefix is optional: `'fooBar'`, `'foo-bar'`, `'dataFooBar'`, `'data-foo-bar'`. Same for `dataset()`. */
   data(name: string): Read<unknown, Many>;
   data(name: string, value: Value<unknown>): this;
   data(map: Record<string, unknown>): this;

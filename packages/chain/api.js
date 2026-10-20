@@ -62,13 +62,14 @@ export const aria = {
 };
 
 // :::::: DATA
-// two views of data-*. both: the data- prefix is optional, null removes, a map sets several.
+// two views of data-*. both: the prefix is optional ('fooBar', 'foo-bar', 'dataFooBar' and
+// 'data-foo-bar' are the same), null removes, a map sets several.
 //
 //   data     typed: reads are cast ('42' -> 42, 'true' -> true, '{…}' -> object),
 //            writes are encoded so they read back as written (true -> 'true', object -> json)
 //   dataset  as the dom has it: strings in, strings out, nothing cast or encoded
 
-const dataKey = name => toCamelCase(name.startsWith('data-') ? name.slice(5) : name);
+const dataKey = key => { const name = toKebabCase(key); return toCamelCase(name.startsWith('data-') ? name.slice(5) : name); };
 
 const removeData = (element, key) => { delete element.dataset[dataKey(key)]; };
 
