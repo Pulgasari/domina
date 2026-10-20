@@ -1,1 +1,64 @@
-domina.js
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>domina.js</title>
+  <link rel='stylesheet' href='https://code.pulgasari.dev/gestalt/packages/css/gestalt.css' />
+  <script src='./importmap.js'></script>
+  <style>
+    body {
+      --color-bg: #111;
+      --color-fg: white;
+    }
+    body, #bg {
+      background : var(--color-bg) url('./assets/bg.webp') center / cover no-repeat;
+      color      : var(--color-fg);
+
+      display: grid;
+      font-family: system-ui, sans-serif;
+      height: 100dvh;
+      margin: 0;
+      place-items: center;
+      width: stretch;
+    }
+  	#app {
+      padding: 2rem;
+      text-transform: uppercase;
+      z-index: 200;
+    }
+    #bg {
+      filter: brightness(25%) grayscale(100%);
+      z-index: 100;
+      position: absolute;
+      inset: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id='bg'></div>
+	<div id='app' layout='landing'>
+    <nav></nav>
+    <h1>domina</h1>
+    <nav>
+      <a href='https://aufbau.dev'>aufbau</a>
+    </nav>
+  </div>
+  
+<script type="module">
+	import * as filters from '@gestalt/filters';
+  import getStyleToken from '@domina/verbs/getStyleToken.js';
+  /*
+    const [filters, { default: getStyleToken }] = await Promise.all([
+      import('@gestalt/filters'),
+      import('@domina/verbs/getStyleToken.js'),
+    ]);
+  */
+  const bg = getStyleToken('color-bg', 'body') || '#000000';
+  const fg = getStyleToken('color-fg', 'body') || 'white';
+  filters.apply('body', 'glitch-live', { animate: true, speed: '2s' });
+</script>
+
+</body>
+</html>
