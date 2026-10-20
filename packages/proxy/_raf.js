@@ -38,13 +38,11 @@ const enqueue = (type, fn) => new Promise((resolve, reject) => {
   schedule();
 });
 
-export const
-
-measure = fn => enqueue('read',  fn),
-mutate  = fn => enqueue('write', fn),
+const measure = fn => enqueue('read',  fn);
+const mutate  = fn => enqueue('write', fn);
 
 // Lesen und Schreiben im SELBEN Frame – das ist der eigentlich nützliche Fall
-frame = (readFn, writeFn) => new Promise((resolve, reject) => {
+const frame = (readFn, writeFn) => new Promise((resolve, reject) => {
   q.read.push({
     fn: readFn,
     reject,
@@ -55,7 +53,11 @@ frame = (readFn, writeFn) => new Promise((resolve, reject) => {
   schedule();
 }),
 
-nextFrame = () => new Promise(r => requestAnimationFrame(() => r())),
+const nextFrame = () => new Promise(r => requestAnimationFrame(() => r())),
 
 // Notausgang: sofort abarbeiten, ohne auf den Frame zu warten
-flushSync = () => flush();
+const flushSync = () => flush();
+
+// :::::: EXPORT 
+
+export { flushSync, frame, measure, mutate, nextFrame };
