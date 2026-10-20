@@ -64,4 +64,4 @@ kinda standalone methods for dealing with the dom. that stuff every true vanilla
 
 MIT
 
-![Logo](/logo.svg)
+![Logo](/.assets/logo.svg)
