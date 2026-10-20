@@ -115,7 +115,7 @@ el.update({
 }, header, [items], cond && footer);
 ```
 
-the same as `updateElement` of `@domina/methods`: props, children and a ref in one call,
+the same as `updateElement` of `@domina/verbs`: props, children and a ref in one call,
 the element comes back. nullish props are skipped.
 
 - `ref`: a function gets the element, an object gets it as `.current`. last, so the

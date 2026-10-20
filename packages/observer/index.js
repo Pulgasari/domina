@@ -1,8 +1,8 @@
 // @domina/observer
 
-import buildSelector  from '@domina/methods/buildSelector.js'
-import getElements    from '@domina/methods/getElements.js'
-import resolveContext from '@domina/methods/resolveContext.js'
+import buildSelector  from '@domina/verbs/buildSelector.js'
+import getElements    from '@domina/verbs/getElements.js'
+import resolveContext from '@domina/verbs/resolveContext.js'
 
 import { isArray, isElementish, isFn, isNullish, isObject } from '@pulgasari/is';   
 

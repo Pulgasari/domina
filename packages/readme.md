@@ -1,49 +1,32 @@
 ![Logo](/logo.svg)
 
-# @domina
-
-- `@domina/methods`;
-
-## @domina/methods
-
 ---
 
-# problematik
+# info
 
-die methods providen zwar handy utils, um mit dem dom zu arbeiten, aber dadurch, dass sie nicht teil des prototypes selbst sind, können sie ihre DX überhaupt nicht richtig entfalten.
+die packages wurden nochmal umstrukturiert:
 
-so schlucken `getElement`/`getElements` oder `onEvent` zwar so ziemlich jeden erdenklichen type/shape, der in der praxis auftritt ...
+## `@domina/dom`
 
-```js
-const sidebar = getElement('#sidebar');
-const panel   = getElement({ name: 'irgendwas', class: 'panel' });
-const element = getElement(sidebar);
-```
+kombiniert `@domina/proxy` (`dom`, wie `document`), `@domina/chain` (`d`, `dd`, wie `$`, `$$`) und `@domina/observer` (`dom.observer`).
 
-... aber bei den children/siblings/usw fehlts dann wieder und man nutzt entweder dort dann doch wieder die originalmethoden wie `element.querySelectorAll('...')` und `element.addEventListener(...)` oder kombiniert das direkt/indirekt mit den domina-methods o.ä. 
+## fighting the dom
+- `@domina/chain`: jQuery-like interface mit kurzen identifieren
+- `@domina/verbs`: einzelne funktionen (`getElement`, `setMeta` …), vormals `@domina/methods`
+- `@domina/prototypes`: evtl. deprecated
+- `@domina/proxy`: fassade für `document`, native namen, lücken gefüllt
+- `@domina/observer`:
 
-jedenfalls endet msn bei uneinheitlichem code, der *hier* mal nice dx-freundliche interface hat und *dort* dann direkt wieder messy ist usw.
-
-und viele methods sind eigtl nur deswegen nötig.
-
-## `@domina/prototypes`
-
-hier knallt domina nur ne handvoll methods an den prototype und unterm strich kann man damit viel sauberer arbeiten und dx-freundlich arbeiten.
-
-## `@domina/prototype-hc` (concept)
-
-es juckt mich glatt ne hardcore-variante zu machen, die vorsätzlich, bewusst und direkt die originalmethoden targeted und enhanced.
-
-## `@domina/chain`(concept)
-
-(async) jquery-like chain (aber nicht `$` sonderm `dom` oder `d`)
-
-## `@domina/proxy' (concept)
-
-kp ob das in praxis geht, aber komplett proxy um `document`, der dann als `domina` referenziert wird?
-
----
+## render html
+- `@domina/render`
+- `@domina/element`: basisklasse zur erstellung von webcomponents
+  -  `@htx` + `@domina/render`
+  -  `@aufbau/gestures`
+  -  `@domina/proxy`
+  -  `@domina/observer`
 
 # todo
-- [ ] rename `@domina/methods` to `@domina/verbs` (?)
+- [x] rename `@domina/methods` to `@domina/verbs`
+- [x] `@domina/dom`: `dom` (proxy, callable as `d`), `d`, `dd`, `dom.observer`. proxy und chain bleiben zwei apis
+- [ ] `@pulgasari/url` als `@domina/url`? (mit `domina.url` am ende nochmal anschauen)
 - [x] rename `@domina/prototype` to `@domina/prototypes`

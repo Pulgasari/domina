@@ -1,22 +1,21 @@
 // @domina/chain/view.js
 // where elements are and whether they are seen; scrolling; waiting
 
-import { getElementOffset }           from '@domina/methods/getElementOffset';
-import { getElementPosition }         from '@domina/methods/getElementPosition';
-import { getElementRect }             from '@domina/methods/getElementRect';
-import { isElementInViewport }        from '@domina/methods/isElementInViewport';
-import { jumpTo as jumpIntoView }     from '@domina/methods/jumpTo';
-import { scrollTo as scrollIntoView } from '@domina/methods/scrollTo';
-import { waitForAnimations }          from '@domina/methods/waitForAnimations';
-import { waitForEvent }               from '@domina/methods/waitForEvent';
-
-const point = found => found ? { x: found.left, y: found.top } : null;
+import { getElementOffset }           from '@domina/verbs/getElementOffset.js';
+import { getElementPosition }         from '@domina/verbs/getElementPosition.js';
+import { getElementRect }             from '@domina/verbs/getElementRect.js';
+import { isElementInViewport }        from '@domina/verbs/isElementInViewport.js';
+import { jumpTo as jumpIntoView }     from '@domina/verbs/jumpTo.js';
+import { scrollTo as scrollIntoView } from '@domina/verbs/scrollTo.js';
+import { waitForAnimations }          from '@domina/verbs/waitForAnimations.js';
+import { waitForEvent }               from '@domina/verbs/waitForEvent.js';
 
 // :::::: GEOMETRY. x and y everywhere
 
-export const offset   = { params: {}, read: element => point(getElementOffset(element)) };     // in the document
-export const position = { params: {}, read: element => point(getElementPosition(element)) };   // in the offset parent
-export const rect     = { params: {}, read: element => getElementRect(element) };               // DOMRect, in the viewport
+export const 
+offset   = { params: {}, read: getElementOffset   }, // in the document
+position = { params: {}, read: getElementPosition }, // in the offset parent
+rect     = { params: {}, read: getElementRect     }; // DOMRect, in the viewport
 
 // any part visible, or at least ratio of it
 export const inView = {

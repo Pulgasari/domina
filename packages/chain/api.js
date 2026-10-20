@@ -1,24 +1,24 @@
 // @domina/chain/api.js
 // the built-in methods, as definitions (see define.js)
 
-import { addClass as addClassTo }         from '@domina/methods/addClass';
-import { getAttr }                        from '@domina/methods/getAttr';
-import { getData }                        from '@domina/methods/getData';
-import { getElementSize }                 from '@domina/methods/getElementSize';
-import { getHTML }                        from '@domina/methods/getHTML';
-import { getStyle }                       from '@domina/methods/getStyle';
-import { getText }                        from '@domina/methods/getText';
-import { getValue }                       from '@domina/methods/getValue';
-import { hasClass as hasClassOn }         from '@domina/methods/hasClass';
-import { removeClass as removeClassFrom } from '@domina/methods/removeClass';
-import { setAttr }                        from '@domina/methods/setAttr';
-import { setClass }                       from '@domina/methods/setClass';
-import { setData }                        from '@domina/methods/setData';
-import { setHTML }                        from '@domina/methods/setHTML';
-import { setStyle }                       from '@domina/methods/setStyle';
-import { setText }                        from '@domina/methods/setText';
-import { setValue }                       from '@domina/methods/setValue';
-import { toggleClass as toggleClassOn }   from '@domina/methods/toggleClass';
+import { addClass as addClassTo }         from '@domina/verbs/addClass.js';
+import { getAttr }                        from '@domina/verbs/getAttr.js';
+import { getData }                        from '@domina/verbs/getData.js';
+import { getElementSize }                 from '@domina/verbs/getElementSize.js';
+import { getHTML }                        from '@domina/verbs/getHTML.js';
+import { getStyle }                       from '@domina/verbs/getStyle.js';
+import { getText }                        from '@domina/verbs/getText.js';
+import { getValue }                       from '@domina/verbs/getValue.js';
+import { hasClass as hasClassOn }         from '@domina/verbs/hasClass.js';
+import { removeClass as removeClassFrom } from '@domina/verbs/removeClass.js';
+import { setAttr }                        from '@domina/verbs/setAttr.js';
+import { setClass }                       from '@domina/verbs/setClass.js';
+import { setData }                        from '@domina/verbs/setData.js';
+import { setHTML }                        from '@domina/verbs/setHTML.js';
+import { setStyle }                       from '@domina/verbs/setStyle.js';
+import { setText }                        from '@domina/verbs/setText.js';
+import { setValue }                       from '@domina/verbs/setValue.js';
+import { toggleClass as toggleClassOn }   from '@domina/verbs/toggleClass.js';
 
 import { isPlainObject, toCamelCase, toKebabCase } from './shared.js';
 
@@ -98,57 +98,29 @@ export const dataset = {
 // :::::: CLASSES
 // names: 'a b', 'a, b', a list, or { a: true, b: false }
 
-export const addClass    = { params: { names: 'string' },                write: (element, ...names)    => { addClassTo(element, ...names); } };
-export const removeClass = { params: { names: 'string' },                write: (element, ...names)    => { removeClassFrom(element, ...names); } };
-export const toggleClass = { params: { names: 'string', force: 'bool' }, write: (element, names, force) => { toggleClassOn(element, names, force); } };
-
-// every name on the first element (or on every element, on .all)
-export const hasClass = {
-  params : { names: 'string' },
-  read   : (element, names) => hasClassOn(element, names),
-};
+export const 
+addClass    = { write: addClassTo,      params: { names: 'string' }},
+removeClass = { write: removeClassFrom, params: { names: 'string' }},
+toggleClass = { write: toggleClassOn,   params: { names: 'string', force: 'bool' }},
+hasClass    = { read: hasClassOn,       params: { names: 'string' }};
 
 // the whole list: read as an array, write replaces it. exported as class
 const classList = {
   params : { names: 'string' },
-  read   : element         => [...element.classList],
-  write  : (element, names) => { setClass(element, names); },
+  read   : element => [...element.classList],
+  write  : setClass,
 };
 
 export { classList as class };
 
-// :::::: CONTENT
-
-export const html = {
-  params : { html: 'html' },
-  read   : (element)       => getHTML(element),
-  write  : (element, html) => setHTML(element, html),
-};
-
-export const text = {
-  params : { text: 'string' },
-  read   : element         => getText(element),
-  write  : (element, text) => { setText(element, text); },
-};
-
-// :::::: FORMS
-// checkbox: boolean, select multiple: array, otherwise a string. { notify: true } fires input and change
-
-export const value = {
-  params : { value: 'json' },
-  reads  : args => args.length === 0,
-  read   : element                   => getValue(element),
-  write  : (element, value, options) => { setValue(element, value, options); },
-};
-
 // :::::: STYLES
 
-export const style = {
-  params : { property: 'string', value: 'string' },
-  read   : (element, property)                => getStyle(element, property),
-  write  : (element, propertyOrMap, value)    => setStyle(element, propertyOrMap, value),
-};
-
+export const
+html  = { read: getHTML,  write: setHTML,  params: { html: 'html' } },
+style = { read: getStyle, write: setStyle, params: { property: 'string', value: 'string' } },
+text  = { read: getText,  write: setText,  params: { text: 'string' } },
+value = { read: getValue, write: setValue, params: { value: 'json' }, reads: args => args.length === 0 };     
+  
 // :::::: GEOMETRY
 
 const onlyBox = options => Object.keys(options).every(key => key === 'box');

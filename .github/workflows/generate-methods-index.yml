@@ -5,7 +5,7 @@ name: Auto-generate Methods Index
 on:
   push:
     paths:
-      - 'packages/methods/**'
+      - 'packages/verbs/**'
     branches:
       - main # or your default branch
 
@@ -31,4 +31,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore(methods): auto-generate index.js + deno.json exports'
-          file_pattern: 'packages/methods/index.js packages/methods/deno.json'
+          file_pattern: 'packages/verbs/index.js packages/verbs/deno.json'

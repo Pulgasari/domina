@@ -1,6 +1,6 @@
 // @domina/chain/events.js
 
-import { emitEvent }        from '@domina/methods/emitEvent';
+import { emitEvent }        from '@domina/verbs/emitEvent.js';
 import { listen, unlisten } from './listeners.js';
 
 // on(types, handler, options) or on(types, selector, handler, options)

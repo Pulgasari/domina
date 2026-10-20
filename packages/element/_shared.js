@@ -1,4 +1,7 @@
 // @domina/element/_shared.js
 
-export { isArray, isSymbol } from '@pulgasari/is';
-export { toKebabCase }       from '@pulgasari/str';
+export * from '@pulgasari/coerce';
+export * from '@pulgasari/is';
+export * from '@pulgasari/str';
+
+export { Logger } from '@pulgasari/logger';

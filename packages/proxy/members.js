@@ -1,90 +1,78 @@
-// @domina/proxy/members.js
-// document state and environment as values. { get (ctx), set (value, ctx), only }
+// @domina/proxy :: members
 
-import { getScroll } from '@domina/methods/getScroll';
-import { setMeta }   from '@domina/methods/setMeta';
-import { setScroll } from '@domina/methods/setScroll';
+/*
+what a facade adds to its root. the methods are named and behave like the
+native ones, a native call stays native: only where the native one throws or
+does nonsense, the gap is filled.
 
-const attribute = name => ({
-  get : ({ host })        => host.getAttribute(name),
-  set : (value, { host }) => { value == null ? host.removeAttribute(name) : host.setAttribute(name, value); },
-});
+  querySelector({ id: 'app' })                  a spec object, natively a SyntaxError
+  querySelectorAll({ tag: 'li' })               a NodeList, as natively
+  getElement(spec, context?)                    the first match or null
+  getElements(spec, context?)                   a List (query.js): find/filter take a matcher or selector
+  get, getListOfElements                        other names of the two, to find out which reads better
+  createElement('button', { class, onClick }, 'save')   props and children ({ is } and strings stay native)
+  addEventListener / removeEventListener        see events.js
 
-const once = (target, type) => new Promise(resolve => target.addEventListener(type, () => resolve(), { once: true }));
+  root       the element of the facade (<html> for the document)
+  meta       see meta.js
+  url        the url of the page, as @pulgasari/url (a copy: changing it moves nothing)
+  observer   @domina/observer
+  a11y, media                                   see media.js
+*/
 
-// activeElement stops at a shadow host, the focused element may sit deeper
-function deepActive (doc) {
-  let active = doc.activeElement;
-  while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
-  return active;
+import buildSelector from '@domina/verbs/buildSelector.js';
+import getElement    from '@domina/verbs/getElement.js';
+import getElements   from '@domina/verbs/getElements.js';
+import updateElement from '@domina/verbs/updateElement.js';
+
+import * as observer from '@domina/observer';
+import { url }       from '@pulgasari/url';
+
+import { listen, unlisten }   from './events.js';
+import { a11y, media }        from './media.js';
+import { meta }               from './meta.js';
+import { List }               from './query.js';
+import { isPlainObject, isString } from './shared.js';
+
+const selectorOf = spec => isPlainObject(spec) ? buildSelector(spec) : spec;
+const isNative  = (props, children) => !children.length && (props == null || isString(props) || (isPlainObject(props) && Object.keys(props).every(key => key === 'is')));
+
+export function membersOf ({ document, host, root }) {
+  const first = (spec, context = root) => getElement(spec, context);
+  const all   = (spec, context = root) => List.from(getElements(spec, context));
+
+  return {
+
+    // :::::: QUERY
+
+    querySelector    (spec) { return root.querySelector(selectorOf(spec)); },
+    querySelectorAll (spec) { return root.querySelectorAll(selectorOf(spec)); },
+
+    getElement        : first,
+    getElements       : all,
+    get               : first,
+    getListOfElements : all,
+
+    // :::::: CREATE
+
+    createElement (tag, props, ...children) {
+      if (isNative(props, children)) return document.createElement(tag, props);
+      const { is, ...rest } = props ?? {};
+      return updateElement(document.createElement(tag, is == null ? undefined : { is }), rest, ...children);
+    },
+
+    // :::::: EVENTS
+
+    addEventListener    (types, ...args)             { return listen(root, types, ...args); },
+    removeEventListener (types, listener, options)   { unlisten(root, types, listener, options); },
+
+    // :::::: PROPERTIES
+
+    get a11y     () { return a11y; },
+    get media    () { return media; },
+    get meta     () { return meta; },
+    get observer () { return observer; },
+    get root     () { return host; },
+    get url      () { return url(document.URL); },
+  };
 }
-
-export const members = {
-
-  // :::::: NODES
-
-  document : { get: ({ document }) => document },
-  root     : { get: ({ host })     => host },
-  body     : { only: 'document', get: ({ document }) => document.body },
-  head     : { only: 'document', get: ({ document }) => document.head },
-
-  // :::::: STATE
-
-  title : {
-    only : 'document',
-    get  : ({ document })        => document.title,
-    set  : (value, { document }) => { document.title = value ?? ''; },
-  },
-
-  lang : attribute('lang'),
-  dir  : attribute('dir'),
-
-  // <meta name="color-scheme"> for the ua before css loads, color-scheme on :root after
-  scheme : {
-    only : 'document',
-    get  : ({ document })        => document.querySelector('meta[name="color-scheme"]')?.content ?? null,
-    set  : (value, { document }) => { setMeta('color-scheme', value); document.documentElement.style.colorScheme = value ?? ''; },
-  },
-
-  // { x, y }. setting takes { x, y, smooth }
-  scroll : {
-    get : ctx => {
-      const { left, top } = getScroll(ctx.isDocument ? null : ctx.host);
-      return { x: left, y: top };
-    },
-    set : ({ smooth = false, x, y } = {}, ctx) => {
-      setScroll(ctx.isDocument ? null : ctx.host, { behavior: smooth ? 'smooth' : 'auto', left: x, top: y });
-    },
-  },
-
-  // the innermost focused element. setting focuses a selector or an element
-  focus : {
-    only : 'document',
-    get  : ({ document })         => deepActive(document),
-    set  : (target, { document }) => { (typeof target === 'string' ? document.querySelector(target) : target)?.focus?.(); },
-  },
-
-  // :::::: ENVIRONMENT
-
-  ready : {
-    only : 'document',
-    get  : ({ document }) => document.readyState === 'loading' ? once(document, 'DOMContentLoaded') : Promise.resolve(),
-  },
-
-  loaded : {
-    only : 'document',
-    get  : ({ document }) => document.readyState === 'complete' ? Promise.resolve() : once(document.defaultView ?? globalThis, 'load'),
-  },
-
-  fontsReady : {
-    only : 'document',
-    get  : ({ document }) => document.fonts?.ready.then(() => {}) ?? Promise.resolve(),
-  },
-
-  visible : { only: 'document', get: ({ document }) => document.visibilityState === 'visible' },
-  focused : { only: 'document', get: ({ document }) => document.hasFocus() },
-  online  : { only: 'document', get: () => globalThis.navigator?.onLine ?? true },
-  motion  : { only: 'document', get: () => !globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches },
-  url     : { only: 'document', get: ({ document }) => new URL(document.location?.href ?? document.URL) },
-
-};

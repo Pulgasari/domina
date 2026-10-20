@@ -5,8 +5,8 @@
 JavaScript toolkit for *doing stuff* in the DOM.
 
 ### demos | playground 
-[chain](https://code.pulgasari.dev/domina/chain.html) ·
-[proxy](https://code.pulgasari.dev/domina/proxy.html) 
+[chain](https://code.pulgasari.dev/domina/www/chain.html) ·
+[proxy](https://code.pulgasari.dev/domina/www/proxy.html) 
 
 ## packages
 
@@ -14,14 +14,13 @@ JavaScript toolkit for *doing stuff* in the DOM.
 |----------------------|----------------------------|---------|--------|
 | `@domina/analyzer`   | [dir](#)                   | concept |        |
 | `@domina/chain`      | [dir](packages/chain)      | v0      | 🔥🥵🔥 |
-| `@domina/element`    | [dir](packages/element)    | soon    |        |
+| `@domina/dom`        | [dir](packages/dom)        | v0      |        |
+| `@domina/element`    | [dir](packages/element)    | v0      |        |
 | `@domina/observer`   | [dir](packages/observer)   | v0      | 🥺👉👈 |
 | `@domina/prototypes` | [dir](packages/prototypes) | v0      | 🤔     |
 | `@domina/proxy`      | [dir](packages/proxy)      | v0      | 🤔🧐😵‍💫 |
-| `@domina/raf`        | [dir](packages)            | v0      |        |
 | `@domina/render`     | [dir](packages/render)     | v0      |        |
-| `@domina/sheets`     | [dir](packages/sheets)     | v0      |        |
-| `@domina/verbs`      | [dir](packages/methods)    | v0      | 😭😭😭 |
+| `@domina/verbs`      | [dir](packages/verbs)      | v0      | 😭😭😭 |
 
 ### `@domina/analyzer`
 
@@ -31,13 +30,13 @@ analyze a code base which is using @domina-packages to provide plugins to get it
 
 a hommage to jQuery.
 
-### `@domina/domina`
+### `@domina/dom`
 
 your sincere excellence, the queen of the www, the dominatrix of humanity ...
 
 ### `@domina/element`
 
-... coming soon ...
+a base class for custom elements: attribute schema, rendering through htx, selections, config. formerly `@aufbau/element`, the base of `@aufbau/elements`.
 
 ### `@domina/observer`
 
@@ -51,17 +50,9 @@ alert! bad practice! danger! evil! forbidden! nobody does that kind of shit anym
 
 a proxy-like wrapper on `document` (without being a proxy or touching any prototype)
 
-### `@domina/raf`
-
-api to deal with `requestAnimationFrame`.
-
 ### `@domina/render`
 
 api to render and update html-templates.
-
-### `@domina/sheets`
-
-api to deal with constructed stylesheets, css/stylesheet-files and style-elements.
 
 ### `@domina/verbs`
 

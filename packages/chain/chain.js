@@ -9,7 +9,7 @@ const unique = list => list.length < 2 ? list : [...new Set(list)];
 
 function select (root, selector) {
   try   { return root.querySelectorAll ? Array.from(root.querySelectorAll(selector)) : []; }
-  catch { return []; } // an invalid selector is an empty set, as in @domina/methods
+  catch { return []; } // an invalid selector is an empty set, as in @domina/verbs
 }
 
 function query (selector, context) {
