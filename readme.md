@@ -1,4 +1,4 @@
-![Banner](/.assets*domina-002b-quant.png)
+![Banner](/.assets/domina-002b-quant.png)
 
 # domina
 
