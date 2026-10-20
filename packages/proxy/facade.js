@@ -15,6 +15,10 @@ import { isFn, isSymbol } from './shared.js';
 // extend() writes here, every facade reads it
 export const extensions = Object.create(null);
 
+// one facade per root: within('#card') twice is the same facade
+const facades = new WeakMap;
+export const facadeOf = (root) => facades.getOrInsertComputed(root, createFacade);
+
 // a setter or a writable value somewhere along the prototype chain
 function isWritable (object, key) {
   for (let current = object; current; current = Object.getPrototypeOf(current)) {
@@ -62,10 +66,9 @@ function createFacade (root) {
   return facade;
 }
 
-// one facade per root: within('#card') twice is the same facade
-const facades = new WeakMap;
-
+/*
 export function facadeOf (root) {
   if (!facades.has(root)) facades.set(root, createFacade(root));
   return facades.get(root);
 }
+*/
