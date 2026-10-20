@@ -39,24 +39,26 @@
 
   <div id='bg'></div>
 	<div id='app' layout='landing'>
-    <nav></nav>
+    <nav>
+		<a href='https://github.com/pulgasari/domina/'>@github</a>
+	</nav>
     <h1>domina</h1>
     <nav>
-      <a href='https://aufbau.dev'>aufbau</a>
+      <a href='https://github.com/pulgasari/domina/'>@github</a>
     </nav>
   </div>
   
 <script type="module">
 	import * as filters from '@gestalt/filters';
-  import getStyleToken from '@domina/verbs/getStyleToken.js';
+  //import getStyleToken from '@domina/verbs/getStyleToken.js';
   /*
     const [filters, { default: getStyleToken }] = await Promise.all([
       import('@gestalt/filters'),
       import('@domina/verbs/getStyleToken.js'),
     ]);
   */
-  const bg = getStyleToken('color-bg', 'body') || '#000000';
-  const fg = getStyleToken('color-fg', 'body') || 'white';
+  //const bg = getStyleToken('color-bg', 'body') || '#000000';
+  //const fg = getStyleToken('color-fg', 'body') || 'white';
   filters.apply('body', 'glitch-live', { animate: true, speed: '2s' });
 </script>
 
