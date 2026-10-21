@@ -28,6 +28,7 @@
       z-index: 200;
     }
     #bg {
+		animation: hueRotate 10s linear infinite;
       /*filter: brightness(50%) hue-rotate(90deg);*/
       z-index: 100;
       position: absolute;
@@ -46,6 +47,16 @@
   */
   z-index: -1;
 	}
+
+	  /* Keyframe animation cycling through 360 degrees of hue */
+    @keyframes hueRotate {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+      100% {
+        filter: hue-rotate(360deg);
+      }
+		}
   </style>
 </head>
 <body>
