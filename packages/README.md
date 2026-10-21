@@ -3,4 +3,4 @@
 ---
 
 # TODO
-- [ ] `@pulgasari/url` als `@domina/url`? (mit `domina.url` am ende nochmal anschauen)
+- [ ] `@pulgasari/url` evtl. zu `@domina/url` machen und im proxy/dom-package? passt das?
