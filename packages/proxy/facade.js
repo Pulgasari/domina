@@ -16,8 +16,12 @@ import { isFn, isSymbol } from './shared.js';
 export const extensions = Object.create(null);
 
 // one facade per root: within('#card') twice is the same facade
+// WeakMap#getOrInsertComputed where the browser has it (still new), the same by hand elsewhere
 const facades = new WeakMap;
-export const facadeOf = (root) => facades.getOrInsertComputed(root, createFacade);
+export const facadeOf = root =>
+    facades.getOrInsertComputed ? facades.getOrInsertComputed(root, createFacade)
+  : facades.has(root)           ? facades.get(root)
+  :                               facades.set(root, createFacade(root)).get(root);
 
 // a setter or a writable value somewhere along the prototype chain
 function isWritable (object, key) {
