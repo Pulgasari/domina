@@ -8,15 +8,14 @@ on:
         required: true
         type: choice
         options:
+          - chain
+          - dom
           - element
-          - fonts
-          - form
-          - meta
-          - methods
           - observer
-          - prototype
-          - raf
-          - style
+          - prototypes
+          - proxy
+          - render
+          - verbs
 
 jobs:
   publish:
