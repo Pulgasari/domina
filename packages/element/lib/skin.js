@@ -6,8 +6,9 @@ import { ensureLayerOrder, SKIN_LAYER }         from './styles.js';
 
 const CONFIG_KEY   = 'elements-skin';
 const DEFAULT_SKIN = 'monochrome';
-// the skins are @gestalt/css's, in the gestalt repo next to this one
-const SKIN_BASE    = new URL('../../../../gestalt/packages/css/skins/', import.meta.url);
+// the skins are @gestalt/css's, from where @gestalt/core loads its sheets as well. not
+// relative to this module: in a build it sits in a chunk of its own
+const SKIN_BASE    = 'https://code.pulgasari.dev/gestalt/packages/css/skins/';
 const SKIN_KEY     = 'aufbau:skin';
 
 const skinUrl = (skin) =>
