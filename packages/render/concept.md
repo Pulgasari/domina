@@ -164,8 +164,10 @@ what a re-rendering caller (aufbau) needs.
 `scope(fn)` gives every component call, row and branch an owner of its own, so
 the effects and cleanups they create are disposed with them. it runs fn
 untracked as well: what a component reads while it is built does not subscribe
-the effect around it. `effect` must create an effect that no other owner
-disposes, the renderer holds and disposes it.
+the effect around it. its second argument is the anchor of the part, the comment
+it starts at: a caller learns where in the page something is built (rat finds
+the named views around a component that way). `effect` must create an effect
+that no other owner disposes, the renderer holds and disposes it.
 
 without `effect` the renderer works without any signal library, and a function
 in a value hole is called once per render. that keeps `@domina/render` usable

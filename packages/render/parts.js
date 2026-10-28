@@ -32,11 +32,12 @@ const stopper = stop => isFn(stop) ? stop : () => stop?.dispose?.();
 // effect(fn) returns a function or an object with dispose()
 const live = (context, fn) => stopper(context.effect(fn));
 
-// runs fn in an owner of its own when the context has scope(fn) -> [result, dispose]:
-// the effects and cleanups a component or a row creates go when its part goes
-function within (context, fn) {
+// runs fn in an owner of its own when the context has scope(fn, anchor) -> [result, dispose]:
+// the effects and cleanups a component or a row creates go when its part goes. anchor is the
+// comment the part starts at: where in the page it is built
+function within (context, fn, anchor) {
   if (!context.scope) return [fn(), null];
-  const [result, dispose] = context.scope(fn);
+  const [result, dispose] = context.scope(fn, anchor);
   return [result, stopper(dispose)];
 }
 
@@ -178,7 +179,7 @@ export class ChildPart {
   // refs of the new content start belongs to it as well
   build (fn) {
     this.release();
-    this.owner = within(this.context, () => this.commit(fn()))[1];
+    this.owner = within(this.context, () => this.commit(fn()), this.start)[1];
   }
 
   release () { this.owner?.(); this.owner = null; }

@@ -30,9 +30,10 @@ function tag (parse) {
 //
 //   effect(fn)  runs fn now and again on every change, returns its dispose. it
 //               must belong to no one else: the renderer disposes it
-//   scope(fn)   runs fn untracked as owner of what it creates, returns
+//   scope(fn, anchor)  runs fn untracked as owner of what it creates, returns
 //               [result, dispose]. components, rows and branches are built in
-//               one, so their own effects and cleanups go when they go
+//               one, so their own effects and cleanups go when they go. anchor:
+//               the comment the part starts at, where in the page it is built
 function configure ({ effect, scope } = {}) {
   if (effect !== undefined) defaults.effect = effect;
   if (scope  !== undefined) defaults.scope  = scope;
