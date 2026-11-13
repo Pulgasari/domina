@@ -79,6 +79,9 @@ export declare function match<T> (subject: T | (() => T), cases: [T, () => unkno
 export declare function raw (html: string | null | undefined): unknown;
 
 /** Whether a value is a template result. */
+/** What a tag returns, for a program that exists already (a compiler wrote it). The program has to be the same object on every call. */
+export declare function result (program: Program, values?: unknown[]): TemplateResult;
+
 export declare function isResult (value: unknown): value is TemplateResult;
 
 export default render;

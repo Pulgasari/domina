@@ -25,6 +25,11 @@ function tag (parse) {
   };
 }
 
+// what a tag returns, for a program that exists already: a compiler writes the program of a
+// template into its output and calls this with the values. the program has to be the same
+// object on every call, an instance is kept while its program stays
+const result = (program, values = []) => ({ [RESULT]: true, program, values });
+
 // a function in a value hole is live once an effect function is set: globally
 // here, or per call as render(target, result, { effect, scope }).
 //
@@ -70,5 +75,5 @@ function raw (html) {
 
 const isResult = value => value?.[RESULT] === true;
 
-export { configure, each, isResult, match, raw, render, tag, unrender, when };
+export { configure, each, isResult, match, raw, render, result, tag, unrender, when };
 export default render;
